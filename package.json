@@ -1,0 +1,41 @@
+{
+  "name": "@urso/slot-base",
+  "version": "0.1.0",
+  "description": "HTML5 slot base game",
+  "main": "build/js/index.js",
+  "author": "Megbrimef",
+  "license": "MIT",
+  "scripts": {
+    "build:prod": "webpack --config webpack.config.js --mode=production",
+    "build:dev": "webpack --config webpack.config.js --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/megbrimef/urso-slot-base.git"
+  },
+  "keywords": [
+    "game",
+    "engine"
+  ],
+  "bugs": {
+    "url": "https://github.com/megbrimef/urso-slot-base/issues"
+  },
+  "homepage": "https://github.com/megbrimef/urso-slot-base#readme",
+  "dependencies": {
+    "@urso/core": "^0.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "babel-loader": "^8.2.2",
+    "copy-webpack-plugin": "^5.0.3",
+    "exports-loader": "^0.7.0",
+    "html-webpack-plugin": "^5.1.0",
+    "script-loader": "^0.7.2",
+    "source-map-loader": "^1.0.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^5.11.0",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0"
+  }
+}
