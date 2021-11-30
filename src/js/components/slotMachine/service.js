@@ -8,7 +8,7 @@ class ComponentsSlotMachineService {
 
         this.borderSymbolsCount = this._config.borderSymbolsCount;
 
-        Urso.localData.set('components.slotMachine.isCascade', this._config.isCascade);
+        Urso.localData.set('components.slotMachine.isDrop', this._config.isDrop);
         const startSymbols = this._getInitialSymbols();
 
         this._setConfig();
