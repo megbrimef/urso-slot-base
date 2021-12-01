@@ -1,156 +1,74 @@
 class ComponentsSlotMachineService {
 
-    create({ id }) {
-        this._symbolsConfig = this.getInstance('SymbolsConfig');
-        this._config = this.getInstance('Config').get(id);
-        const spinType = Urso.helper.capitaliseFirstLetter(this._config.spinType);
-        this._view = this.getInstance(spinType);
-
-        this.borderSymbolsCount = this._config.borderSymbolsCount;
-
-        Urso.localData.set('components.slotMachine.isDrop', this._config.isDrop);
-        const startSymbols = this._getInitialSymbols();
-
-        this._setConfig();
-        this._setService();
-        this._view.create({ id, startSymbols });
-    }
-
-    _setService() {
+    constructor() {
+        this._view = this.getInstance('View');
+        this._config = this.getInstance('Config');
+        this._view.setConfig(this._config);
         this._view.setService(this);
     }
 
-    _setConfig() {
-        this._view.setConfig(this._config);
+    create = () => {
+        const startSymbols = this._getInitialSymbols();
+        this._view.create(Urso.helper.transpose(startSymbols));
     }
 
-    startSpin() {
-        this._view.spinHandler();
-    }
+    startSpin = () => this._view.startSpin();
+    
 
-    setSpinNewSymbols(symbolsKeys) {
-        symbolsKeys = Urso.helper.rowsToCols(symbolsKeys);
-        this._addBorderSymbols(symbolsKeys);
+    setSpinNewSymbols = (symbolsKeys) => {
         const symbolsConfigs = this._getSymbolsConfigs(symbolsKeys);
         this._view.setSpinNewSymbols(symbolsConfigs);
     }
 
-    symbolAnimate({ reel, row }) {
-        row += this.borderSymbolsCount;
-        this._view.symbolTryAnimate({ reel, row });
+    symbolAnimate = (position) => this._view.symbolAnimate(position);
+
+    symbolStopAnimation = (position) => this._view.symbolStopAnimation(position);
+    
+    speedUpReels = () => this._view.speedUpReels();
+    
+    intrigue = (reelIndexFrom) => this._view.intrigue(reelIndexFrom);
+    
+    _getSymbolsKeysArray = () => Object.keys(this._getMappedSymbolsData());
+
+    _getMappedSymbolsData = () => {
+        const symbols = this._config.getSymbols();
+        return symbols.reduce((acc, { key, object }) => ({ ...acc, [key]: { key, object }}), {});
     }
 
-    symbolStopAnimation(position) {
-        this._view.symbolTryStopAnimation(position);
+    _getEmptyMatrix = () => {
+        const { reelsCount, rowsCount } = this._config.get();
+        return new Array(rowsCount).fill(new Array(reelsCount).fill(null));
+    }   
+
+    _getRandomSymbolsCfgMatrix = () => {
+        const matrix = this._getEmptyMatrix();
+        return matrix.map((row) => row.map(() => this._getRandomSymbolConfig()));
     }
 
-    speedUpReels() {
-        this._view.commandSpeedUp();
-    }
+    _getRandomIndexFromArray = (array) => array[Urso.math.getRandomIntBetween(0, array.length - 1)];
 
-    intrigue(reelIndexFrom) {
-        this._view.intrigue(reelIndexFrom);
-    }
-
-    _getInitialSymbols() {
-        let initialSymbolsKeys = false //TODO get from local data? setter ?
-
-        if (!initialSymbolsKeys)
-            return this._getRandomSymbols();
-        else {
-            initialSymbolsKeys = Urso.helper.rowsToCols(initialSymbolsKeys);
-            this._addBorderSymbols(initialSymbolsKeys);
-            return this._getSymbolsConfigs(initialSymbolsKeys)
-        }
-    }
-
-    _getRandomSymbols() {
-        return this._getSymbolsConfigs();
-    }
-
-    _addBorderSymbols(symbolsMatrix) {
-
-        for (let reel of symbolsMatrix) {
-            for (let i = 0; i < this.borderSymbolsCount; i++) {
-                reel.unshift(null);
-                reel.push(null);
-            }
-        }
-    }
-
-    _getSymbolsConfigs(symbolsKeys) {
-        let symbols = [];
-
-        for (let reelIndex = 0; reelIndex < this._config.reelsCount; reelIndex++) {
-            let reelArray = [];
-
-            for (let rowIndex = 0; rowIndex < this._config.rowsCount + this.borderSymbolsCount * 2; rowIndex++) {
-                const key = symbolsKeys ? symbolsKeys[reelIndex][rowIndex] : null;
-                reelArray.push(this._getSymbol(key));
-            }
-
-            symbols.push(reelArray);
+    _getInitialSymbols = () => {
+        let [ ...initialSymbols ] = Urso.localData.get('s1lotMachine.initialSymbols') || [];
+        
+        if (initialSymbols.length > 0) {
+            return this._getSymbolsConfigs(initialSymbols);
         }
 
-        return symbols;
+        return this._getRandomSymbolsCfgMatrix();
     };
 
-    _getSymbol(symbolKey) {
-        const symbols = this._symbolsConfig.getSymbols();
-
-        //check can we use symbolsBlurKeys
-        if (symbolKey == null) {
-
-            const symbolsBlurKeys = this._config.symbolsBlurKeys;
-
-            if (symbolsBlurKeys.length > 0) {
-                let symbolBlurIndex = Urso.math.getRandomIntBetween(0, symbolsBlurKeys.length - 1);
-                symbolKey = symbolsBlurKeys[symbolBlurIndex];
-            } else {
-                // if no blur symbols return random
-                let symbolIndex = Urso.math.getRandomIntBetween(0, symbols.length - 1);
-                return symbols[symbolIndex];
-            }
-        }
-
-        return symbols.find((element) => (element.key === symbolKey + ''));
+    _getRandomSymbolConfig = () => {
+        const symbolsArray = this._getSymbolsKeysArray();
+        const symbolKey = this._getRandomIndexFromArray(symbolsArray);
+        return this._getSymbolConfig(this._getMappedSymbolsData())(symbolKey);;
     };
 
-    symbolStopAllAnimationHandler() {
-        this._view.symbolStopAllAnimationHandler();
-    }
+    _getSymbolsConfigs = (initialSymbols) => initialSymbols
+        .map((row) => row.map(this._getSymbolConfig(this._getMappedSymbolsData())));
 
-    _destroyWinSymbols() {
-        const slotMachineData = Urso.localData.get('slotMachine');
-        const firstStageSlotWin = slotMachineData.spinStages[0].slotWin;
-        const lineWinAmounts = firstStageSlotWin.lineWinAmounts;
-        let wonSymbolsArray = [];
+    _getSymbolConfig = (mappedSymbolsData) => (symbolKey) => mappedSymbolsData[symbolKey];
 
-        lineWinAmounts.forEach(line => {
-
-            line.wonSymbols.forEach(symbol => {
-                wonSymbolsArray.push(symbol);
-            })
-
-        })
-
-        wonSymbolsArray = wonSymbolsArray.filter((symbol, index, self) =>
-            index === self.findIndex((t) => (
-                t[0] === symbol[0] && t[1] === symbol[1]
-            ))
-        )
-
-        this._view.destroyWinSymbols(wonSymbolsArray);
-    }
-
-    destroyWinSymbolsHandler() {
-        this._view.symbolStopAllAnimationHandler();
-        setTimeout(() => this._destroyWinSymbols(), 20);
-    }
-
-    tintSymbols(symbols) {
-        this._view.tintSymbols(symbols);
-    }
+    symbolStopAllAnimationHandler = () => this._view.symbolStopAllAnimationHandler();
 }
 
 module.exports = ComponentsSlotMachineService;
