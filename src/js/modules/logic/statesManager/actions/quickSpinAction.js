@@ -6,11 +6,6 @@ class ModulesStatesManagerConfigStatesActionsQuickSpinAction extends Urso.Core.M
 
         super._onFinish();
     }
-
-    terminate() {
-      super.terminate();
-      this._onTerminate();
-    }
 };
 
 module.exports = ModulesStatesManagerConfigStatesActionsQuickSpinAction;
