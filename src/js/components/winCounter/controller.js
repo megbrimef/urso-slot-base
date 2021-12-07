@@ -1,4 +1,11 @@
-class ComponentsWinCounterController extends Urso.Core.Components.Base.Controller {
+class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Controller {
+    
+    configActions = {
+        showWinCounterAction: {
+            guard: () => this._getTotalWin(),
+            run: () => this._runShowWinCounter(),
+        }
+    };
 
     create() {
         this.counterText = this.common.findOne('^counterText');
@@ -15,59 +22,54 @@ class ComponentsWinCounterController extends Urso.Core.Components.Base.Controlle
 
         return '';
     }
+    
+    _runShowWinCounter(){
+        this._startCounterAnimation();
+    }
 
-    _counterTextHandler() {
+    _getTotalWin() {
         const slotMachineData = Urso.localData.get('slotMachine');
-        const firstStageSlotWin = slotMachineData.spinStages[0].slotWin;
+        const { totalWin } = slotMachineData.spinStages[0].slotWin;
+        return totalWin;
+    }
+
+    _startCounterAnimation() {
+        const totalWin = this._getTotalWin();
         const bet = Urso.localData.get('bets.value');
-
-        let totalWin = firstStageSlotWin.totalWin;
-
-        if (!totalWin) {
-            return this.emit('components.winField.showWin.finished', null, 1);
-        }
 
         this.counterText.y = totalWin >= (bet * 10) ? 700 : 500;
         this._counterTextTween(this.counterText, totalWin, this.firstWin);
         this.firstWin = false;
     }
 
-    // TODO: REFACTOR
-    _counterTextTween(obj, winVal, isFirstWin) {
-        this.counterText.visible = true;
+    _counterTextTween(obj, winVal) {
+        obj.visible = true;
+        obj.scaleX = obj.scaleY = obj.alpha = 0;
+        obj.text = 0;
+        obj.y = 0;
         let textConfig = {
-            scaleX: 1, scaleY: 1, alpha: 1, duration: 1,
+            scaleX: 1, scaleY: 1, alpha: 1, text: winVal,
+            onUpdate: () => {obj.text = obj.text.toFixed(2)},
+            duration: 2,
             onComplete: () => {
-                gsap.to(obj, {
-                    scaleX: 0, scaleY: 0, alpha: 0, delay: 1, onComplete: () => {
-                        this.counterText.text = '';
-                        this.counterText.visible = false;
-                        this.emit('components.winField.showWin.finished', null, 1);
-                    }
-                });
+                gsap.to(obj, { scaleX: 0, scaleY: 0, alpha: 0, delay: 1, onComplete: () => {
+                    this.emit('components.winField.showWin.finished', null, 1);
+                    this.firstWin = true;
+                    this.callFinish('showWinCounterAction');
+                } });
             }
         };
 
-        if (isFirstWin) {
-            textConfig = {
-                ...textConfig, get text() { return winVal },
-                onUpdate: () => {
-                    obj.text = `${this.currency}${obj.text.toFixed(2)} `;
-                }
-            }
-        } else {
-            obj.text = `${this.currency}${winVal}`;
-        }
 
         gsap.to(obj, textConfig);
     }
 
-    _subscribeOnce() {
-        this.addListener('components.winlines.animateAll.start', this._counterTextHandler.bind(this));
-        this.addListener('components.winlines.animateAll.finished', () => {
-            this.firstWin = true;
-        });
-    };
+    // _subscribeOnce() {
+        // this.addListener('components.winlines.animateAll.start', this._counterTextHandler.bind(this));
+        // this.addListener('components.winlines.animateAll.finished', () => {
+        //     this.firstWin = true;
+        // });
+    // };
 }
 
 module.exports = ComponentsWinCounterController;

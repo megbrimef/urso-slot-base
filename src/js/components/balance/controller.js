@@ -1,4 +1,15 @@
-class ComponentsBalanceController extends Urso.Core.Components.Base.Controller {
+class ComponentsBalanceController extends Urso.Core.Components.StateDriven.Controller {
+
+    configActions = {
+        balanceMakeBetAction: {
+            run: (finishClbk) => this._runBalanceMakeBetAction(finishClbk),
+        }
+    };
+
+    _runBalanceMakeBetAction(finishClbk) {
+        this._makeBet()
+        finishClbk();
+    }
 
     _setHandler(){
         const balance = Urso.localData.get('balance');
@@ -14,7 +25,7 @@ class ComponentsBalanceController extends Urso.Core.Components.Base.Controller {
         textObj.text = `${totalAmount} ${currency}`;
     };
 
-    _makeBetHandler(){
+    _makeBet(){
         const balance = Urso.localData.get('balance');
         const totalBet = Urso.localData.get('totalBet.value');
         balance.totalAmount -= totalBet;
@@ -23,8 +34,9 @@ class ComponentsBalanceController extends Urso.Core.Components.Base.Controller {
     };
 
     _subscribeOnce(){
+        super._subscribeOnce();
         this.addListener('components.balance.set', this._setHandler.bind(this));
-        this.addListener('components.balance.makeBet', this._makeBetHandler.bind(this));
+        // this.addListener('components.balance.makeBet', this._makeBetHandler.bind(this));
     };
 }
 

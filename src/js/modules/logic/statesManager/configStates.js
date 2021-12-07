@@ -3,50 +3,72 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
         super();
 
         this.contents = {
-            IDLE: { 
+            RESET_UI: {
                 all: [
-                    { action: 'startSpin' },
-                    { action: 'startAutospin'}
+                    { action: 'resetWinTextAction' },
+                ]
+            },
+            IDLE: { 
+                race: [
+                    
+                    { action: 'waitingForInteractionAction' },
+                    // { action: 'startAutospin'},
             ]},
 
-            SPIN_START: {
+            // RESET_UI_STATE: {
+            //     all: [
+            //         { action: 'resetWinField' },
+            //     ]
+            // },
+
+            // CHECK_BALANCE: {
+            //     sequence: [
+            //         { action: 'showNoBalanceMessage'}
+            //     ],
+            //     nextState: ["IDLE"]
+            // },
+         
+            START_SPIN: {
+                sequence: [
+                    { action: 'balanceMakeBetAction'},
+                    { action: 'regularSpinStartAction' },
+                    { action: 'serverSpinRequestAction' },
+                    { action: 'updateSlotMachineDataAction' },
+                ]
+            },
+
+            FINISH_SPIN: { 
+                race: [
+                    { action: 'finishingSpinAction' },
+                    { action: 'fastSpinAction' }
+                ]
+            },
+
+            SHOW_WIN: {
                 all: [
-                    { action: 'resetWinField' },
-                    { action: 'balanceMakeBet'},
-                    { action: 'serverSpinRequest' },
-                    { action: 'slotMachineSpinStart' },
+                    { action: 'showWinCounterAction' },
+                    { action: 'showWinlinesAnimationAllAction' },
                 ]
             },
 
-            SPIN_FINISHING: { 
-                race: [
-                    { action: 'regularSpin' },
-                    { action: 'quickSpin' }
-                ]
-            },
+            // // PICK_GAME: { action: 'showPickGame' },
 
-            WINLINES_ANIMATE_ALL: {
+            WINLINES_ANIMATE_BY_ONE: {
                 all: [
-                    { action: 'counterUpdate' },
-                    { action: 'showWinlinesAnimationAll' },
-                    { action: 'ghostLaugh' }
-                ]
+                    { action: 'showWinTextAction' },
+                    {
+                        race: [
+                            { action: 'showWinlinesAnimationByOneAction' },
+                            { action: 'stopWinlinesAnimationAction'}
+                        ]
+                    },
+                    {
+                        sequence: [
+                            { action: 'serverBalanceRequestAction' }
+                        ]
+                    }
+                ]   
             },
-
-            PICK_GAME: { action: 'showPickGame' },
-
-            WINLINES_ANIMATE_BY_ONE: { 
-                race: [
-                    { action: 'showGambleGame' },
-                    { action: 'showWinlinesAnimationByOne' }
-                ]
-            },
-
-            UPDATE_WIN: {
-                race: [
-                    { action: 'balanceReceived' }
-                ]
-            }
         };
     };
 
