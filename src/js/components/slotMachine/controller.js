@@ -39,7 +39,6 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         super(options);
         this._id = options.id;
 
-        this._eventPrefix = 'components.slotMachine';
         this._service = this.getInstance('Service');
         this.tween = this.getInstance('Tween');
     }
