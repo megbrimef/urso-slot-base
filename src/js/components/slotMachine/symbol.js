@@ -1,48 +1,56 @@
 class ComponentsSlotMachineSymbol {
-    key = null;
+    _key = null;
     _animationTween = null;
-    texture = null;
+    _template = null;
+    _parent = null;
+    _texture = null;
 
     setConfig(symbolsConfig) {
         const { key, template, parent } = symbolsConfig;
-        this.key = key;
-        
-        if(!this.texture) {
-            this.texture = Urso.objects.create(template, parent, true);
-        } else {
-            this.texture.changeTexture(template.assetKey);
-        }
+        this._key = key;
+        this._template = template;
+        this._parent = parent;
+
+        this._updateTexture();
     };
 
+    _updateTexture() {
+        if(!this._texture) {
+            this._texture = Urso.objects.create(this._template, this._parent, true);
+        } else {
+            this._texture.changeTexture(this._template.assetKey);
+        }
+    }
+
     prepareToDrop() {
-        this.texture.visible = false;
+        this._texture.visible = false;
     }
 
     destroy() {
-        this.texture.destroy(true);
+        this._texture.destroy(true);
     }
     
     getAnchors() {
-        const { anchorX, anchorY } = this.texture;
+        const { anchorX, anchorY } = this._texture;
         return { anchorX, anchorY };
     }
 
     setPosition ({ x, y }) {
         if (isFinite(x)) {
-            this.texture.x = x;
+            this._texture.x = x;
         }
 
         if (isFinite(y)) {
-            this.texture.y = y;
+            this._texture.y = y;
         }
     };
 
     getPosition() {
-        if (!this.texture) {
+        if (!this._texture) {
             return null;
         }
 
-        const { x, y } = this.texture;
+        const { x, y } = this._texture;
 
         return { x, y };
     }
@@ -50,7 +58,7 @@ class ComponentsSlotMachineSymbol {
     animate(clbk) {
         this._animationTween = gsap.timeline({ defaults: { duration: 1 }});
 
-        this._animationTween.to(this.texture, { scaleX: 1.2, scaleY: 1.2 })
+        this._animationTween.to(this._texture, { scaleX: 1.2, scaleY: 1.2 })
             .to(this.texture, { scaleX: 1, scaleY: 1, onComplete: clbk });
 
         
@@ -64,8 +72,8 @@ class ComponentsSlotMachineSymbol {
 
             this._animationTween = null;
 
-            this.texture.scaleX = 1;
-            this.texture.scaleY = 1;
+            this._texture.scaleX = 1;
+            this._texture.scaleY = 1;
         }
     }
 }
