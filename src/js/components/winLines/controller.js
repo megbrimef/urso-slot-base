@@ -1,15 +1,14 @@
 class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Controller {
     _animateByOneIndex = -1;
 
-    // configStates = {
-    //     SHOW_WIN: {
-    //         guard: () => this._hasWin()
-    //     }
-    // };
+    configStates = {
+        SHOW_WIN: {
+            guard: () => this._hasWin()
+        }
+    };
    
     configActions = {
         showWinlinesAnimationAllAction: {
-            guard: () => this._hasWin(),
             run: () => this._runShowWinlinesAnimationAll(),
         },
         showWinlinesAnimationByOneAction: {

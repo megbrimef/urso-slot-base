@@ -59,7 +59,7 @@ class ComponentsSlotMachineSymbol {
         this._animationTween = gsap.timeline({ defaults: { duration: 1 }});
 
         this._animationTween.to(this._texture, { scaleX: 1.2, scaleY: 1.2 })
-            .to(this.texture, { scaleX: 1, scaleY: 1, onComplete: clbk });
+            .to(this._texture, { scaleX: 1, scaleY: 1, onComplete: clbk });
 
         
 

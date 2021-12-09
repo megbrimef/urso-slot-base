@@ -1,7 +1,11 @@
 class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.Controller {
     _eventPrefix = 'components.slotMachine';
 
-    configStates = {}
+    configStates = {
+        DROP: {
+            guard: () => this._hasWin()
+        }
+    }
    
     configActions = {
         waitingForInteractionAction: { 
@@ -23,6 +27,9 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         fastSpinAction: {
             run: () => this._runFastSpin(),
             terminate: () => this._finishFastSpin()
+        },
+        dropAction: {
+            run: (finishClbk) => this._runDrop(finishClbk),
         }
     }
 
@@ -110,10 +117,26 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         this.callFinish('fastSpinAction');
     }
 
-    // _showAllSymbolsAmation() {
-    //     this._service.showAllSymbolsAmation();
-    // }
-    
+    _hasWin() {
+        return this._getWinlines().length > 0
+    }
+
+    _getWinlines() {
+        return Urso.localData.get('slotMachine.spinStages.0.slotWin.lineWinAmounts') || [];
+    }
+
+    // ACTION
+
+    _runDrop(finishClbk) {
+        const winLines = this._getWinlines();
+        const wonSymbols = winLines
+            .reduce((acc, { wonSymbols }) => [...acc, ...wonSymbols], []);
+        
+        this._service.prepareDrop(wonSymbols);
+
+        finishClbk();
+    }
+
     // //position: {reel:2, row:1}
     _symbolAnimate(position) {
         this._service.symbolAnimate(position);
@@ -140,16 +163,17 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         this._service.setDropMatrix(Urso.helper.transpose(matrix));
     }
     
-    _spinComplete = () => {
+    _spinComplete = ({ type }) => {
+        this._service.setBaseConfig();
         this.callFinish('finishingSpinAction');
     };
 
-    _spinCompleteHandler = () => this._spinComplete();
+    _spinCompleteHandler = (params) => this._spinComplete(params);
 
     _symbolAnimateHandler = (position) => this._symbolAnimate(position);
 
     // _symbolStopAllAnimationHandler = () => this._symbolStopAllAnimation();
-    _dropHandler = (matrix) => this._drop(matrix);
+    // _dropHandler = (matrix) => this._drop(matrix);
     // _cycleFinishedHandler = () => this._cycleFinished();
     
     _addComponentListener = (key, clbk) => this.addListener(`${this._eventPrefix}.${key}`, clbk);
@@ -167,7 +191,7 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
     //     // this._addComponentListener('stopSymbolAnimate', this._stopSymbolAnimateHandler);
     //     // this._addComponentListener('speedUpReels', this._speedUpReelsHandler);
     //     // this._addComponentListener('intrigue', this._intrigueHandler);
-        this._addComponentListener('drop', this._dropHandler);
+        // this._addComponentListener('drop', this._dropHandler);
         this._addComponentListener('spinComplete', this._spinCompleteHandler);
     //     // this._addComponentListener('cycleFinished', this._cycleFinishedHandler);
 

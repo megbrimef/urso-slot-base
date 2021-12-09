@@ -51,6 +51,15 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
                 ]
             },
 
+            DROP: {
+                sequence: [
+                    { action: 'regularSpinStartAction' },
+                    { action: 'serverSpinRequestAction' },
+                    { action: 'updateSlotMachineDataAction' },
+                ],
+                nextState: ["DROP"]
+            },
+
             // // PICK_GAME: { action: 'showPickGame' },
 
             WINLINES_ANIMATE_BY_ONE: {

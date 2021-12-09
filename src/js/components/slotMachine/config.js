@@ -14,7 +14,7 @@ class ComponentsSlotMachineConfig {
             blurAlpha: 0.5,
             borderSymbolsCount: 2,
             regularEasingParam: 0,
-            dropEasingParam: 10,
+            dropEasingParam: 0,
 
             spinCompleteDelay: 200, //event delay, after reels stops
 
@@ -56,9 +56,18 @@ class ComponentsSlotMachineConfig {
         const basic = this.getBasicConfig();
         return {
             ...basic,
-            regularEasingParam: 50,
+            regularEasingParam: 75,
             borderSymbolsCount: 0,
             cascadeDuration: 400
+        }
+    }
+
+    getDropConfig() {
+        const basic = this.getBasicConfig();
+        return {
+            ...basic,
+            dropEasingParam: 70,
+            symbolSpeed: 0.2
         }
     }
 
@@ -66,10 +75,13 @@ class ComponentsSlotMachineConfig {
         const basic = this.getBasicConfig();
         const reel15Row1 = this.getReel15Row1Config();
         const cascade = this.getCascadeConfig();
+        const drop = this.getDropConfig();
+
         return {
             basic,
             reel15Row1,
-            cascade
+            cascade,
+            drop
         };
     }
 
