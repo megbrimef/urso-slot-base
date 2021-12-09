@@ -86,7 +86,6 @@ class ComponentsSlotMachineService {
     symbolStopAnimation(position) {
         this._view.symbolStopAnimation(position);
     }
-
     speedUpReels() {
         this._view.speedUpReels();
     }
