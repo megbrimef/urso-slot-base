@@ -1,11 +1,14 @@
 class ComponentsWinFieldController extends Urso.Core.Components.StateDriven.Controller {
 
     configActions = {
-        showWinTextAction: {
-            run: (finishClbk) => this._runShowWinText(finishClbk),
+        showWinAmountTextAction: {
+            run: (finishClbk) => this._runShowAmountWinText(finishClbk),
         },
         resetWinTextAction: {
             run: (finishClbk) => this._runResetText(finishClbk)
+        },
+        showWinTextAction: {
+            run: (finishClbk) => this._runShowWinText(finishClbk)
         } 
     };
 
@@ -20,13 +23,18 @@ class ComponentsWinFieldController extends Urso.Core.Components.StateDriven.Cont
         this.cheering = Urso.findOne('.cheeringText');
     }
 
-    _runShowWinText(finishClbk){
+    _runShowAmountWinText(finishClbk){
         this._showWinText();
         finishClbk();
     }
 
     _runResetText(finishClbk) {
         this._resetText()
+        finishClbk();
+    }
+    
+    _runShowWinText(finishClbk) {
+        this.cheering.text = 'WIN';
         finishClbk();
     }
 

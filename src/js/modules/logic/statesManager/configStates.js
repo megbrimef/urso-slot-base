@@ -3,41 +3,39 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
         super();
 
         this.contents = {
-            RESET_UI: {
+            IDLE: {
                 all: [
-                    { action: 'resetWinTextAction' },
+                    { action: 'enableUiButtonsAction' },
+                    { action: 'hideStopButtonAction' },
+                    { action: 'showSpinButtonAction' },
+                    {
+                        race: [
+                            { action: 'autoSpinAction' },
+                            { action: 'waitingForInteractionAction' }
+                        ]
+                    }
                 ]
             },
-            IDLE: { 
-                race: [
-                    
-                    { action: 'waitingForInteractionAction' },
-                    // { action: 'startAutospin'},
-            ]},
 
-            // RESET_UI_STATE: {
-            //     all: [
-            //         { action: 'resetWinField' },
-            //     ]
-            // },
+            RESET_WIN_STATE: {
+                all: [
+                    { action: 'resetWinTextAction' }
+                ]
+            },
 
-            // CHECK_BALANCE: {
-            //     sequence: [
-            //         { action: 'showNoBalanceMessage'}
-            //     ],
-            //     nextState: ["IDLE"]
-            // },
-         
             START_SPIN: {
                 sequence: [
-                    { action: 'balanceMakeBetAction'},
+                    { action: 'disableUiButtonsAction' },
+                    { action: 'hideSpinButtonAction' },
+                    { action: 'showStopButtonAction' },
+                    { action: 'balanceMakeBetAction' },
                     { action: 'regularSpinStartAction' },
                     { action: 'serverSpinRequestAction' },
                     { action: 'updateSlotMachineDataAction' },
                 ]
             },
 
-            FINISH_SPIN: { 
+            FINISH_SPIN: {
                 race: [
                     { action: 'finishingSpinAction' },
                     { action: 'fastSpinAction' }
@@ -46,29 +44,33 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
 
             SHOW_WIN: {
                 all: [
+                    { action: 'showWinTextAction' },
                     { action: 'showWinCounterAction' },
                     { action: 'showWinlinesAnimationAllAction' },
                 ]
             },
 
-            DROP: {
-                sequence: [
-                    { action: 'regularSpinStartAction' },
-                    { action: 'serverSpinRequestAction' },
-                    { action: 'updateSlotMachineDataAction' },
-                ],
-                nextState: ["DROP"]
-            },
-
-            // // PICK_GAME: { action: 'showPickGame' },
+            // DROP: {
+            //     sequence: [
+            //         { action: 'dropAction'},
+            //         { action: 'regularSpinStartAction' },
+            //         { action: 'serverSpinRequestAction' },
+            //         { action: 'updateSlotMachineDataAction' },
+            //         { action: 'finishingSpinAction' }
+            //     ],
+            //     nextState: ['SHOW_WIN']
+            // },
 
             WINLINES_ANIMATE_BY_ONE: {
                 all: [
-                    { action: 'showWinTextAction' },
+                    { action: 'showWinAmountTextAction' },
+                    { action: 'enableUiButtonsAction' },
                     {
                         race: [
+                            { action: 'autospinCheckAction'},
+                            { action: 'autoSpinAction'},
                             { action: 'showWinlinesAnimationByOneAction' },
-                            { action: 'stopWinlinesAnimationAction'}
+                            { action: 'stopWinlinesAnimationAction' }
                         ]
                     },
                     {
@@ -76,7 +78,8 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
                             { action: 'serverBalanceRequestAction' }
                         ]
                     }
-                ]   
+                ],
+                nextState: ['RESET_WIN_STATE']
             },
         };
     };

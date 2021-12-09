@@ -46,7 +46,6 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
         obj.visible = true;
         obj.scaleX = obj.scaleY = obj.alpha = 0;
         obj.text = 0;
-        obj.y = 0;
         let textConfig = {
             scaleX: 1, scaleY: 1, alpha: 1, text: winVal,
             onUpdate: () => {obj.text = obj.text.toFixed(2)},
@@ -63,13 +62,6 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
 
         gsap.to(obj, textConfig);
     }
-
-    // _subscribeOnce() {
-        // this.addListener('components.winlines.animateAll.start', this._counterTextHandler.bind(this));
-        // this.addListener('components.winlines.animateAll.finished', () => {
-        //     this.firstWin = true;
-        // });
-    // };
 }
 
 module.exports = ComponentsWinCounterController;

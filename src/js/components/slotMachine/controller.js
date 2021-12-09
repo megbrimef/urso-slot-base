@@ -10,6 +10,7 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
     configActions = {
         waitingForInteractionAction: { 
             run: () => this._runWaitingForInteraction(),
+            terminate: () => this._terminateWaitingForInteraction()
         },
         regularSpinStartAction: {
             run: () => this._runRegularSpinStart()
@@ -22,7 +23,8 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
             terminate: () => this._terminateFinishingSpinAction()
         },
         stopWinlinesAnimationAction: {
-            run: () => this._runStopWinlinesAnimation()
+            run: () => this._runStopWinlinesAnimation(),
+            terminate: () => this._terminateStopWinlinesAnimation()
         },
         fastSpinAction: {
             run: () => this._runFastSpin(),
@@ -53,6 +55,10 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
     
     _runWaitingForInteraction() {
         this._addComponentListener('spinCommand', this._spinCommandHandler);
+    }
+
+    _terminateWaitingForInteraction() {
+        this._spinCommandHandler();
     }
 
     _spinCommandHandler = () => {
@@ -95,17 +101,21 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
 
     // ACTION
     _runStopWinlinesAnimation() {
-        this._addComponentListener('spinCommand', this._stopWinlinesAnimationHandler);
+        this._addComponentListener('stopCommand', this._stopWinlinesAnimationHandler);
+    }
+
+    _terminateStopWinlinesAnimation() {
+        this._stopWinlinesAnimationHandler();
     }
 
     _stopWinlinesAnimationHandler = () => {
-        this._removeComponentListener('spinCommand', this._stopWinlinesAnimationHandler);
+        this._removeComponentListener('stopCommand', this._stopWinlinesAnimationHandler);
         this._symbolStopAllAnimation();
         this.callFinish('stopWinlinesAnimationAction');
     }
 
     _runFastSpin() {
-        this._addComponentListener('spinCommand', this._fastSpinHandler);
+        this._addComponentListener('stopCommand', this._fastSpinHandler);
     }
 
     _fastSpinHandler = () => {
@@ -113,7 +123,7 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
     }
 
     _finishFastSpin() {
-        this._removeComponentListener('spinCommand', this._fastSpinHandler);
+        this._removeComponentListener('stopCommand', this._fastSpinHandler);
         this.callFinish('fastSpinAction');
     }
 
