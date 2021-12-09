@@ -8,10 +8,23 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
                     { action: 'enableUiButtonsAction' },
                     { action: 'hideStopButtonAction' },
                     { action: 'showSpinButtonAction' },
+                    { action: 'showWinAmountTextAction' },
                     {
-                        race: [
-                            { action: 'autoSpinAction' },
-                            { action: 'waitingForInteractionAction' }
+                        all: [
+                            {
+                                race: [
+                                    
+                                    { action: 'autospinAction' },
+                                    { action: 'autospinCheckAction' },
+                                    { action: 'waitingForInteractionAction' }
+                                ]
+                            },
+                            {
+                                race: [
+                                    { action: 'showWinlinesAnimationByOneAction' },
+                                    { action: 'stopWinlinesAnimationAction' }
+                                ]
+                            }
                         ]
                     }
                 ]
@@ -45,8 +58,13 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
             SHOW_WIN: {
                 all: [
                     { action: 'showWinTextAction' },
-                    { action: 'showWinCounterAction' },
                     { action: 'showWinlinesAnimationAllAction' },
+                    {
+                        race: [
+                            { action: 'finishCounterAction' },
+                            { action: 'showWinCounterAction' },
+                        ]
+                    }
                 ]
             },
 
@@ -61,25 +79,13 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
             //     nextState: ['SHOW_WIN']
             // },
 
-            WINLINES_ANIMATE_BY_ONE: {
-                all: [
-                    { action: 'showWinAmountTextAction' },
-                    { action: 'enableUiButtonsAction' },
-                    {
-                        race: [
-                            { action: 'autospinCheckAction'},
-                            { action: 'autoSpinAction'},
-                            { action: 'showWinlinesAnimationByOneAction' },
-                            { action: 'stopWinlinesAnimationAction' }
-                        ]
-                    },
-                    {
-                        sequence: [
-                            { action: 'serverBalanceRequestAction' }
-                        ]
-                    }
-                ],
-                nextState: ['RESET_WIN_STATE']
+            FINISH_ROUND: {
+
+                sequence: [
+                    { action: 'serverBalanceRequestAction' }
+                ]
+
+
             },
         };
     };

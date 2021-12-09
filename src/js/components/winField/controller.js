@@ -2,6 +2,7 @@ class ComponentsWinFieldController extends Urso.Core.Components.StateDriven.Cont
 
     configActions = {
         showWinAmountTextAction: {
+            guard: () => this._guardShowWinText(),
             run: (finishClbk) => this._runShowAmountWinText(finishClbk),
         },
         resetWinTextAction: {
@@ -28,6 +29,14 @@ class ComponentsWinFieldController extends Urso.Core.Components.StateDriven.Cont
         finishClbk();
     }
 
+    _guardShowWinText() {
+        return this._hasWin();
+    }
+
+    _hasWin() {
+        return Urso.localData.get('slotMachine.spinStages.0.slotWin');
+    }
+
     _runResetText(finishClbk) {
         this._resetText()
         finishClbk();
@@ -51,8 +60,7 @@ class ComponentsWinFieldController extends Urso.Core.Components.StateDriven.Cont
 
     _showWinText() {
         const slotMachineData = Urso.localData.get('slotMachine');
-        const { isBonus, totalWin } = this._getWinData(slotMachineData)
-
+        const { totalWin } = this._getWinData(slotMachineData);
         this._updateText(totalWin);
     };
 

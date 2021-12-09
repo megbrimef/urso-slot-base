@@ -101,7 +101,7 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
 
     // ACTION
     _runStopWinlinesAnimation() {
-        this._addComponentListener('stopCommand', this._stopWinlinesAnimationHandler);
+        this._addComponentListener('spinCommand', this._stopWinlinesAnimationHandler);
     }
 
     _terminateStopWinlinesAnimation() {
@@ -109,7 +109,7 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
     }
 
     _stopWinlinesAnimationHandler = () => {
-        this._removeComponentListener('stopCommand', this._stopWinlinesAnimationHandler);
+        this._removeComponentListener('spinCommand', this._stopWinlinesAnimationHandler);
         this._symbolStopAllAnimation();
         this.callFinish('stopWinlinesAnimationAction');
     }

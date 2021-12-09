@@ -10,7 +10,7 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
     }
 
     configActions = {
-        autoSpinAction: {
+        autospinAction: {
             run: () => this._runAutoSpin(),
             terminate: () => this._terminateAutoSpin()
         },
@@ -41,7 +41,7 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
 
     _terminateAutoSpin() {
         this._waitingForSpinPress = false;
-        this.callFinish('autoSpinAction');
+        this.callFinish('autospinAction');
     }
 
     _idleStateGuard() {
