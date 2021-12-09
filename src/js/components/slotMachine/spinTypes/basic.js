@@ -211,10 +211,13 @@ class ComponentsSlotMachineBasic {
     }
 
     symbolStopAnimation(position) {
+        const key = `${reel}_${row}`;
+        delete this._animatedSymbolsMap[key];
         this._symbols[position.reel][position.row].data.stopAnimation();
     }
 
     symbolStopAllAnimationHandler() {
+        this._animatedSymbolsMap = {};
         this._symbols.forEach((reel) => reel.forEach((sym) => sym.data.stopAnimation()));
     }
     

@@ -1,6 +1,7 @@
 Urso.SlotBase.Components = {};
 require('./autoSpin/_info.js');
 require('./background/_info.js');
+require('./buttons/_info.js');
 require('./balance/_info.js');
 require('./bet/_info.js');
 require('./coin/_info.js');
