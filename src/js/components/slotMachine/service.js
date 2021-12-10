@@ -1,4 +1,5 @@
 class ComponentsSlotMachineService {
+    _spinning = false;
 
     constructor() {
         this.id = null;
@@ -26,9 +27,24 @@ class ComponentsSlotMachineService {
     }
 
     startSpin() {   
+        if (this._spinning){
+            return false;
+        }
+
+        this._spinning = true;
+        Urso.localData.set('spinning', true);
+    
         this._view.startSpin();
         this.emit('components.slotMachine.spinStarted');
     };
+
+    spinCompleted(type) {
+        const { spinCompleteDelay } = this._cfg; 
+        
+        this._spinning = false;
+        Urso.localData.set('spinning', false);
+        this.emit('components.slotMachine.spinComplete', { type }, spinCompleteDelay);
+    } 
 
     setSpinNewSymbols(symbolsKeys) {
         const decorated = this._decorateWithBorder(symbolsKeys);
@@ -70,7 +86,7 @@ class ComponentsSlotMachineService {
     symbolStopAnimation(position) {
         this._view.symbolStopAnimation(position);
     }
-    
+
     speedUpReels() {
         this._view.speedUpReels();
     }

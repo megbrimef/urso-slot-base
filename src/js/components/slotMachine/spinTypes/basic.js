@@ -4,6 +4,7 @@ class ComponentsSlotMachineBasic {
     _pool = null;
     _dropMatrix = null;
 
+    _bounceTweens = false;
     _moveMatrix = [];
     _animatedSymbolsMap = {};
     _reelMoving = [];
@@ -128,17 +129,19 @@ class ComponentsSlotMachineBasic {
                 .forEach((sym) => this._pool.putElement(sym)));
     }
 
+    _setBounce(key) {
+        const { bounce } = this._config;
+        if(bounce && bounce[key]){
+            this._bounceTweens = [];
+        }
+    }
+
     startSpin() {
-        if (this.spinning)
-            return false;
-
-        this.spinning = true;
-        Urso.localData.set('spinning', true);
-
         this._resetSpinState();
         this._updateMoveData();
-
+        
         if(!this._dropMatrix) {
+            this._setBounce('top');
             this._startSpin();
         }
     }
@@ -226,6 +229,11 @@ class ComponentsSlotMachineBasic {
         this._timeScale = speedUpReelsFactor;
 
         for (let reelIndex = 0; reelIndex < reelsCount; reelIndex++) {
+            if(this._bounceTweens[reelIndex]) {
+                this._bounceTweens[reelIndex].timeScale = this._timeScale;
+                continue;
+            }
+            
             this._reelTweens[reelIndex].timeScale = this._timeScale;
         }
     }
@@ -287,12 +295,58 @@ class ComponentsSlotMachineBasic {
     //////////////////spin
 
     _startSpin() {
-        const { reelsCount, spinStartInterval, bounce } = this._config;
+        const { reelsCount, spinStartInterval } = this._config;
 
         for (let reelIndex = 0; reelIndex < reelsCount; reelIndex++) {
             const delay = reelIndex * spinStartInterval;
+
+            if(this._bounceTweens){
+                this._startTopBounce(reelIndex, delay);
+                continue;
+            }
+            
             this._tweenReel(reelIndex, delay);
         }
+    }
+
+    _startTopBounce(reelIndex, delay) {
+        const { bounce } = this._config;
+        const clbk = () => {
+            this._tweenReel(reelIndex, 0);
+            delete this._bounceTweens[reelIndex];
+            
+            if(Object.keys(this._bounceTweens).length === 0){
+                this._bounceTweens = false;   
+            }
+        };
+
+        this._startBounce(clbk, reelIndex, delay, bounce.top);
+    }
+
+    _startBounce(clbk, reelIndex, delay, { to, duration }) {
+        const from = { x: 0, y: 0 };
+        const reel = this._symbols[reelIndex];
+
+        const tween = this.tween.add(from)
+            .to(to, duration, 'none', true, delay);
+
+        tween.timeScale = this._getTweenTimeScale();
+
+        tween.onComplete.addOnce(clbk);
+
+        for (let rowIndex = 0; rowIndex < reel.length; rowIndex++) {
+            const { data } = reel[rowIndex];
+            const { y } = data.getPosition();
+
+            tween.onUpdateCallback((({ target }, progress) => {
+                const deltaY = Math.sin(Math.PI * progress) * to.y;
+                data.setPosition({
+                    y: y + deltaY
+                });
+            }));
+        }
+
+        this._bounceTweens[reelIndex] = tween;
     }
 
     _resetSpinState() {
@@ -438,18 +492,11 @@ class ComponentsSlotMachineBasic {
         tween.to(this._getBaseSymbolMoveData(), duration, 'none', true, delay);
     }
 
-    _setupBounce(tween, delay, { to, duration }) {
-        tween.to(to, duration/2, 'none', false, delay)
-            .to({x: 0, y: 0 }, duration/2);
-    }
-
     _tweenReelSymbols(reelIndex, delay) {
-        const { bounce } = this._config;
         const tween = this._getReelTween(reelIndex);
-        this._setTweenTimeScale(tween, reelIndex);
         this._setupReelTween(tween, reelIndex);
         this._setupTweenMove(tween, delay);
-        this._reelMoving[reelIndex] = true;
+        this._setTweenTimeScale(tween, reelIndex);
     }
 
     _isIntrigueInProgress(reelIndex) {
@@ -469,25 +516,47 @@ class ComponentsSlotMachineBasic {
         return timeScale;
     }
 
+    _startBottomBounce(reelIndex) {
+        const { bounce } = this._config;
+        const clbk = () => {
+            this._finishSpinIfNeeded(reelIndex);
+            delete this._bounceTweens[reelIndex];
+            
+            if(Object.keys(this._bounceTweens).length === 0){
+                this._bounceTweens = false;   
+            }
+        };
+
+        this._startBounce(clbk, reelIndex, 0, bounce.bottom);
+    }
+
     _onReelStopCallback(reelIndex) {
-        const { reelsCount } = this._config;
         this._lastStoppedReelIndex = reelIndex;
-
         this._reelMoving[reelIndex] = false;
+        
+        this._setBounce('bottom');
 
+        if(this._bounceTweens){
+            this._startBottomBounce(reelIndex);
+            return;
+        }
+
+      this._finishSpinIfNeeded(reelIndex);
+    }
+
+    _finishSpinIfNeeded(reelIndex){
+        const { reelsCount } = this._config;
         if (reelIndex === reelsCount - 1)
             this._onSpinStopCallback();
     }
 
     _onSpinStopCallback() {
-        const { spinCompleteDelay } = this._config; 
-        this.spinning = false;
-        Urso.localData.set('spinning', false);
+ 
 
-        const type = this._dropMatrix ? 'drop' : 'basic';
         this._dropMatrix = null;
-
-        this.emit('components.slotMachine.spinComplete', { type }, spinCompleteDelay);
+        
+        const type = this._dropMatrix ? 'drop' : 'basic';
+        this._service.spinCompleted(type);
     }
 
     _checkCanTweenReel(reelIndex) {
@@ -523,6 +592,11 @@ class ComponentsSlotMachineBasic {
 
     finishSpin() {
         this._finishSpin = true;
+    }
+
+    finishBounceSpin() {
+        this._bounceTweens = [];
+        this.finishSpin();
     }
 
     _checkNeedUpdateRemainingBlurSymbolsCount(reelIndex) {
