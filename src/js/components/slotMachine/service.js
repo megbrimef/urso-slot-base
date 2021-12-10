@@ -11,6 +11,7 @@ class ComponentsSlotMachineService {
     }
 
     create(id) {
+        this.id = id;
         this.updateCfgById(id);
         const initialSymbolMatrix = this._getInitialSymbols();
         const decoratedWithBorder = this._decorateWithBorder(initialSymbolMatrix);
@@ -111,7 +112,7 @@ class ComponentsSlotMachineService {
     }
 
     setBaseConfig() {
-        this.updateCfgById('basic');
+        this.updateCfgById(this.id);
     }
 
     _getInitialSymbols() {

@@ -3,7 +3,7 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
 
     configStates = {
         SHOW_WIN: {
-            guard: () => this._hasWin()
+            guard: () => this._hasWin
         }
     };
    
@@ -12,13 +12,13 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
             run: () => this._runShowWinlinesAnimationAll(),
         },
         showWinlinesAnimationByOneAction: {
-            guard: () => this._hasWin(),
+            guard: () => this._hasWin,
             run: () => this._runShowWinlinesAnimationByOne(),
             terminate: () => this._terminateShowWinLinesAnimationByOne()
         }
     };
 
-    _hasWin() {
+    get _hasWin() {
         return Urso.localData.get('slotMachine.spinStages.0.slotWin');
     }
 
@@ -47,20 +47,6 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
     _byOneCycleFinishedHandler = () => {
         this._startAnimateByOne();
     }
-
-    // _spinCommandHandler = () => {
-    //     this.removeListener('components.slotMachine.spinCommand', this._spinCommandHandler);
-    //     this._unsubscribeCycleFinished(this._byOneCycleFinishedHandler);
-    //     this._stopWinlinesAnimateByOne();
-    // }
-
-    // _stopWinlinesAnimateByOne() {
-    //     this.callFinish('stopWinlinesAnimateByOneAction');
-    // }
-
-    // _runStopWinlinesAnimateByOne() {
-    //     this.addListener('components.slotMachine.spinCommand', this._spinCommandHandler);
-    // }
 
     _subscribeCycleFinished(clbk) {
         this.addListener('components.slotMachine.cycleFinished', clbk);
