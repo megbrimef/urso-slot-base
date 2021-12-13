@@ -35,8 +35,6 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         }
     }
 
-    _stopWinlines = null;
-
     constructor(options) {
         super(options);
         this._id = options.id;
