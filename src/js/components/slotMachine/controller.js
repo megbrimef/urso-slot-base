@@ -28,6 +28,10 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         },
         dropAction: {
             run: (finishClbk) => this._runDrop(finishClbk),
+        },
+        stopAllSymbolsAnimationAction: {
+            run: () => {},
+            terminate: () => this._terminateStopAllSymbols()
         }
     }
 
@@ -127,6 +131,11 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         finishClbk();
     }
 
+    _terminateStopAllSymbols() {
+        this._service.symbolStopAllAnimationHandler();
+        this.callFinish('stopAllSymbolsAnimationAction');
+    }
+
     // //position: {reel:2, row:1}
     _symbolAnimate(position) {
         this._service.symbolAnimate(position);
@@ -145,9 +154,9 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
     //  */
     // _intrigueHandler = (reelIndexFrom) => this._service.intrigue(reelIndexFrom);
     
-    _symbolStopAllAnimation() {
-        this._service.symbolStopAllAnimationHandler();
-    }
+    // _symbolStopAllAnimation() {
+    //     this._service.symbolStopAllAnimationHandler();
+    // }
     
     _drop(matrix) {
         this._service.setDropMatrix(Urso.helper.transpose(matrix));

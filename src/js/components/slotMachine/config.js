@@ -19,8 +19,8 @@ class ComponentsSlotMachineConfig {
             spinCompleteDelay: 200, //event delay, after reels stops
 
             bounce: {
-                top: { to: { y: -80, x: 0 }, duration: 200 },
-                bottom: { to: { y: 80, x: 0 }, duration: 200 }
+                top: false, // { to: { y: -80, x: 0 }, duration: 200 }
+                bottom: false // { to: { y: 80, x: 0 }, duration: 200 }
             },
 
             symbolSpeed: 1.5, //pixels in MS
