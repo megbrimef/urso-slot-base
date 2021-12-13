@@ -22,10 +22,6 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
             run: () => this._runFinishingSpinAction(),
             terminate: () => this._terminateFinishingSpinAction()
         },
-        stopWinlinesAnimationAction: {
-            run: () => this._runStopWinlinesAnimation(),
-            terminate: () => this._terminateStopWinlinesAnimation()
-        },
         fastSpinAction: {
             run: () => this._runFastSpin(),
             terminate: () => this._finishFastSpin()
@@ -34,8 +30,6 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
             run: (finishClbk) => this._runDrop(finishClbk),
         }
     }
-
-    _stopWinlines = null;
 
     constructor(options) {
         super(options);
@@ -98,37 +92,6 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
 
     _terminateFinishingSpinAction() {
         this._service.speedUpReels();
-    }
-
-    // ACTION
-    _runStopWinlinesAnimation() {
-        this._stopWinlines = true;
-        this._addComponentListener('spinCommand', this._stopWinlinesAnimationHandler);
-        this.addListener('components.autospin.press', this._autoSpinPressHandler);
-    }
-
-    _autoSpinPressHandler = () => {
-        this.removeListener('components.autospin.press', this._autoSpinPressHandler);
-        
-        if(this._stopWinlines) {
-            this.callFinish('stopWinlinesAnimationAction');
-        }
-
-        this._stopWinlines = false;
-    }
-
-    _terminateStopWinlinesAnimation() {
-        this._stopWinlinesAnimationHandler();
-    }
-
-    _stopWinlinesAnimationHandler = () => {
-        this._removeComponentListener('spinCommand', this._stopWinlinesAnimationHandler);
-        this._symbolStopAllAnimation();
-        if(this._stopWinlines) {
-            this.callFinish('stopWinlinesAnimationAction');
-        }
-
-        this._stopWinlines = false;
     }
 
     _runFastSpin() {
