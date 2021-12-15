@@ -530,10 +530,14 @@ class ComponentsSlotMachineBasic {
         this._startBounce(clbk, reelIndex, 0, bounce.bottom);
     }
 
+    _runLandingAnimations() {}
+
     _onReelStopCallback(reelIndex) {
         this._lastStoppedReelIndex = reelIndex;
         this._reelMoving[reelIndex] = false;
         
+        this._runLandingAnimations(reelIndex);
+
         this._setBounce('bottom');
 
         if(this._bounceTweens){
@@ -551,8 +555,6 @@ class ComponentsSlotMachineBasic {
     }
 
     _onSpinStopCallback() {
- 
-
         this._dropMatrix = null;
         
         const type = this._dropMatrix ? 'drop' : 'basic';
