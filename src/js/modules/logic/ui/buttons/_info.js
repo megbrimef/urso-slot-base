@@ -1,3 +1,5 @@
-Urso.SlotBase.Modules.Ui.Buttons = {
-    BaseUiController: require('./baseUiController')
+Urso.SlotBase.Modules.Logic.Ui.Buttons = {
+    Controller: require('./controller'),
+    BaseUiButtonController: require('./baseUiButtonController'),
+    SpinButtonController: require('./spinButtonController'),
 };

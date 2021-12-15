@@ -4,7 +4,7 @@ class ModulesLogicUiController {
 
     _getControllersToInit() {
         return [
-            // buttons controller
+            'Buttons.Controller'
             // settings controller
             // autospinPanel controller
         ];
@@ -13,9 +13,9 @@ class ModulesLogicUiController {
     _initContollers() {
         const controllerNames = this._getControllersToInit();
         
-        controllers.forEach((controllerName) => {
-            debugger;
-            this;
+        controllerNames.forEach((controllerName) => {
+            const instance = Urso.getInstance(`Modules.Logic.Ui.${controllerName}`);
+            instance.init();
         });
     }
 

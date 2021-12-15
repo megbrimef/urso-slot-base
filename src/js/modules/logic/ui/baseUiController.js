@@ -1,8 +1,7 @@
 class ModulesLogicBaseUiController {
 
-
-    _subscribeOnce() {
-        // this.
+    init() {
+        
     }
 }
 

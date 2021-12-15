@@ -4,3 +4,4 @@ Urso.SlotBase.Modules.Logic = {
 };
 require('./statesManager/_info');
 require('./transport/_info');
+require('./ui/_info');
