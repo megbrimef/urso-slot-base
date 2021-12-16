@@ -1,22 +1,39 @@
 class ModulesLogicUiController {
-    _controllers = {};
-
+    _getInstancePath(path) {
+        return `Modules.Logic.Ui${path}`;
+    }
 
     _getControllersToInit() {
-        return [
-            'Buttons.Controller'
-            // settings controller
-            // autospinPanel controller
-        ];
+        return {
+            Buttons: [
+                'SpinButtonController'
+            ]
+        }
     }
 
     _initContollers() {
-        const controllerNames = this._getControllersToInit();
-        
-        controllerNames.forEach((controllerName) => {
-            const instance = Urso.getInstance(`Modules.Logic.Ui.${controllerName}`);
+        const controllersToInit = this._getControllersToInit();
+        this._initControllersRecursive(controllersToInit);
+    }
+
+    _initControllersRecursive(obj, pathPrefix = '') {
+        if (Array.isArray(obj)) {
+            obj.map((controller) => this._initControllersRecursive(controller, pathPrefix));
+        } else if(typeof obj === 'object') { 
+            const keys = Object.keys(obj);
+            keys.map((key) => this._initControllersRecursive(obj[key], `${pathPrefix}.${key}`));
+        } else if (typeof obj === 'string') {
+            const fullPath = this._getInstancePath(`${pathPrefix}.${obj}`);
+            const instance = Urso.getInstance(fullPath);
+
+            if(!instance) {
+                Urso.logger.error(`Wrong UI controllers path '${fullPath}'!`);
+            }
+
             instance.init();
-        });
+        } else {
+            Urso.logger.error('Wrong UI controllers config!');
+        }
     }
 
     _subscribeOnce() {

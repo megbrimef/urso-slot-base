@@ -1,7 +1,14 @@
-class ModulesLogicBaseUiButtonsSpinButtonController extends Urso.SlotBase.Modules.Logic.Ui.Buttons.BaseUiButtonController {
-    init() {
-        super.init();
-        debugger
+class ModulesLogicBaseUiButtonsSpinButtonController extends Urso.SlotBase.Modules.Logic.Ui.BaseInteraciveUiElementController {
+    _type = this.TYPES.BUTTON;
+    _name = 'sidePanel_spinButton';
+    _canFireInteract = true;
+
+    _getShowStates() {
+        return ["IDLE"];
+    }
+
+    _interactDone(params){
+        // FIRE SPIN
     }
 }
 

@@ -1,6 +1,7 @@
 Urso.SlotBase.Modules.Logic.Ui = {
     Controller: require('./controller'),
-    BaseUiController: require('./baseUiController')
+    BaseUiElementController: require('./baseUiElementController'),
+    BaseInteraciveUiElementController: require('./baseInteraciveUiElementController')
 };
 
 require('./buttons/_info');

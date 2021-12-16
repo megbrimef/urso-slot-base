@@ -5,26 +5,14 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
         this.contents = {
             IDLE: {
                 all: [
-                    { action: 'enableUiButtonsAction' },
-                    { action: 'hideStopButtonAction' },
-                    { action: 'showSpinButtonAction' },
-                    { action: 'showWinAmountTextAction' },
+                    // { action: 'showWinAmountTextAction' },
                     {
-                        all: [
-                            {
-                                race: [
-                                    
-                                    { action: 'autospinAction' },
-                                    { action: 'autospinCheckAction' },
-                                    { action: 'waitingForInteractionAction' }
-                                ]
-                            },
-                            {
-                                race: [
-                                    { action: 'showWinlinesAnimationByOneAction' },
-                                    { action: 'stopWinlinesAnimationAction' }
-                                ]
-                            }
+                        race: [            
+                            // { action: 'autospinAction' },
+                            // { action: 'autospinCheckAction' },
+                            { action: 'waitingForInteractionAction' },
+                            // { action: 'showWinlinesAnimationByOneAction' },
+                            // { action: 'stopWinlinesAnimationAction' }
                         ]
                     }
                 ]
@@ -38,9 +26,6 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
 
             START_SPIN: {
                 sequence: [
-                    { action: 'disableUiButtonsAction' },
-                    { action: 'hideSpinButtonAction' },
-                    { action: 'showStopButtonAction' },
                     { action: 'balanceMakeBetAction' },
                     { action: 'regularSpinStartAction' },
                     { action: 'serverSpinRequestAction' },

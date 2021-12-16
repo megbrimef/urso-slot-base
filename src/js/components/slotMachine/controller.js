@@ -8,10 +8,10 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
     }
    
     configActions = {
-        waitingForInteractionAction: { 
-            run: () => this._runWaitingForInteraction(),
-            terminate: () => this._terminateWaitingForInteraction()
-        },
+        // waitingForInteractionAction: { 
+        //     run: () => this._runWaitingForInteraction(),
+        //     terminate: () => this._terminateWaitingForInteraction()
+        // },
         regularSpinStartAction: {
             run: () => this._runRegularSpinStart()
         },
@@ -53,22 +53,22 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
     
     // ACTION waitingForInteractionAction
     
-    _runWaitingForInteraction() {
-        this._addComponentListener('spinCommand', this._spinCommandHandler);
-    }
+    // _runWaitingForInteraction() {
+    //     this._addComponentListener('spinCommand', this._spinCommandHandler);
+    // }
 
-    _terminateWaitingForInteraction() {
-        this._spinCommandHandler();
-    }
+    // _terminateWaitingForInteraction() {
+    //     this._spinCommandHandler();
+    // }
 
-    _spinCommandHandler = () => {
-        this._spinCommand();
-        this._removeComponentListener('spinCommand', this._spinCommandHandler);
-    }
+    // _spinCommandHandler = () => {
+    //     this._spinCommand();
+    //     this._removeComponentListener('spinCommand', this._spinCommandHandler);
+    // }
 
-    _spinCommand = () => {
-        this.callFinish('waitingForInteractionAction');
-    };
+    // _spinCommand = () => {
+    //     this.callFinish('waitingForInteractionAction');
+    // };
 
     // ACTION regularSpinStartAction
 

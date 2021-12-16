@@ -1,3 +1,3 @@
-Urso.SlotBase.Components.Buttons = {
+Urso.SlotBase.Components.Ui = {
     Controller: require('./controller.js')
 };
