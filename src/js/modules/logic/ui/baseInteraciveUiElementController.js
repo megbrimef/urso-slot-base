@@ -77,7 +77,10 @@ class ModulesLogicBaseInteraciveUiElementController extends BaseUiElementControl
     _interactHandler = (params) => this._interact(params);
 
     _interact(params) {
-        if(this._class === params.class) {
+        const objClass = params.class || "";
+        const classArray = objClass.split(' '); 
+
+        if(classArray.includes(this._class)) {
             this._interactDone(params);
 
             if(this._canFireInteract) {
