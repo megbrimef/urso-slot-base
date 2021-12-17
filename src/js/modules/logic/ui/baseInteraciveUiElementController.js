@@ -2,7 +2,7 @@ const BaseUiElementController = require('./baseUiElementController');
 
 class ModulesLogicBaseInteraciveUiElementController extends BaseUiElementController {
     _type = null;
-    _name = null;
+    _class = null;
     _canFireInteract = false;
 
     TYPES = {
@@ -27,10 +27,14 @@ class ModulesLogicBaseInteraciveUiElementController extends BaseUiElementControl
             return;
         }
 
-        const visible = this._getShowStates().includes(this._state);
-        const name = this._name;
+        const uiState = this._getUiState();
+        this.emit('components.ui.state.update', uiState);
+    }
 
-        this.emit('components.ui.state.update', { [name]: { visible }});
+    _getUiState() {
+        const visible = this._getShowStates().includes(this._state);
+        const className = '.' + this._class;
+        return { [className]: { visible }};
     }
 
     _subscribeByType() {
@@ -48,7 +52,7 @@ class ModulesLogicBaseInteraciveUiElementController extends BaseUiElementControl
             case this.TYPES.CHECKBOX:
                 event = Urso.events.MODULES_OBJECTS_CHECKBOX_PRESS;
                 break;
-
+    
             case this.TYPES.TOGGLE:
                 event = Urso.events.MODULES_OBJECTS_TOGGLE_PRESS;
                 break;
@@ -73,7 +77,7 @@ class ModulesLogicBaseInteraciveUiElementController extends BaseUiElementControl
     _interactHandler = (params) => this._interact(params);
 
     _interact(params) {
-        if(this._name === params.name) {
+        if(this._class === params.class) {
             this._interactDone(params);
 
             if(this._canFireInteract) {
