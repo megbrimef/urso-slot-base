@@ -8,6 +8,11 @@ class ModulesStatesManagerConfigStatesActionsWaitingForInteractionAction extends
         return true;
     }
 
+    terminate() {
+        super.terminate();
+        this._interactDone();
+    }
+
     _interactDone = () => {
         Urso.observer.remove('modules.logic.ui.interact.done', this._interactDoneHandler, true);
         super._onFinish();

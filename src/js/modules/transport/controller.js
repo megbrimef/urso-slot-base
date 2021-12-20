@@ -1,9 +1,9 @@
-class ModulesLogicTransportController {
+class ModulesLogicTransportController extends Urso.Core.Modules.Transport.Controller{
 
     init() {
         super.init();
         this.setupServerCommunication();
-    }
+    };
 
     sendRequestHandler({ requestName, data }){
         const requestNameCapitalized = Urso.helper.capitaliseFirstLetter(requestName);
