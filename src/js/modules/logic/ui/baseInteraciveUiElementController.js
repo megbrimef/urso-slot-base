@@ -14,29 +14,6 @@ class ModulesLogicBaseInteraciveUiElementController extends BaseUiElementControl
         HITAREA: 5
     }
 
-    _getShowStates() {
-        return [];
-    }
-
-    _stateChanged(stateName) {
-        super._stateChanged(stateName);
-
-        const showStates = this._getShowStates();
-        
-        if(showStates.length === 0) {
-            return;
-        }
-
-        const uiState = this._getUiState();
-        this.emit('components.ui.state.update', uiState);
-    }
-
-    _getUiState() {
-        const visible = this._getShowStates().includes(this._state);
-        const className = '.' + this._class;
-        return { [className]: { visible }};
-    }
-
     _subscribeByType() {
         let event = '';
 
@@ -89,9 +66,7 @@ class ModulesLogicBaseInteraciveUiElementController extends BaseUiElementControl
         }
     }
 
-    _interactDone(params){
-        
-    }
+    _interactDone(params){}
 
     _extendedSubscribeOnce() {
         super._extendedSubscribeOnce();
