@@ -21,7 +21,9 @@ class ModulesStatesManagerConfigStatesActionsWaitingForInteractionAction extends
     _interactDoneHandler = () => this._interactDone();
 
     _onFinish() {
-        Urso.observer.add('modules.logic.ui.interact.done', this._interactDoneHandler, true);
+        if(!this._terminating) {
+            Urso.observer.add('modules.logic.ui.interact.done', this._interactDoneHandler, true);
+        }
     }
 };
 
