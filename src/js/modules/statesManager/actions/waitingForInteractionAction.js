@@ -1,4 +1,8 @@
 class ModulesStatesManagerConfigStatesActionsWaitingForInteractionAction extends Urso.Core.Modules.StatesManager.Action {
+    constructor(name) {
+        super(name);
+        this.name = 'waitingForInteractionAction';
+    }
 
     guard() {
         return true;

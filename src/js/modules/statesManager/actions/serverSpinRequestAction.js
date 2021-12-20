@@ -1,11 +1,9 @@
 class ModulesStatesManagerConfigStatesActionsServerSpinRequestAction extends Urso.Core.Modules.StatesManager.Action {
-    // _onFinish(){
-    //     if(!this._terminating){
-    //         this.emit('components.slotMachine.speedUpReels');
-    //     }
+    constructor(name) {
+        super(name);
+        this.name = 'serverSpinRequestAction';
+    }
 
-    //     super._onFinish();
-    // }
     guard() {
         return true;
     }

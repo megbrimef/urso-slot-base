@@ -1,5 +1,10 @@
 class ModulesStatesManagerConfigStatesActionsServerBalanceRequestAction extends Urso.Core.Modules.StatesManager.Action {
 
+    constructor(name) {
+        super(name);
+        this.name = 'serverBalanceRequestAction';
+    }
+
     guard() {
         return true;
     }

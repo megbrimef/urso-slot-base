@@ -3,4 +3,3 @@ Urso.SlotBase.Modules.StatesManager = {
 };
 
 require('./actions/_info');
-
