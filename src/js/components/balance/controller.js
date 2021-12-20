@@ -3,15 +3,23 @@ class ComponentsBalanceController extends Urso.Core.Components.StateDriven.Contr
     configActions = {
         balanceMakeBetAction: {
             run: (finishClbk) => this._runBalanceMakeBetAction(finishClbk),
+        },
+        updateBalanceAction: {
+            run: (finishClbk) => this._runBalanceAction(finishClbk),
         }
     };
 
     _runBalanceMakeBetAction(finishClbk) {
-        this._makeBet()
+        this._makeBet();
         finishClbk();
     }
 
-    _setHandler(){
+    _runBalanceAction(finishClbk) {
+        this._updateBalanceText();
+        finishClbk();
+    }
+
+    _updateBalanceText(){
         const balance = Urso.localData.get('balance');
         const texts = Urso.findAll('.balanceVal');
 
@@ -26,17 +34,12 @@ class ComponentsBalanceController extends Urso.Core.Components.StateDriven.Contr
     };
 
     _makeBet(){
-        const balance = Urso.localData.get('balance');
-        const totalBet = Urso.localData.get('totalBet.value');
-        balance.totalAmount -= totalBet;
+        const { totalAmount } = Urso.localData.get('balance');
+        const { value } = Urso.localData.get('totalBet');
+        const newTotalAmount = totalAmount - value;
+        Urso.localData.get('balance.totalAmount', newTotalAmount);
 
-        this._setHandler();
-    };
-
-    _subscribeOnce(){
-        super._subscribeOnce();
-        this.addListener('components.balance.set', this._setHandler.bind(this));
-        // this.addListener('components.balance.makeBet', this._makeBetHandler.bind(this));
+        this._updateBalanceText();
     };
 }
 

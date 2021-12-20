@@ -3,6 +3,12 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
         super();
 
         this.contents = {
+            INIT_GAME: {
+                sequence: [
+                    { action: 'transportInitAction' }
+                ]
+            },
+
             IDLE: {
                 all: [
                     // { action: 'showWinAmountTextAction' },
