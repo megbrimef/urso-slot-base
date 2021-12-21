@@ -1,4 +1,4 @@
-class ModulesLogicTransportController extends Urso.Core.Modules.Transport.Controller{
+class ModulesTransportController extends Urso.Core.Modules.Transport.Controller{
 
     init() {
         super.init();
@@ -16,12 +16,12 @@ class ModulesLogicTransportController extends Urso.Core.Modules.Transport.Contro
     };
 
     onTransportReadyHandler(){
-        this.emit('modules.logic.transport.ready');
+        this.emit('modules.transport.ready');
     };
 
     onTransportMessageHandler({ action, data }){
         const type = action.replace('Response', '');
-        this.emit('modules.logic.transport.receive', { type, data });
+        this.emit('modules.transport.receive', { type, data });
     };
 
     setupServerCommunication(){  
@@ -30,8 +30,8 @@ class ModulesLogicTransportController extends Urso.Core.Modules.Transport.Contro
     };
 
     _subscribeOnce(){
-        this.addListener('modules.logic.transport.send', this.sendRequestHandler.bind(this), true);
+        this.addListener('modules.transport.send', this.sendRequestHandler.bind(this), true);
     };
 };
 
-module.exports = ModulesLogicTransportController;
+module.exports = ModulesTransportController;

@@ -205,8 +205,8 @@ class ModulesLogicMain {
     }
 
     _subscribeOnce(){
-        this.addListener('modules.logic.transport.ready', this.transportReadyHandler.bind(this), true);
-        this.addListener('modules.logic.transport.receive', this.messageReceivedHandler.bind(this), true);
+        this.addListener('modules.transport.ready', this.transportReadyHandler.bind(this), true);
+        this.addListener('modules.transport.receive', this.messageReceivedHandler.bind(this), true);
         this.addListener(Urso.events.MODULES_SCENES_DISPLAY_FINISHED, this.displayFinishedHandler.bind(this), true);
 
         this.addListener('modules.logic.main.spinRequest', this.sendSpinRequestHandler.bind(this), true);
