@@ -3,11 +3,16 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
         super();
 
         this.contents = {
-            INIT_GAME: {
-                sequence: [
-                    { action: 'transportInitAction' }
-                ]
-            },
+            // INIT_GAME: {
+            //     sequence: [
+            //         { action: 'updateServerSettingsAction' },
+            //         { action: 'transportInitAction' },
+            //         { action: 'serverApiVersionRequestAction' },
+            //         { action: 'serverCheckBrokenGameRequestAction' },
+            //         { action: 'serverAuthRequestAction' },
+            //
+            //     ]
+            // },
 
             IDLE: {
                 all: [
