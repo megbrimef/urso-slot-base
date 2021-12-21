@@ -1,4 +1,4 @@
-class ModulesStatesManagerConfigStatesActionsServerSpinRequestAction extends Urso.Core.Modules.StatesManager.Action {
+class ModulesStatesManagerActionsServerSpinRequestAction extends Urso.Core.Modules.StatesManager.Action {
     constructor(name) {
         super(name);
         this.name = 'serverSpinRequestAction';
@@ -21,4 +21,4 @@ class ModulesStatesManagerConfigStatesActionsServerSpinRequestAction extends Urs
     }
 };
 
-module.exports = ModulesStatesManagerConfigStatesActionsServerSpinRequestAction;
+module.exports = ModulesStatesManagerActionsServerSpinRequestAction;

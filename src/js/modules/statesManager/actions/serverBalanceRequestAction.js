@@ -1,4 +1,4 @@
-class ModulesStatesManagerConfigStatesActionsServerBalanceRequestAction extends Urso.Core.Modules.StatesManager.Action {
+class ModulesStatesManagerActionsServerBalanceRequestAction extends Urso.Core.Modules.StatesManager.Action {
 
     constructor(name) {
         super(name);
@@ -22,4 +22,4 @@ class ModulesStatesManagerConfigStatesActionsServerBalanceRequestAction extends 
     }
 };
 
-module.exports = ModulesStatesManagerConfigStatesActionsServerBalanceRequestAction;
+module.exports = ModulesStatesManagerActionsServerBalanceRequestAction;

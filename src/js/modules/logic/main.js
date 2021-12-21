@@ -5,7 +5,7 @@ class ModulesLogicMain {
     }
 
     transportReadyHandler(){
-        this.sendApiVersionRequest();
+        // this.sendApiVersionRequest();
     };
 
     sendApiVersionRequest(){

@@ -1,4 +1,4 @@
-class ModulesStatesManagerConfigStatesActionsWaitingForInteractionAction extends Urso.Core.Modules.StatesManager.Action {
+class ModulesStatesManagerActionsWaitingForInteractionAction extends Urso.Core.Modules.StatesManager.Action {
     constructor(name) {
         super(name);
         this.name = 'waitingForInteractionAction';
@@ -27,4 +27,4 @@ class ModulesStatesManagerConfigStatesActionsWaitingForInteractionAction extends
     }
 };
 
-module.exports = ModulesStatesManagerConfigStatesActionsWaitingForInteractionAction;
+module.exports = ModulesStatesManagerActionsWaitingForInteractionAction;

@@ -1,25 +1,40 @@
-class ModulesStatesManagerConfigStatesActionsServerAuthRequestAction extends Urso.Core.Modules.StatesManager.Action {
+const BaseTransportAction = require('./baseTransportAction');
+class ModulesStatesManagerActionsServerAuthRequestAction extends BaseTransportAction {
+    name = 'serverAuthRequestAction';
 
-    constructor(name) {
-        super(name);
-        this.name = 'serverAuthRequestAction';
+    _postProcessEvent(data) {
+        const { 
+            betMultiplier,
+            bets,
+            coinValues,
+            defaultBet,
+            defaultCoinValue,
+            defaultLines,
+            extrabet,
+            gameParameters,
+            sessionId
+        } = data;
+
+        this._sesId = sessionId;
+
+        const { avaliableLines, payouts, initialSymbols } = gameParameters;
+        const normalizedLines = defaultLines.map(index => index + 1);
+        const linesVal = normalizedLines[normalizedLines.length - 1];
+
+        Urso.localData.set('extraBet', { betMultiplier, extrabet });
+        Urso.localData.set('coins', { coins: coinValues, value: defaultCoinValue });
+        Urso.localData.set('bets', { bets: bets, value: defaultBet });
+        Urso.localData.set('linesCfg', avaliableLines);
+        Urso.localData.set('lines', { lines: normalizedLines, value: linesVal });
+        Urso.localData.set('payoutsCfg', payouts);
+        Urso.localData.set('slotMachine.initialSymbols', initialSymbols);
+
+        return true; 
     }
 
-    guard() {
-        return true;
-    }
-
-    _balanceResponse = (data) => {
-        Urso.observer.remove('modules.logic.main.balanceResponce', this._balanceRequestHandler, true);
-        super._onFinish();
-    }
-
-    _balanceRequestHandler = (data) => this._balanceResponse(data);
-
-    _onFinish() {
-        Urso.observer.add('modules.logic.main.balanceResponce', this._balanceRequestHandler, true);
-        Urso.observer.fire('modules.logic.main.balanceRequest');
+    _preProcessEvent() {
+        this.sendRequest('AuthRequest');
     }
 };
 
-module.exports = ModulesStatesManagerConfigStatesActionsServerAuthRequestAction;
+module.exports = ModulesStatesManagerActionsServerAuthRequestAction;
