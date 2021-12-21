@@ -1,23 +1,28 @@
-class ModulesStatesManagerActionsServerSpinRequestAction extends Urso.Core.Modules.StatesManager.Action {
-    constructor(name) {
-        super(name);
-        this.name = 'serverSpinRequestAction';
+const BaseTransportAction = require('./baseTransportAction');
+class ModulesStatesManagerActionsServerSpinRequestAction extends BaseTransportAction {
+    name = 'serverSpinRequestAction';
+
+    _postProcessEvent(data) {
+        
+        return !true; 
     }
 
-    guard() {
-        return true;
-    }
+    _preProcessEvent() {
+        const linesData = Urso.localData.get('lines');
+        const coinData = Urso.localData.get('coins');
+        const betData = Urso.localData.get('bets');
+        const extraBetData = Urso.localData.get('extraBet');
+        const sessionId = Urso.localData.get('sessionId');
 
-    _spinResponse = (data) => {
-        Urso.observer.remove('modules.logic.main.spinResponse', this._spinResponseHandler, true);
-        super._onFinish();
-    }
+        const lines = new Array(linesData.value).fill(1).map((_, i) =>  i);
+        const data = {
+            coin: coinData.value,
+            bet: betData.value,
+            extraBet: extraBetData.value,
+            lines: lines
+        };
 
-    _spinResponseHandler = (data) => this._spinResponse(data);
-
-    _onFinish() {
-        Urso.observer.add('modules.logic.main.spinResponse', this._spinResponseHandler, true);
-        Urso.observer.fire('modules.logic.main.spinRequest');
+        this.sendRequest('SpinRequest', { sessionId, data });
     }
 };
 
