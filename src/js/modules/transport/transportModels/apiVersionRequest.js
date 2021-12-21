@@ -1,4 +1,4 @@
-class ApiVersionRequest extends Urso.SlotBase.Modules.Logic.Transport.BaseModel {
+class ApiVersionRequest extends Urso.SlotBase.Modules.Transport.BaseModel {
     constructor(){
         super('ApiVersionRequest', false, {})
     }

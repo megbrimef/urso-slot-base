@@ -7,6 +7,6 @@ Urso.SlotBase.Components.SlotMachine = {
     Tween: require('./tween.js'),
     SymbolsConfig: require('./symbolsConfig.js'),
 
-    Basic: require('./spinTypes/basic.js'),
+    Wheel: require('./spinTypes/wheel.js'),
     Cascade: require('./spinTypes/cascade.js')
 };

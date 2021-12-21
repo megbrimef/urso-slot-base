@@ -1,3 +1,4 @@
+require('@urso/core');
 window.Urso.SlotBase = {};
 
 require('./config/load.js');

@@ -1,4 +1,4 @@
-class ComponentsSlotMachineSpinTypesBasic {
+class ComponentsSlotMachineSpinTypesWheel {
 
     constructor() {
         this._parent = null;
@@ -580,4 +580,4 @@ class ComponentsSlotMachineSpinTypesBasic {
     }
 }
 
-module.exports = ComponentsSlotMachineSpinTypesBasic;
+module.exports = ComponentsSlotMachineSpinTypesWheel;

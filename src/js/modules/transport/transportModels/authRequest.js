@@ -1,4 +1,4 @@
-class AuthRequest extends Urso.SlotBase.Modules.Logic.Transport.BaseModel {
+class AuthRequest extends Urso.SlotBase.Modules.Transport.BaseModel {
     constructor(){
         super('AuthRequest', false, {})
     }

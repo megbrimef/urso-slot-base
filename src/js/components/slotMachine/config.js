@@ -2,7 +2,7 @@ class AppComponentsSlotMachineConfig {
 
     getDefaultConfig(){
         return {
-            spinType: 'basic',
+            spinType: 'wheel',
             isDrop: false,
             spinStartInterval: 250, //per reel
             reelsCount: 5,
@@ -51,10 +51,10 @@ class AppComponentsSlotMachineConfig {
 
     _getConfig(){
         let cascade = {...this.getDefaultConfig(), ...this.getCascadeConfig()};
-        let basic = this.getDefaultConfig();
-        let basicDrop = {...this.getDefaultConfig(), isDrop: true};
+        let wheel = this.getDefaultConfig();
+        let wheelDrop = {...this.getDefaultConfig(), isDrop: true};
         let cascadeDrop = {...cascade, isDrop: true};
-        return { cascade, basic, basicDrop, cascadeDrop }
+        return { cascade, wheel, wheelDrop, cascadeDrop }
     }
 
     getCascadeConfig() {

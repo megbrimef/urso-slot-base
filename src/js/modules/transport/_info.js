@@ -1,4 +1,4 @@
-Urso.SlotBase.Modules.Logic.Transport = {
+Urso.SlotBase.Modules.Transport = {
     BaseModel: require('./baseModel'),
     Controller: require('./controller'),
 };

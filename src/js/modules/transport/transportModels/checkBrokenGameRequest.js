@@ -1,4 +1,4 @@
-class CheckBrokenGameRequest extends Urso.SlotBase.Modules.Logic.Transport.BaseModel {
+class CheckBrokenGameRequest extends Urso.SlotBase.Modules.Transport.BaseModel {
     constructor(){
         super('CheckBrokenGameRequest', false, {})
     }

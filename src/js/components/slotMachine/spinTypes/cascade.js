@@ -1,6 +1,6 @@
-const ComponentsSlotMachineSpinTypesBasic = require('./basic');
+const ComponentsSlotMachineSpinTypesWheel = require('./wheel');
 
-class ComponentsSlotMachineSpinTypesCascade extends ComponentsSlotMachineSpinTypesBasic {
+class ComponentsSlotMachineSpinTypesCascade extends ComponentsSlotMachineSpinTypesWheel {
     constructor() {
         super()
 
