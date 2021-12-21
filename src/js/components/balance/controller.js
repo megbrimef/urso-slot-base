@@ -1,4 +1,11 @@
 class ComponentsBalanceController extends Urso.Core.Components.StateDriven.Controller {
+    _config = null;
+
+    create() {
+        super.create();
+
+        this._config = this.getInstance('Config');
+    }
 
     configActions = {
         balanceMakeBetAction: {
@@ -19,7 +26,7 @@ class ComponentsBalanceController extends Urso.Core.Components.StateDriven.Contr
         finishClbk();
     }
 
-    _updateBalanceText(){
+    _updateBalanceText() {
         const balance = Urso.localData.get('balance');
         const texts = Urso.findAll('.balanceVal');
 
@@ -28,12 +35,16 @@ class ComponentsBalanceController extends Urso.Core.Components.StateDriven.Contr
         this.emit('components.balance.updated');
     };
 
-    _formatBalance(textObj, { currency, totalAmount }){
+    _formatBalance(textObj, { totalAmount }) {
+        const { currentCurrency, currentSymbol } = Urso.localData.get('currency');
+        const { showCurrencySymbol } = this._config.get();
+        const currency = showCurrencySymbol ? currentSymbol : currentCurrency;
+
         totalAmount = (+totalAmount).toFixed(2);
         textObj.text = `${totalAmount} ${currency}`;
     };
 
-    _makeBet(){
+    _makeBet() {
         const { totalAmount } = Urso.localData.get('balance');
         const { value } = Urso.localData.get('totalBet');
         const newTotalAmount = totalAmount - value;
