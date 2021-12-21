@@ -1,32 +1,70 @@
-class ComponentsWinLinesController extends Urso.Core.Components.Base.Controller {
+class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Controller {
+    _animateByOneIndex = -1;
 
-    constructor() {
-        super();
+    configStates = {
+        SHOW_WIN: {
+            guard: () => this._hasWin
+        }
+    };
+   
+    configActions = {
+        showWinlinesAnimationAllAction: {
+            run: () => this._runShowWinlinesAnimationAll(),
+        },
+        showWinlinesAnimationByOneAction: {
+            guard: () => this._hasWin,
+            run: () => this._runShowWinlinesAnimationByOne(),
+            terminate: () => this._terminateShowWinLinesAnimationByOne()
+        }
+    };
 
-        this._animateByOneIndex = -1;
+    get _hasWin() {
+        return Urso.localData.get('slotMachine.spinStages.0.slotWin');
     }
 
-    _animateAllStartHandler() {
+    _animateAllCycleFinishedHandler = () => {
+        this._unsubscribeCycleFinished(this._animateAllCycleFinishedHandler);
+        this.callFinish('showWinlinesAnimationAllAction');
+    };
+
+    _runShowWinlinesAnimationAll(){
+        this._subscribeCycleFinished(this._animateAllCycleFinishedHandler);
+        this._showWinlinesAnimationAll();
+    }
+
+
+    // ACTION showWinlinesAnimationByOneAction
+    _runShowWinlinesAnimationByOne() {
+        this._subscribeCycleFinished(this._byOneCycleFinishedHandler);
+        this._startAnimateByOne();
+    }
+
+    _terminateShowWinLinesAnimationByOne() {
+        this._unsubscribeCycleFinished(this._byOneCycleFinishedHandler);
+        this.callFinish('showWinlinesAnimationByOneAction');
+    }
+    
+    _byOneCycleFinishedHandler = () => {
+        this._startAnimateByOne();
+    }
+
+    _subscribeCycleFinished(clbk) {
+        this.addListener('components.slotMachine.cycleFinished', clbk);
+    }
+
+    _unsubscribeCycleFinished(clbk) {
+        this.removeListener('components.slotMachine.cycleFinished', clbk);
+    }
+
+    _showWinlinesAnimationAll() {
         const slotMachineData = Urso.localData.get('slotMachine');
         const firstStageSlotWin = slotMachineData.spinStages[0].slotWin;
-
-        if(!firstStageSlotWin){
-            this.emit('components.winlines.animateAll.finished', null, 1);
-            return;
-        }
-
         const lineWinAmounts = firstStageSlotWin.lineWinAmounts;
-        const lastIndex = { index: lineWinAmounts.length };
-
-        const callback = () => {
-            if (--lastIndex.index === 0)
-                this.emit('components.winlines.animateAll.finished', null, 1);
-        };
 
         for (let i = 0; i < lineWinAmounts.length; i++) {
             const line = lineWinAmounts[i];
 
-            this._animateLine(line.selectedLine, callback);
+            this._animateLine(line.selectedLine);
             this._runSymbolAnimation(line);
         }
     };
@@ -34,12 +72,11 @@ class ComponentsWinLinesController extends Urso.Core.Components.Base.Controller 
     _runSymbolAnimation(line) {
         for (let j = 0; j < line.wonSymbols.length; j++) {
             const [reel, row] = line.wonSymbols[j];
-
-            this.emit('components.slotMachine.symbolAnimate', { reel, row });
+            this.emit('components.slotMachine.symbolAnimate', { reel: +reel, row: +row });
         }
     };
 
-    _animateLine(lineIndex, callback) {
+    _animateLine(lineIndex) {
         const line = this.common.findOne(`^line${lineIndex}`);
 
         if (line) {
@@ -47,15 +84,11 @@ class ComponentsWinLinesController extends Urso.Core.Components.Base.Controller 
             line.setAnimationConfig({
                 onComplete: () => {
                     line.visible = false;
-
-                    callback && callback();
                 }
             });
 
             const animationName = this._getAnimationName(lineIndex);
             line.play(animationName);
-        } else {
-            setTimeout(callback, 1000);
         }
     };
 
@@ -78,35 +111,28 @@ class ComponentsWinLinesController extends Urso.Core.Components.Base.Controller 
         }
     }
 
-    _animateByOneStartHandler() {
+    _startAnimateByOne() {
         const slotMachineData = Urso.localData.get('slotMachine');
         const firstStageSlotWin = slotMachineData.spinStages[0].slotWin;
 
-        this._animateByOneIndex = 0;
+    
+        if(!firstStageSlotWin.lineWinAmounts[this._animateByOneIndex]){
+            this._animateByOneIndex = 0;
+        }
 
-        const callback = () => {
-            if (this._animateByOneIndex !== -1) {
-                if (!firstStageSlotWin.lineWinAmounts[this._animateByOneIndex])
-                    this._animateByOneIndex = 0;
+        firstStageSlotWin.lineWinAmounts[this._animateByOneIndex];
 
-                const line = firstStageSlotWin.lineWinAmounts[this._animateByOneIndex];
-
-                this._runSymbolAnimation(line);
-                this._animateLine(line.selectedLine, callback);
-                this._animateByOneIndex++;
-                return;
-            }
-        };
-
-        callback();
+        const line = firstStageSlotWin.lineWinAmounts[this._animateByOneIndex++];
+        this._runSymbolAnimation(line);
+        this._animateLine(line.selectedLine);
     };
 
     _animateByOneStop() {
-        if(this._animateByOneIndex === -1)
-            return;
+        // if(this._animateByOneIndex === -1)
+        //     return;
 
-        this._animateByOneIndex = -1;
-        this._stopAllAnimation();
+        // this._animateByOneIndex = -1;
+        // this._stopAllAnimation();
     };
 
     _stopAllAnimation() {
@@ -121,12 +147,13 @@ class ComponentsWinLinesController extends Urso.Core.Components.Base.Controller 
         this.emit('components.winlines.animateByOne.finished', null, 1);
     }
 
-    _subscribeOnce() {
-        this.addListener('components.winlines.animateAll.start', this._animateAllStartHandler.bind(this));
-        this.addListener('components.winlines.animateByOne.start', this._animateByOneStartHandler.bind(this));
-        this.addListener('components.slotMachine.spinCommand', this._animateByOneStop.bind(this));
-        this.addListener('components.winlines.stop', this._animateByOneStop.bind(this));
-    };
+    // _subscribeOnce() {
+        // super._subscribeOnce();
+        // this.addListener('components.winlines.animateAll.start', this._animateAllStartHandler.bind(this));
+        // this.addListener('components.winlines.animateByOne.start', this._animateByOneStartHandler.bind(this));
+        // this.addListener('components.slotMachine.spinCommand', this._animateByOneStop.bind(this));
+        // this.addListener('components.winlines.stop', this._animateByOneStop.bind(this));
+    // };
 }
 
 module.exports = ComponentsWinLinesController;

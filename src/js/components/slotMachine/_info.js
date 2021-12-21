@@ -1,12 +1,11 @@
 Urso.SlotBase.Components.SlotMachine = {
     Config: require('./config.js'),
-    Template: require('./template.js'),
-    Symbol: require('./symbol.js'),
+    Symbols: require('./symbols.js'),
     Controller: require('./controller.js'),
     Service: require('./service.js'),
+    Symbol: require('./symbol.js'),
     Tween: require('./tween.js'),
-    SymbolsConfig: require('./symbolsConfig.js'),
-
+    Template: require('./template.js'),  
     Wheel: require('./spinTypes/wheel.js'),
-    Cascade: require('./spinTypes/cascade.js')
+    Cascade: require('./spinTypes/cascade.js'),
 };

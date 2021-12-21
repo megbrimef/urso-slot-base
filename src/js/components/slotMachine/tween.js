@@ -16,7 +16,7 @@ class ComponentsSlotMachineTween {
         });
 
         this.tweens = this._tweens;
-        this._subscibe();
+        //this._subscibe();
     }
 
     //sys
@@ -265,16 +265,14 @@ class ComponentsSlotMachineTween {
                     tween._functions.onComplete = [];
                 }
 
-                // for (let i = 0; i < onCompleteOnce.length; i++)
-                //     onCompleteOnce[i]();
-                if(onCompleteOnce.length > 0)
-                    onCompleteOnce.shift()();
+                for (let i = 0; i < onCompleteOnce.length; i++)
+                    onCompleteOnce[i]();
 
                 for (let i = 0; i < onComplete.length; i++)
                     onComplete[i]();
             } else {
                 //next point
-                let startDelay = tween.points[0].startDelay * tween.timeScale;
+                let startDelay = tween.points[0].startDelay;
 
                 //calc step for new point
                 tween.points[0].timeStart = this._currentTime + startDelay;
@@ -283,7 +281,12 @@ class ComponentsSlotMachineTween {
                 for (let k in tween.points[0].propsTo)
                     tween.points[0].propsFrom[k] = tween.target[k];
 
-                this._calcStep(tween);
+                if (startDelay)
+                    setTimeout(function () {
+                        this._calcStep(tween);
+                    }, startDelay);
+                else
+                    this._calcStep(tween);
             }
         }
     };
@@ -303,11 +306,11 @@ class ComponentsSlotMachineTween {
 
         if (progress > 1) {
             progress = 1;
-            // tween._timeBonus = ~~((time - point.timeStart) - point.duration / (tween.timeScale * this.globalTimeScale));
+
+            tween._timeBonus = ~~((time - point.timeStart) - point.duration / (tween.timeScale * this.globalTimeScale));
         }
 
         //apply objects props
-
         for (let k in point.propsTo)
             tween.target[k] = point.propsFrom[k] + (point.propsTo[k] - point.propsFrom[k]) * progress;
 

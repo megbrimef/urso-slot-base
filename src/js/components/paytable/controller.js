@@ -1,16 +1,38 @@
-class ComponentsPaytableController extends Urso.Core.Components.Base.Controller {
+class ComponentsPaytableController extends Urso.Core.Components.StateDriven.Controller {
+
+    configStates = {
+        SHOW_PAYTABLE: {
+            guard: () => this._needOpenGuard()
+        }
+    };
+
+    configActions = {
+        showPaytableAction: {
+            run: () => this._runShowPayTable()
+        }
+    }
 
     constructor(){
         super();
+
         this.OPEN_WINDOW = 'open_window';
         this.CLOSE_WINDOW = 'close_window';
         this.NEXT_PAGE = 'next_page';
         this.PREV_PAGE = 'prev_page';
         this._currentPage = 0;
         this._basePayout = null;
+        this._needOpen = false;
 
         this._reset();
     };
+
+    _runShowPayTable() {
+        this._showPaytable();
+    }
+
+    _needOpenGuard() {
+        return this._needOpen;
+    }
 
     _reset(){
         this._currentPage = 0;
@@ -22,15 +44,21 @@ class ComponentsPaytableController extends Urso.Core.Components.Base.Controller 
             this._doAction(action);
     };
 
+    _showPaytable() {
+        this._reset();
+        this._setWindowVisibility(true);
+        this._recalculatePaytable();
+    }
+
     _doAction(action){
         switch (action) {
             case this.OPEN_WINDOW:
-                this._reset();
-                this._setWindowVisibility(true);
-                this._recalculatePaytable();
+                this._needOpen = true;
                 break;
             case this.CLOSE_WINDOW:
                 this._setWindowVisibility(false);
+                this._needOpen = false;
+                this.callFinish('showPaytableAction');
                 break;
             case this.NEXT_PAGE:
                 this._setPageVisibility(++this._currentPage);
@@ -106,6 +134,7 @@ class ComponentsPaytableController extends Urso.Core.Components.Base.Controller 
     };
 
     _subscribeOnce(){
+        super._subscribeOnce();
         this.addListener('components.paytable.switch', this._payTableSwitchHandler.bind(this));
     };
 }

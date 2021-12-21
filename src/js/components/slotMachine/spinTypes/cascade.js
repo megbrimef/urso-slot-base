@@ -1,79 +1,62 @@
-const ComponentsSlotMachineSpinTypesWheel = require('./wheel');
+const Wheel = require('./wheel');
+class ComponentsSlotMachineCascade extends Wheel {
 
-class ComponentsSlotMachineSpinTypesCascade extends ComponentsSlotMachineSpinTypesWheel {
-    constructor() {
-        super()
-
-        this.symbolsDropped = true;
-    }
-
-    spinHandler() {
-        this.reelsMovedCounter = new Array(this.reelsCount).fill(this.rowsCount);
-
-        const { start, stop } = this._config.dropTimings;
-        this.symbolsDropped = false;
-
-        if (!this.spinning) {
-
-            this.spinTween.to({progress: 0}, start.defaultDelay / 1000, {progress: 100, onComplete: () => {
-                this._startSpin(start.reelsDelay, start.rowsDelay)
-            }})
-
-            return
+    _wasDropped = [];
+    
+    _getOneSymbolTweenDuration() {
+        if(this._dropMatrix) {
+            return super._getOneSymbolTweenDuration();
         }
 
-        this.symbolsDropped = true;
-        this.spinning = false;
-
-        this.spinTween.to({progress: 0}, stop.defaultDelay / 1000, {progress: 100, onComplete: () => {
-            this._startSpin(stop.reelsDelay, stop.rowsDelay)
-        }})
-
+        return this._config.cascadeDuration;
     }
 
-    _tweenReelHandler(reelIndex, rowsDelay) {
-        this._tweenReel(reelIndex, rowsDelay);
-    }
+    _moveAllSymbolsToTop(reelIndex) {
+        const reel = this._symbols[reelIndex];
 
-    _tweenReel(reelIndex, rowDelay) {
-        const delay = rowDelay || 0;
-
-        for(let i = 0; i < this.rowsCount; i++)
-            this._tweenReelSymbols(reelIndex, delay);
-    }
-
-    _checkIfReelMoveDone(reelIndex) {
-        this.reelsMovedCounter[reelIndex]--;
-
-        if (this.reelsMovedCounter[reelIndex] === 0 && !this._newSymbolsDroping)
-            return this._onReelStopCallback(reelIndex);
-          
-        this._onDropNewSymbolsOver()
-    }
-
-    _onReelStopCallback(reelIndex) {
-        this._lastStoppedReelIndex = reelIndex;
-        this._reelsMovingCount--;
-        this._symbols[reelIndex].forEach(symbol => symbol.data.reset())
-
-        if (!this.symbolsDropped)
-            this._moveReelSymbolsOnTop(reelIndex);
-
-        if (this._reelsMovingCount === 0){
-
-            if (!this.symbolsDropped){
-                this._reelsMovingCount = this._config.reelsCount;
-                this.spinHandler();  
-            } else
-                this._onSpinStopCallback();
+        for (let rowIndex = 0; rowIndex < reel.length; rowIndex++) {
+            this._setSymbolToPosition(reelIndex, rowIndex);
+            this._setSymbolConfig(reelIndex, rowIndex);
+            this._setSymbolPositionForDrop(reelIndex, rowIndex);
         }
     }
 
-    _moveReelSymbolsOnTop(reelIndex){
-        for(let i = 0; i < this._symbols[reelIndex].length; i++)
-            this._moveSymbolOnTop(reelIndex);
+    _moveDone(reelIndex) {
+        return () => {
+            if(this._dropMatrix) {
+                
+                if(reelIndex === this._config.reelsCount - 1){
+                    this._dropMatrix = null;
+                }
+
+                this._onReelStopCallback(reelIndex);
+                return;
+            }
+
+            if(!this._wasDropped[reelIndex]) {
+                this._moveAllSymbolsToTop(reelIndex);
+                this._tweenReel(reelIndex);
+                this._wasDropped[reelIndex] = true;
+                return;
+            }
+
+            this._onReelStopCallback(reelIndex);
+        }
     }
 
+    _makeRegularMoveMatrix() {
+        const { rowsCount } = this._config;
+        return super._makeRegularMoveMatrix(rowsCount);
+    }
+
+    _startSpin(){
+        super._startSpin();
+        this._wasDropped = new Array(this._symbols.length).fill(false);
+    }
+
+    _getCurrentSymbolConfig(reelIndex) {
+        return this._spinNewSymbols[reelIndex].shift();
+    }
 }
 
-module.exports = ComponentsSlotMachineSpinTypesCascade;
+module.exports = ComponentsSlotMachineCascade;

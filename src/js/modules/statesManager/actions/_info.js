@@ -1,5 +1,10 @@
 Urso.SlotBase.Modules.StatesManager.Actions = {
-    ShowWinlinesAnimationByOne: require('./showWinlinesAnimationByOne'),
-    ShowWinlinesAnimationAll: require('./showWinlinesAnimationAll'),
-    QuickSpin: require('./quickSpinAction')
+    TransportInitAction: require('./transportInitAction'),
+    ServerApiVersionRequestAction: require('./serverApiVersionRequestAction'),
+    ServerCheckBrokenGameRequestAction: require('./serverCheckBrokenGameRequestAction'),
+    ServerAuthRequestAction: require('./serverAuthRequestAction'),
+    ServerSpinRequestAction: require('./serverSpinRequestAction'),
+    ServerBalanceRequestAction: require('./serverBalanceRequestAction'),
+    WaitingForInteractionAction: require('./waitingForInteractionAction'),
+    UpdateServerSettingsAction: require('./updateServerSettingsAction')
 };

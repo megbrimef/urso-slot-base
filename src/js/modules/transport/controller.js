@@ -1,9 +1,10 @@
 class ModulesTransportController extends Urso.Core.Modules.Transport.Controller{
 
     init() {
-        super.init();
+        this._updateService();
         this.setupServerCommunication();
-    }
+        this._service.init();
+    };
 
     sendRequestHandler({ requestName, data }){
         const requestNameCapitalized = Urso.helper.capitaliseFirstLetter(requestName);
@@ -16,7 +17,7 @@ class ModulesTransportController extends Urso.Core.Modules.Transport.Controller{
     };
 
     onTransportReadyHandler(){
-        this.emit('modules.transport.ready');
+        this.emit('modules.transport.ready', null, 100);
     };
 
     onTransportMessageHandler({ action, data }){

@@ -1,86 +1,200 @@
-class ComponentsSlotMachineController extends Urso.Core.Components.Base.Controller {
+class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.Controller {
+    _eventPrefix = 'components.slotMachine';
+
+    configStates = {
+        DROP: {
+            guard: () => this._hasWin()
+        }
+    }
+   
+    configActions = {
+        // waitingForInteractionAction: { 
+        //     run: () => this._runWaitingForInteraction(),
+        //     terminate: () => this._terminateWaitingForInteraction()
+        // },
+        regularSpinStartAction: {
+            run: () => this._runRegularSpinStart()
+        },
+        updateSlotMachineDataAction: {
+            run: () => this._runUpdateSlotMachineData()
+        },
+        finishingSpinAction: {
+            run: () => this._runFinishingSpinAction(),
+            terminate: () => this._terminateFinishingSpinAction()
+        },
+        fastSpinAction: {
+            run: () => this._runFastSpin(),
+            terminate: () => this._finishFastSpin()
+        },
+        dropAction: {
+            run: (finishClbk) => this._runDrop(finishClbk),
+        },
+        stopAllSymbolsAnimationAction: {
+            run: () => {},
+            terminate: () => this._terminateStopAllSymbols()
+        }
+    }
 
     constructor(options) {
         super(options);
+        this._id = options.id;
 
         this._service = this.getInstance('Service');
-        this._spin = this._spin.bind(this);
-        this.options = options;
-        this._setSpinSymbolsHandler = this._setSpinSymbolsHandler.bind(this);
-        this._symbolAnimateHandler = this._symbolAnimateHandler.bind(this);
-        this._stopSymbolAnimateHandler = this._stopSymbolAnimateHandler.bind(this);
-        this._speedUpReelsHandler = this._speedUpReelsHandler.bind(this);
-        this._intrigueHandler = this._intrigueHandler.bind(this);
-        this._symbolStopAllAnimationHandler = this._symbolStopAllAnimationHandler.bind(this);
-
         this.tween = this.getInstance('Tween');
     }
 
     create() {
-        this._service.create(this.options);
+        this._service.create(this._id);
     }
 
-    _spin() {
+    update() {
+        this.tween.update();
+    } 
+    
+    // ACTION waitingForInteractionAction
+    
+    // _runWaitingForInteraction() {
+    //     this._addComponentListener('spinCommand', this._spinCommandHandler);
+    // }
+
+    // _terminateWaitingForInteraction() {
+    //     this._spinCommandHandler();
+    // }
+
+    // _spinCommandHandler = () => {
+    //     this._spinCommand();
+    //     this._removeComponentListener('spinCommand', this._spinCommandHandler);
+    // }
+
+    // _spinCommand = () => {
+    //     this.callFinish('waitingForInteractionAction');
+    // };
+
+    // ACTION regularSpinStartAction
+
+    _runRegularSpinStart() {
         this._service.startSpin();
+        this.callFinish('regularSpinStartAction');
     }
 
-    _setSpinNewSymbols(symbols) {
-        this._service.setSpinNewSymbols(symbols);
+     // ACTION updateSlotMachineDataAction
+    
+    _runUpdateSlotMachineData() {
+        this._setSpinNewSymbols();
+        this.callFinish('updateSlotMachineDataAction');
     }
 
-    _setSpinSymbolsHandler() {
+    _setSpinNewSymbols() {
         const spinSymbols = Urso.localData.get('slotMachine.spinStages.0.spinResult.rows');
-        this._setSpinNewSymbols(spinSymbols);
+        this._service.setSpinNewSymbols(spinSymbols);
     }
 
-    //position: {reel:2, row:1}
-    _symbolAnimateHandler(position) {
-        this._service.symbolAnimate(position);
+    // ACTION
+    _runFinishingSpinAction() {
+        this._service.finishSpin();
     }
 
-    //position: {reel:2, row:1}
-    _stopSymbolAnimateHandler(position) {
-        this._service.symbolStopAnimation(position);
-    }
-
-    _speedUpReelsHandler() {
+    _terminateFinishingSpinAction() {
         this._service.speedUpReels();
     }
 
-    /**
-     * set intrigue to spinning reels
-     * @param {Number} reelIndexFrom 
-     */
-    _intrigueHandler(reelIndexFrom) {
-        this._service.intrigue(reelIndexFrom);
+    _runFastSpin() {
+        this._addComponentListener('stopCommand', this._fastSpinHandler);
     }
 
-    _symbolStopAllAnimationHandler(){
+    _fastSpinHandler = () => {
+        this._finishFastSpin();
+    }
+
+    _finishFastSpin() {
+        this._removeComponentListener('stopCommand', this._fastSpinHandler);
+        this.callFinish('fastSpinAction');
+    }
+
+    _hasWin() {
+        return this._getWinlines().length > 0
+    }
+
+    _getWinlines() {
+        return Urso.localData.get('slotMachine.spinStages.0.slotWin.lineWinAmounts') || [];
+    }
+
+    // ACTION
+
+    _runDrop(finishClbk) {
+        const winLines = this._getWinlines();
+        const wonSymbols = winLines
+            .reduce((acc, { wonSymbols }) => [...acc, ...wonSymbols], []);
+        
+        this._service.prepareDrop(wonSymbols);
+
+        finishClbk();
+    }
+
+    _terminateStopAllSymbols() {
         this._service.symbolStopAllAnimationHandler();
+        this.callFinish('stopAllSymbolsAnimationAction');
     }
 
-    _destroyWinSymbolsHandler(){
-        this._service.destroyWinSymbolsHandler();
-    }
-
-    _tintSymbols(symbols){
-        this._service.tintSymbols(symbols);
+    // //position: {reel:2, row:1}
+    _symbolAnimate(position) {
+        this._service.symbolAnimate(position);
+    }   
+    
+    // //position: {reel:2, row:1}
+    _stopSymbolAnimateHandler(position) {
+        this._service.symbolStopAnimation(position);
     }
     
-    _subscribeOnce() {
-        this.addListener('components.slotMachine.spinStart', this._spin);
-        this.addListener('components.winLines.tintSymbols', this._tintSymbols.bind(this));
-        this.addListener('components.slotMachine.setSpinSymbols', this._setSpinSymbolsHandler);
-        this.addListener('components.slotMachine.symbolAnimate', this._symbolAnimateHandler);
-        this.addListener('components.slotMachine.symbolAnimateAllStop', this._symbolStopAllAnimationHandler);
-        this.addListener('components.slotMachine.stopSymbolAnimate', this._stopSymbolAnimateHandler);
-        this.addListener('components.slotMachine.speedUpReels', this._speedUpReelsHandler);
-        this.addListener('components.slotMachine.intrigue', this._intrigueHandler);
-        this.addListener('components.slotMachine.spinCommand', this._symbolStopAllAnimationHandler);
-
-        this.addListener('components.slotMachine.drop.start', this._destroyWinSymbolsHandler.bind(this), true);
+    // _speedUpReelsHandler = () => this._service.speedUpReels();
+    
+    // /**
+    //  * set intrigue to spinning reels
+    //  * @param {Number} reelIndexFrom 
+    //  */
+    // _intrigueHandler = (reelIndexFrom) => this._service.intrigue(reelIndexFrom);
+    
+    // _symbolStopAllAnimation() {
+    //     this._service.symbolStopAllAnimationHandler();
+    // }
+    
+    _drop(matrix) {
+        this._service.setDropMatrix(Urso.helper.transpose(matrix));
+    }
+    
+    _spinComplete = ({ type }) => {
+        this._service.setBaseConfig();
+        this.callFinish('finishingSpinAction');
     };
 
+    _spinCompleteHandler = (params) => this._spinComplete(params);
+
+    _symbolAnimateHandler = (position) => this._symbolAnimate(position);
+
+    // _symbolStopAllAnimationHandler = () => this._symbolStopAllAnimation();
+    // _dropHandler = (matrix) => this._drop(matrix);
+    // _cycleFinishedHandler = () => this._cycleFinished();
+    
+    _addComponentListener = (key, clbk) => this.addListener(`${this._eventPrefix}.${key}`, clbk);
+    _removeComponentListener = (key, clbk) => this.removeListener(`${this._eventPrefix}.${key}`, clbk);
+
+    // components.slotMachine.spinComplete
+    _subscribeOnce = () => {
+        super._subscribeOnce();
+    //     // this._addComponentListener('spinCommand', this._spinCommandHandler);
+    
+    //     // this._addComponentListener('spinStart', this._spinHandler);
+    //     // this._addComponentListener('setSpinSymbols', this._setSpinSymbolsHandler);
+        this._addComponentListener('symbolAnimate', this._symbolAnimateHandler);
+    //     // this._addComponentListener('symbolAnimateAllStop', this._symbolStopAllAnimationHandler);
+    //     // this._addComponentListener('stopSymbolAnimate', this._stopSymbolAnimateHandler);
+    //     // this._addComponentListener('speedUpReels', this._speedUpReelsHandler);
+    //     // this._addComponentListener('intrigue', this._intrigueHandler);
+        // this._addComponentListener('drop', this._dropHandler);
+        this._addComponentListener('spinComplete', this._spinCompleteHandler);
+    //     // this._addComponentListener('cycleFinished', this._cycleFinishedHandler);
+
+    };
 }
 
 module.exports = ComponentsSlotMachineController;

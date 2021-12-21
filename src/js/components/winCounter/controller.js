@@ -1,9 +1,24 @@
-class ComponentsWinCounterController extends Urso.Core.Components.Base.Controller {
+class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Controller {
+    
+    configActions = {
+        showWinCounterAction: {
+            guard: () => this._getTotalWin(),
+            run: () => this._runShowWinCounter(),
+            terminate: () => this._terminateShowWinCounter()
+        },
+        finishCounterAction: {
+            guard: () => this._getTotalWin(),
+            run: () => this._runFinishCounter(),
+            terminate: () => this._terminateFinishCounter()
+        }
+    };
+
+    _counterText = null;
+    _tween = null;
+    _finishCounterClbk = null;
 
     create() {
-        this.counterText = this.common.findOne('^counterText');
-        this.firstWin = true
-        this.counterText.visible = false;
+        this._counterText = this.common.findOne('^counterText');
     }
 
     get currency() {
@@ -15,59 +30,101 @@ class ComponentsWinCounterController extends Urso.Core.Components.Base.Controlle
 
         return '';
     }
-
-    _counterTextHandler() {
-        const slotMachineData = Urso.localData.get('slotMachine');
-        const firstStageSlotWin = slotMachineData.spinStages[0].slotWin;
-        const bet = Urso.localData.get('bets.value');
-
-        let totalWin = firstStageSlotWin.totalWin;
-
-        if (!totalWin) {
-            return this.emit('components.winField.showWin.finished', null, 1);
-        }
-
-        this.counterText.y = totalWin >= (bet * 10) ? 700 : 500;
-        this._counterTextTween(this.counterText, totalWin, this.firstWin);
-        this.firstWin = false;
+    
+    _runFinishCounter() {
+        this._finishCounterClbk = this._useSubcribe('components.slotMachine.stopCommand', () => {
+            this._clearFinishCounter();
+        });
     }
 
-    // TODO: REFACTOR
-    _counterTextTween(obj, winVal, isFirstWin) {
-        this.counterText.visible = true;
-        let textConfig = {
-            scaleX: 1, scaleY: 1, alpha: 1, duration: 1,
+    _terminateFinishCounter() {
+        this._clearFinishCounter();
+    }
+
+    _clearFinishCounter() {
+        this._finishCounterClbk();
+        this.callFinish('finishCounterAction');
+    }
+
+    _runShowWinCounter(){
+        this._startCounterAnimation();
+    }
+
+
+    _terminateShowWinCounter() {
+        this._startLastState();   
+    }
+
+    _useSubcribe(event, callback){
+        Urso.observer.addListener(event, callback);
+        return () => Urso.observer.removeListener(event, callback);
+    }
+
+    _getTotalWin() {
+        const slotMachineData = Urso.localData.get('slotMachine');
+        const { totalWin } = slotMachineData.spinStages[0].slotWin;
+        return totalWin;
+    }
+
+    _startCounterAnimation() {
+        const totalWin = this._getTotalWin();
+        const bet = Urso.localData.get('bets.value');
+
+        this._counterText.y = totalWin >= (bet * 10) ? 700 : 500;
+        this._counterTextTween(this._counterText, totalWin, this.firstWin);
+    }
+
+    _killTween() {
+        if(this._tween) {
+            this._tween.kill();
+        }
+
+        this._tween = null;
+    }
+
+    _startLastState(delay = 1000) {
+        this._killTween();
+
+        this._counterText.scaleX = 1;
+        this._counterText.scaleY = 1;
+        this._counterText.alpha = 1;
+        this._counterText.text = this._getTotalWin();
+
+        this._tween = gsap.to(this._counterText, { 
+            scaleX: 0, 
+            scaleY: 0, 
+            alpha: 0, 
+            delay: delay/1000, 
             onComplete: () => {
-                gsap.to(obj, {
-                    scaleX: 0, scaleY: 0, alpha: 0, delay: 1, onComplete: () => {
-                        this.counterText.text = '';
-                        this.counterText.visible = false;
-                        this.emit('components.winField.showWin.finished', null, 1);
-                    }
-                });
+                this.emit('components.winField.showWin.finished');
+                this.callFinish('showWinCounterAction');
+        } });
+    }
+
+    _counterTextTween(obj, winVal) {
+        this._killTween();
+
+        obj.visible = true;
+        obj.scaleX = obj.scaleY = obj.alpha = 0;
+        obj.text = 0;
+        
+        let textConfig = {
+            scaleX: 1,
+            scaleY: 1,
+            alpha: 1, 
+            text: winVal,
+            onUpdate: () => {
+                obj.text = obj.text.toFixed(2)
+            },
+            duration: 2,
+            onComplete: () => {
+              this._startLastState()
             }
         };
 
-        if (isFirstWin) {
-            textConfig = {
-                ...textConfig, get text() { return winVal },
-                onUpdate: () => {
-                    obj.text = `${this.currency}${obj.text.toFixed(2)} `;
-                }
-            }
-        } else {
-            obj.text = `${this.currency}${winVal}`;
-        }
 
-        gsap.to(obj, textConfig);
+        this._tween = gsap.to(obj, textConfig);
     }
-
-    _subscribeOnce() {
-        this.addListener('components.winlines.animateAll.start', this._counterTextHandler.bind(this));
-        this.addListener('components.winlines.animateAll.finished', () => {
-            this.firstWin = true;
-        });
-    };
 }
 
 module.exports = ComponentsWinCounterController;

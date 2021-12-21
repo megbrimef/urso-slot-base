@@ -1,41 +1,33 @@
-class ComponentsSlotMachineSpinTypesWheel {
+class ComponentsSlotMachineBasic {
+    _config = null;
+    _service = null;
+    _pool = null;
+    _dropMatrix = null;
+
+    _bounceTweens = false;
+    _moveMatrix = [];
+    _animatedSymbolsMap = {};
+    _reelMoving = [];
 
     constructor() {
-        this._parent = null;
-        this._config = null;
-        this._service = null;
-
-        this._symbolWidth = null;
-        this._symbolHeight = null;
-
         this._symbols = [];
 
-        this._remainingBlurSymbolsCount = 0;
+        this._symbolWidth;
+        this._symbolHeight;
 
         this._spinning = false;
-        this._spinNewSymbolsReceived = false;
+        this._remainingBlurSymbolsCount;
 
-        this._spinNewSymbols = null;
-        this._lastStoppedReelIndex = -1;
+        this._finishSpin = false;
+        this._spinNewSymbols = [];
+
         this._timeScale = 1;
-
         this._intrigue = false;
         this._intrigueStartsFrom = 0;
+        this._lastStoppedReelIndex = -1;
 
-        this._allReelsStarted = false;
-
-        this.startSymbolsCreated = false;
-        this._pool = null;
-
-        this._newSymbolsDroping = false;
-        this._dropingSymbolsCount = 0;
-        this._reelsMovingCount = 0
-
-        this.spinTween = this.getInstance('Tween');
-    }
-
-    _getPoolName(id) {
-        return `ComponentsSlotMachineService.pool.${id}`;
+        this.tween = this.getInstance('Tween');
+        this._reelTweens = [];
     }
 
     setConfig(config) {
@@ -45,130 +37,20 @@ class ComponentsSlotMachineSpinTypesWheel {
     setService(service) {
         this._service = service;
     }
-
-    create({ id, startSymbols }) {
-        this._setup();
-        this._createSymbolsPool(id);
-        this.setSpinNewSymbols(startSymbols)
-        this._createInitialSymbols();
-        this.startSymbolsCreated = true;
+    
+    create(startSymbols) {
+        this._createPool();
+        this._updateSlotMachineSymbols(startSymbols);
+        this._setSlotMachineSizes();
+        this._setSymbolsPosition();
+        this._createMask();
     }
 
-    _createSymbolsPool(id) {
-        this._pool = this._getPool(id);
-    }
+    _createMask(){
+        const { borderSymbolsCount } = this._config;
+        const reelsCount = this._symbols.length;
+        const rowsCount = this._symbols[0].length - borderSymbolsCount * 2;
 
-    setSpinNewSymbols(symbolsConfigs) {
-        this._spinNewSymbolsReceived = true;
-        this._spinNewSymbols = symbolsConfigs;
-    }
-
-    _createInitialSymbols() {
-        for (let reelIndex = 0; reelIndex < this.reelsCount; reelIndex++) {
-            !this._symbols[reelIndex] && this._symbols.push([]);
-            const rowsNum = this._spinNewSymbols[reelIndex].length;
-
-            for (let i = 0; i < rowsNum; i++) {
-                this._addSymbolOnTop(reelIndex);
-            }
-        }
-    }
-
-    _checkSymbolExists({ reel, row }) {
-        return this._symbols[reel] && this._symbols[reel][row];
-    }
-
-    //position: {reel:2, row:1}
-    symbolTryAnimate(position) {
-        if (!this._checkSymbolExists(position)) {
-            return Urso.logger.error(`Symbol on position ${JSON.stringify(position)} was not found`);
-        }
-
-        this._symbolAnimate(position);
-    }
-
-    _symbolAnimate({ reel, row }) {
-        this._symbols[reel][row].data.animate();
-    }
-
-    symbolTryStopAnimation(position) {
-        if (!this._checkSymbolExists(position)) {
-            return Urso.logger.error(`Symbol on position ${JSON.stringify(position)} was not found`);
-        }
-
-        this._symbolStopAnimation(position);
-    }
-
-    _symbolStopAnimation({ reel, row }) {
-        this._symbols[reel][row].data.stopAnimation();
-    }
-
-    symbolStopAllAnimationHandler() {
-        for (let reelIndex = 0; reelIndex < this.reelsCount; reelIndex++) {
-            for (let rowIndex = 0; rowIndex < this._symbols[reelIndex].length; rowIndex++) {
-                const symbol = this._symbols[reelIndex][rowIndex].data;
-                symbol.stopAnimation();
-
-                if(this._blackoutOnShowWinlines)
-                    symbol.createAndStartTintAnimation(false, true);
-            }
-        }
-    }
-
-    commandSpeedUp() {
-        this._speedUpCommanded = true;
-
-        if (this._allReelsStarted || this._newSymbolsDroping)
-            this._speedUpReels()
-    }
-
-    _speedUpReels() {
-        this._speedUpCommanded = false;
-
-        // this.timeoutArr.forEach(timeout =)
-
-        this._timeScale = this._config.speedUpReelsFactor;
-        this.spinTween.globalTimescale = this._timeScale;
-
-        for (let reelIndex = 0; reelIndex < this.reelsCount; reelIndex++) {
-            this._symbols[reelIndex].forEach(symbol => {
-                symbol.data.setTimeScale(this._timeScale);
-            })
-        }
-    }
-
-    intrigue(reelIndexFrom, reelIndexTo) {
-        reelIndexTo = reelIndexTo || this.reelsCount - 1;
-
-        if (this._intrigue)
-            return false;
-
-        this._intrigue = true;
-        this._intrigueStartsFrom = reelIndexFrom;
-
-        //add new symbols to the _remainingBlurSymbolsCount
-        for (let i = reelIndexFrom; i < reelIndexTo; i++)
-            this._remainingBlurSymbolsCount[i] += this._config.intrigueAdditionalSymbols;
-    }
-
-    _setup() {
-        this._parent = Urso.findOne('^slotMachine'); //todo refactoring to this._object ?!
-
-        const { bounce, reelsCount, rowsCount, borderSymbolsCount, spinStartInterval,
-            blackoutOnShowWinlines, rowsXoffset, rowsYoffset } = this._config;
-
-        this.rowsXoffset = rowsXoffset;
-        this.rowsYoffset = rowsYoffset;
-        this.bounce = bounce;
-        this.reelsCount = reelsCount;
-        this.rowsCount = rowsCount;
-        this.borderSymbolsCount = borderSymbolsCount;
-        this._reelsMovingCount = reelsCount;
-        this.spinStartInterval = spinStartInterval;
-        this._blackoutOnShowWinlines = blackoutOnShowWinlines;
-
-        this._symbolWidth = this._parent.width / this.reelsCount;
-        this._symbolHeight = this._parent.height / this.rowsCount;
         this.mask = Urso.objects.create(
             {
                 type: Urso.types.objects.MASK,
@@ -177,407 +59,554 @@ class ComponentsSlotMachineSpinTypesWheel {
             }, this.common.object
         );
 
-        //check int values
-        if (this._symbolWidth !== ~~this._symbolWidth || this._symbolHeight !== ~~this._symbolHeight)
-            Urso.logger.error('ComponentsSlotMachineView dimension error. Use int width/height values.')
-
-        this._resetSpinState();
+        this.common.object._baseObject.mask = this.mask._baseObject;
     }
 
-    _getSymbolsConfig(symbolData) {
-        return {
-            key: 'symbol',
-            template: symbolData,
-            parent: this._parent
-        }
+    setDropMatrix(matrix) {
+        this._dropMatrix = matrix;
     }
 
-    _poolConstructorFunction(key, symbolConfig) {
-        return this.getInstance('Symbol', symbolConfig);;
+    _createPool() {
+        this._pool = new Urso.Game.Lib.ObjectPool(this._makeSymbol.bind(this), this._resetSymbol.bind(this));
     }
 
-    _poolResetFunction(symbol) {
-        symbol.reset();
-        symbol.removeFromScene();
+    _makeSymbol() {
+        return this.getInstance('Symbol');
+    }
+    
+    _resetSymbol(symbol) {
         return symbol;
     }
 
-    _getPool(id) {
-        const poolName = this._getPoolName(id);
-        const pool = Urso.localData.get(poolName);
+    _createSymbols(startSymbols) {
+        return startSymbols
+            .map((reel) => reel.map((symData) => {
+                const symbolObject = this._pool.getElement('slotMachine');
+                symbolObject.data.setConfig(this._getSymbolsConfig(symData));
+                return symbolObject;
+            })); 
+    }
 
-        if (pool)
-            return pool;
+    _setSymbolsPosition = () => {
+        this._symbols.map((reel, reelIndex) => reel.map(this._setSymbolPosition(reelIndex)));
+    }
 
-        const newPool = new Urso.Game.Lib.ObjectPool(this._poolConstructorFunction.bind(this), this._poolResetFunction.bind(this));
-        Urso.localData.set(poolName, newPool);
+    _setSymbolPosition(reelIndex) {
+        return ({ data }, rowIndex) => {
+            const position = this._calculateSymbolPosition(data, reelIndex, rowIndex);
+            data.setPosition(position);
+        };
+    }
 
-        return newPool;
+    _calculateSymbolPosition(data, reelIndex, rowIndex) {
+        const { borderSymbolsCount } = this._config;
+        const { _symbolWidth, _symbolHeight } = this;
+        const { anchorX, anchorY } = data.getAnchors();
+        const  { xOffset, yOffset } = this._getSymbolOffset(reelIndex, rowIndex);
+        const deltaY = borderSymbolsCount * _symbolHeight;
+        const x = _symbolWidth * reelIndex + anchorX * _symbolWidth + xOffset;
+        const y = _symbolHeight * rowIndex + anchorY * _symbolHeight - deltaY + yOffset;
+
+        return { x, y };
+    }
+
+    _getSymbolOffset(reelIndex) {
+        const { _symbolWidth, _symbolHeight } = this;
+        const { rowsXoffset = [], rowsYoffset = [] } = this._config;
+        const xOffset = (rowsXoffset[reelIndex] || 0) * _symbolWidth;
+        const yOffset = (rowsYoffset[reelIndex] || 0) * _symbolHeight;
+        return { xOffset, yOffset };
+    }
+
+    _updateSlotMachineSymbols(startSymbols) {
+        this._clearSymbols();
+        this._symbols = this._createSymbols(startSymbols);
+    }
+
+    _clearSymbols() {
+        this._symbols
+            .forEach((reel) => reel
+                .forEach((sym) => this._pool.putElement(sym)));
+    }
+
+    _setBounce(key) {
+        const { bounce } = this._config;
+        if(bounce && bounce[key]){
+            this._bounceTweens = [];
+        }
+    }
+
+    startSpin() {
+        this._resetSpinState();
+        this._updateMoveData();
+        
+        if(!this._dropMatrix) {
+            this._setBounce('top');
+            this._startSpin();
+        }
+    }
+    
+    _updateMatrixForDrop() {
+        for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++) {
+            const reel = this._dropMatrix[reelIndex];
+            
+            let moveAmount = 0;
+            const maxMoveAmount = reel.filter(row => row).length;
+
+            for (let rowIndex = reel.length - 1; rowIndex >= 0; rowIndex--) {
+                const prevNeedMove = reel[rowIndex];
+            
+                if(prevNeedMove){
+                    moveAmount++;
+                    this._setSymbolPositionForDrop(reelIndex, rowIndex, moveAmount + rowIndex);
+                }
+                
+                this._moveMatrix[reelIndex][rowIndex] = prevNeedMove ? maxMoveAmount : moveAmount;
+            }
+        }
+    }
+
+    _sortSymbols() {
+        this._symbols.forEach((reel) => {
+            reel.sort((a, b) => {
+                return  a.data.getPosition().y - b.data.getPosition().y;
+        })});
+    }
+
+    setSpinNewSymbols(symbolsConfigs) {
+        this._spinNewSymbols = symbolsConfigs;
+        
+        // TODO: move to separate method for action call
+        if(this._dropMatrix) {
+            this._updateMatrixForDrop();
+            this._sortSymbols();
+            this._updateSymbolsMatrix();
+            this._startSpin();
+        }
+    }
+
+    _updateSymbolsMatrix() {       
+        for (let reelIndex = 0; reelIndex < this._spinNewSymbols.length; reelIndex++) {
+            const reel = this._spinNewSymbols[reelIndex];
+            for (let rowIndex = 0; rowIndex < reel.length; rowIndex++) {
+                const symbolConfig = this._getSymbolsConfig(reel[rowIndex]);
+                const { data } = this._symbols[reelIndex][rowIndex];
+                data.setConfig(symbolConfig);
+            }
+        }
+    }
+
+    _animationCompletedHandler(key) {
+        return () => {
+            delete this._animatedSymbolsMap[key];
+
+            if(Object.keys(this._animatedSymbolsMap).length === 0) {
+                Urso.observer.fire('components.slotMachine.cycleFinished');
+            }
+        }
+    }
+
+    //position: {reel:2, row:1}
+    symbolAnimate({ reel, row }) {
+        const key = `${reel}_${row}`;
+        this._animatedSymbolsMap[key] = true;
+        this._symbols[reel][row].data.animate(this._animationCompletedHandler(key));
+    }
+
+    symbolStopAnimation(position) {
+        const key = `${reel}_${row}`;
+        delete this._animatedSymbolsMap[key];
+        this._symbols[position.reel][position.row].data.stopAnimation();
+    }
+
+    symbolStopAllAnimationHandler() {
+        this._animatedSymbolsMap = {};
+        this._symbols.forEach((reel) => reel.forEach((sym) => sym.data.stopAnimation()));
+    }
+    
+    speedUpReels() {
+        const { speedUpReelsFactor, reelsCount } = this._config;
+        this._timeScale = speedUpReelsFactor;
+
+        for (let reelIndex = 0; reelIndex < reelsCount; reelIndex++) {
+            if(this._bounceTweens[reelIndex]) {
+                this._bounceTweens[reelIndex].timeScale = this._timeScale;
+                continue;
+            }
+            
+            this._reelTweens[reelIndex].timeScale = this._timeScale;
+        }
+    }
+
+    intrigue(reelIndexFrom) {
+        if (this._intrigue)
+            return false;
+
+        this._intrigue = true;
+        this._intrigueStartsFrom = reelIndexFrom;
+
+        const { intrigueAdditionalSymbols } = this._config;
+
+        //add new symbols to the _remainingBlurSymbolsCount
+        for (let i = reelIndexFrom; i < this._remainingBlurSymbolsCount.length; i++)
+            this._remainingBlurSymbolsCount[i] += intrigueAdditionalSymbols;
+    }
+
+    _getSlotMachineMatrixSize() {
+        const { borderSymbolsCount } = this._config;
+        const reels = this._symbols.length;;
+        const rows = Math.max(...this._symbols.map((row) => row.length)) - borderSymbolsCount * 2;
+        return { reels, rows };
+    }
+
+    _setSlotMachineSizes(newWidth, newHeight) {
+        const { symbolHeight, symbolWidth } = this._config;
+        const { reels, rows } = this._getSlotMachineMatrixSize();
+        let { width, height } = this.common.object;
+
+        if(isFinite(newWidth)) {
+            width = newWidth;
+        }
+
+        if(isFinite(newHeight)) {
+            height = newHeight;
+        }
+        
+        this._symbolWidth = symbolWidth ? symbolWidth : width / reels;
+        this._symbolHeight = symbolHeight ? symbolHeight : height / rows;
+        
+        //check int values
+        if (this._symbolWidth !== ~~this._symbolWidth || this._symbolHeight !== ~~this._symbolHeight)
+            Urso.logger.error('ComponentsSlotMachineView dimension error. Use int width/height values.')
+    }
+
+    _getSymbolsConfig({ key, template }) {
+        return {
+            key,
+            template,
+            parent: this.common.object
+        };
+    }
+   
+    _getSymbol(symbolConfig) { 
+        return this.getInstance('Symbol');
     }
 
     //////////////////spin
 
+    _startSpin() {
+        const { reelsCount, spinStartInterval } = this._config;
+
+        for (let reelIndex = 0; reelIndex < reelsCount; reelIndex++) {
+            const delay = reelIndex * spinStartInterval;
+
+            if(this._bounceTweens){
+                this._startTopBounce(reelIndex, delay);
+                continue;
+            }
+            
+            this._tweenReel(reelIndex, delay);
+        }
+    }
+
+    _startTopBounce(reelIndex, delay) {
+        const { bounce } = this._config;
+        const clbk = () => {
+            this._tweenReel(reelIndex, 0);
+            delete this._bounceTweens[reelIndex];
+            
+            if(Object.keys(this._bounceTweens).length === 0){
+                this._bounceTweens = false;   
+            }
+        };
+
+        this._startBounce(clbk, reelIndex, delay, bounce.top);
+    }
+
+    _startBounce(clbk, reelIndex, delay, { to, duration }) {
+        const from = { x: 0, y: 0 };
+        const reel = this._symbols[reelIndex];
+
+        const tween = this.tween.add(from)
+            .to(to, duration, 'none', true, delay);
+
+        tween.timeScale = this._getTweenTimeScale();
+
+        tween.onComplete.addOnce(clbk);
+
+        for (let rowIndex = 0; rowIndex < reel.length; rowIndex++) {
+            const { data } = reel[rowIndex];
+            const { y } = data.getPosition();
+
+            tween.onUpdateCallback((({ target }, progress) => {
+                const deltaY = Math.sin(Math.PI * progress) * to.y;
+                data.setPosition({
+                    y: y + deltaY
+                });
+            }));
+        }
+
+        this._bounceTweens[reelIndex] = tween;
+    }
+
     _resetSpinState() {
         this._timeScale = 1;
-        this.spinTween.globalTimescale = this._timeScale;
         this._intrigue = false;
         this._intrigueStartsFrom = 0;
         this._lastStoppedReelIndex = -1;
         this._spinning = true;
         this._remainingBlurSymbolsCount = [...this._config.blurSymbolsCount];
-        this._spinNewSymbolsReceived = false;
-        this._spinNewSymbols = null;
-        this.winSymbols = [];
-        this._allReelsStarted = false;
-        this._reelsMovingCount = this.reelsCount;
+        this._finishSpin = false;
+        this._spinNewSymbols = [];
+        this._reelTweens = [];
     }
 
-    spinHandler() {
-        this._startSpin();
+    _updateMoveData() {``
+        if(this._dropMatrix) {
+            this._moveMatrix = this._makeDropMatrix();
+            return;
+        }
+        
+        this._moveMatrix = this._makeRegularMoveMatrix(1);
     }
 
-    _setMask() {
-        this.common.object._baseObject.mask = this.mask._baseObject;
-        this.mask.visible = true;
+    _makeDropMatrix() {
+        return this._dropMatrix.map(reel => reel.map(param => ~~param));
     }
 
-    _removeMask() {
-        this.common.object._baseObject.mask = null;
-        this.mask.visible = false;
+    _makeRegularMoveMatrix(moveDirectionParam) {
+        return new Array(this._symbols.length)
+            .fill(new Array(this._symbols[0].length).fill(moveDirectionParam));
     }
 
-    _changeBorderSymbolsVisible(isVisible) {
-        for (let i = 0; i < this.borderSymbolsCount; i++) {
-            for (let reel of this._symbols) {
-                reel[i].data._texture.visible = isVisible;
-                reel[reel.length - 1 - i].data._texture.visible = isVisible;
+    _moveSymbolToTop(reelIndex, rowIndex = null) {
+        const reel = this._symbols[reelIndex];
+        const index = rowIndex != null ? rowIndex : this._symbols[reelIndex].length -1;
+        const [ symbol ] = reel.splice(index, 1);
+        reel.unshift(symbol);
+    }
+
+    _setSymbolToPosition(reelIndex, rowIndex = 0) {
+        const { data } = this._symbols[reelIndex][rowIndex];
+        const position = this._calculateSymbolPosition(data, reelIndex, rowIndex)
+        data.setPosition(position);
+    }
+
+    _setSymbolConfig(reelIndex, rowIndex = 0) {
+        const { data } = this._symbols[reelIndex][rowIndex];
+        const symbolConfig = this._getCurrentSymbolConfig(reelIndex);
+        data.setConfig(symbolConfig);
+    }
+
+    _moveDone(reelIndex) {
+        return () => {
+            if(this._dropMatrix) {
+                this._onReelStopCallback(reelIndex);
+                return;
             }
+            
+            this._moveSymbolToTop(reelIndex);
+            this._setSymbolToPosition(reelIndex);
+            this._setSymbolConfig(reelIndex);
+            
+            if (this._checkCanTweenReel(reelIndex))
+                this._tweenReel(reelIndex);
+            else
+                this._onReelStopCallback(reelIndex);
         }
     }
 
-    _startSpin(reelsSpinDelay, rowsSpinDelay) {
-        Urso.localData.set('spinning', true);
+    _tweenReel(reelIndex, delay = 0) {
+        this._tweenReelSymbols(reelIndex, delay);
+    }
 
-        if (this.spinning)
-            return
+    _getReelTween(reelIndex) {
+        const tempObject = { y: 0 };
 
-        this._setMask();
-        this._changeBorderSymbolsVisible(true);
+        if (!this._reelTweens[reelIndex])
+            this._reelTweens[reelIndex] = this.tween.add(tempObject);
+        else
+            this._reelTweens[reelIndex].target = tempObject;
 
-        this.spinning = true;
-        const reelsDelay = reelsSpinDelay || this.spinStartInterval;
-        const rowsDelay = rowsSpinDelay || 0;
+        return this._reelTweens[reelIndex];
+    }
 
-        for (let reelIndex = 0; reelIndex < this.reelsCount; reelIndex++) {
-            this._tweenReelHandler(reelIndex, rowsDelay, true)
+    _calculateEasing({ easingParam, rowIndex, progress, to }) {
+        let easeY = 0;
+
+        if(to.y > 0){
+            easeY = easingParam * (rowIndex + 1) * Math.sin(Math.PI * progress);
         }
 
-        this._allReelsStarted = true;
-
-        if (this._speedUpCommanded)
-            this._speedUpReels();
-
-        //TODO: CHECK FOR EVENT // move emit to controller
-        this.emit('components.slotMachine.spinStarted');
+        return { easeY };
     }
 
-    _tweenReelHandler(reelIndex, rowsDelay, isSpinStart) {
-        if (this._checkCanTweenReel(reelIndex) && this._checkNeedAddSymbolOnTop(reelIndex)) {
-            !isSpinStart && this._moveSymbolOnTop(reelIndex);
-            this._tweenReel(reelIndex, rowsDelay, isSpinStart);
-            return
-        }
-
-        this._remainingBlurSymbolsCount[reelIndex]++
-        !isSpinStart && this._moveSymbolOnTop(reelIndex);
-        this._onReelStopCallback(reelIndex);
+     _getEasingParam() {
+        const { dropEasingParam, regularEasingParam } = this._config;
+        return this._dropMatrix ? dropEasingParam : regularEasingParam;
     }
 
-    _tweenReel(reelIndex, rowDelay, isSpinStart) {
-        const delay = rowDelay || 0;
-        this._tweenReelSymbols(reelIndex, delay, isSpinStart);
+    _updateCallback({ reelIndex, rowIndex, easingParam = 0 }) {
+        const { data } = this._symbols[reelIndex][rowIndex];
+        const { y } = data.getPosition();
+        const to = this._getReelFinishPosition(reelIndex, rowIndex);
+        return ({ target }, progress) => {
+            const { easeY } = this._calculateEasing({ easingParam, rowIndex, progress, to });
+            const maxY = y + this._symbolHeight * to.y;
+            const curY = y + target.y * to.y + easeY;
+            data.setPosition({ 
+                y: curY > maxY ? maxY : curY
+            });
+        };
     }
-
-    _tweenReelSymbols(reelIndex, rowDelay, isSpinStart) {
-        const reelLength = this._symbols[reelIndex].length;
-        let delay;
-
-        for (let i = reelLength - 1; i >= 0; i--) {
-            const symbol = this._symbols[reelIndex][i];
-            const rowIndex = reelLength - i;
-
-            delay = rowIndex * rowDelay;
-
-            const startBounce = isSpinStart ? this.bounce.start : false
-            this._moveSymbol(symbol, delay, reelIndex, startBounce);
+                
+    _setupReelTween(tween, reelIndex) {
+        tween.onComplete.addOnce(this._moveDone(reelIndex));
+        const easingParam = this._getEasingParam();
+        for (let rowIndex = 0; rowIndex < this._symbols[reelIndex].length; rowIndex++) {        
+            tween.onUpdateCallback(this._updateCallback({ reelIndex, rowIndex, easingParam }));
         }
     }
 
-    _moveSymbol(symbol, delay, reelIndex, startBounce) {
-        const startDelay = delay || 0;
-        const duration = this._getOneSymbolTweenDuration();
-
+    _setTweenTimeScale(tween, reelIndex) {
         const timeScale = this._getTweenTimeScale(reelIndex);
-        const moveTo = this._symbolHeight;
 
-        symbol.data.setTimeScale(timeScale);
-        symbol.data.moveTween(moveTo, duration, startDelay, this._onSymbolMoveOver.bind(this, symbol, reelIndex), startBounce);
-    }
-
-    _onSymbolMoveOver(symbol, reelIndex) {
-        const symbolIndex = this._symbols[reelIndex].indexOf(symbol);
-
-        if (this._newSymbolsDroping) {
-            symbol.data.reset();
-            return this._onDropingSymbolMoveOver(reelIndex, symbolIndex)
+        if (timeScale !== 1) {
+            tween.timeScale = timeScale;
         }
-
-        this._checkIfReelMoveDone(reelIndex, symbolIndex);
     }
 
-    _onDropingSymbolMoveOver() {
-        this._dropingSymbolsCount--;
-        this._dropingSymbolsCount === 0 && this._onDropNewSymbolsOver();
+    _getReelFinishPosition(reelIndex, rowIndex) {
+        const y = this._moveMatrix[reelIndex][rowIndex];
+        return { y };
     }
 
-    _moveSymbolOnTop(reelIndex, symbol) {
-        if (!symbol) {
-            symbol = this._symbols[reelIndex].pop();
-        } else {
-            const symbolIndex = this._symbols[reelIndex].indexOf(symbol);
-            this._symbols[reelIndex].splice(symbolIndex, 1);
-        }
-
-        this._symbols[reelIndex].unshift(symbol);
-        symbol.data.reset();
-        this._addSymbolOnTop(reelIndex);
+    _getBaseSymbolMoveData() {
+        const y = this._symbolHeight;
+        const x = 0;
+        return { x, y };
     }
 
-    _checkIfReelMoveDone(reelIndex, rowIndex) {
-        if (rowIndex === 0 && !this._newSymbolsDroping)
-            return this._tweenReelHandler(reelIndex);
+    _setupTweenMove(tween, delay) {
+        const duration = this._getOneSymbolTweenDuration();
+        tween.to(this._getBaseSymbolMoveData(), duration, 'none', true, delay);
     }
 
-    _onDropNewSymbolsOver() {
-        if (!this._config.isDrop && this.symbolsDropped){
-            this._removeMask();
-            this._changeBorderSymbolsVisible(false);
-        }
+    _tweenReelSymbols(reelIndex, delay) {
+        const tween = this._getReelTween(reelIndex);
+        this._setupReelTween(tween, reelIndex);
+        this._setupTweenMove(tween, delay);
+        this._setTweenTimeScale(tween, reelIndex);
+    }
 
-        this._newSymbolsDroping = false;
-
-        this.emit('components.slotMachine.drop.finished', null, this._config.spinCompleteDelay);
+    _isIntrigueInProgress(reelIndex) {
+        return this._intrigue 
+                && reelIndex >= this._intrigueStartsFrom 
+                && reelIndex === (this._lastStoppedReelIndex + 1)
     }
 
     _getTweenTimeScale(reelIndex) {
+        const { intrigueSpeedReelsFactor } = this._config;
         let timeScale = this._timeScale;
 
-        if (this._canStartIntigueOnReel(reelIndex))
-            timeScale = timeScale * this._config.intrigueSpeedReelsFactor;
+        if (this._isIntrigueInProgress(reelIndex)) {
+            timeScale = timeScale * intrigueSpeedReelsFactor;
+        }
 
         return timeScale;
     }
 
-    _canStartIntigueOnReel(reelIndex) {
-        return this._intrigue && reelIndex >= this._intrigueStartsFrom && reelIndex === (this._lastStoppedReelIndex + 1)
+    _startBottomBounce(reelIndex) {
+        const { bounce } = this._config;
+        const clbk = () => {
+            this._finishSpinIfNeeded(reelIndex);
+            delete this._bounceTweens[reelIndex];
+            
+            if(Object.keys(this._bounceTweens).length === 0){
+                this._bounceTweens = false;   
+            }
+        };
+
+        this._startBounce(clbk, reelIndex, 0, bounce.bottom);
     }
+
+    _runLandingAnimations() {}
 
     _onReelStopCallback(reelIndex) {
         this._lastStoppedReelIndex = reelIndex;
-        this._reelsMovingCount--;
-        let delay = 0;
+        this._reelMoving[reelIndex] = false;
+        
+        this._runLandingAnimations(reelIndex);
 
-        if (this.bounce) {
-            this._symbols[reelIndex].forEach(symbol => {
-                symbol.data.bounceOnFinish(this.bounce.stop);
-            })
+        this._setBounce('bottom');
 
-            delay = this.bounce.stop.duration;
+        if(this._bounceTweens){
+            this._startBottomBounce(reelIndex);
+            return;
         }
 
-        if (this._reelsMovingCount === 0)
-            setTimeout(() => this._onSpinStopCallback(), delay)
+      this._finishSpinIfNeeded(reelIndex);
+    }
+
+    _finishSpinIfNeeded(reelIndex){
+        const { reelsCount } = this._config;
+        if (reelIndex === reelsCount - 1)
+            this._onSpinStopCallback();
     }
 
     _onSpinStopCallback() {
-        //reset symbols tweens
-        this.spinning = false;
-        this._resetSpinState();
-        Urso.localData.set('spinning', false);
-
-        if (!this._config.isDrop && !this.spinning){
-            this._removeMask();
-            this._changeBorderSymbolsVisible(false);
-        }
-
-        this.emit('components.slotMachine.spinComplete', null, this._config.spinCompleteDelay);
+        this._dropMatrix = null;
+        
+        const type = this._dropMatrix ? 'drop' : 'basic';
+        this._service.spinCompleted(type);
     }
 
     _checkCanTweenReel(reelIndex) {
-        let result = false;
-
-        if (this._spinNewSymbols && this._spinNewSymbols[reelIndex].length - this.borderSymbolsCount > 0) {
-            result = true;
-        } else {
-            this._checkNeedUpdateRemainingBlurSymbolsCount(reelIndex);
-            result = this._remainingBlurSymbolsCount[reelIndex] > 0;
-        }
-
-        return result;
+        this._checkNeedUpdateRemainingBlurSymbolsCount(reelIndex);
+        return this._remainingBlurSymbolsCount[reelIndex] > 0 || this._spinNewSymbols[reelIndex].length > 0;
     }
 
     _getOneSymbolTweenDuration() {
         return this._symbolHeight / this._config.symbolSpeed;
     }
 
-    _getSymbolData(reelIndex) {
-        if (this._remainingBlurSymbolsCount[reelIndex] > 0 && this.startSymbolsCreated) {
+    // TODO: RENAME
+    _getCurrentSymbolConfig(reelIndex) {
+        if (this._remainingBlurSymbolsCount[reelIndex] > 0) {
             this._remainingBlurSymbolsCount[reelIndex]--;
-            return this._service._getSymbol();
-        } else if (this._spinNewSymbols[reelIndex].length > 0)
-            return this._spinNewSymbols[reelIndex].pop();
-    }
-
-    _getSymbol(reelIndex) {
-        const symbolData = this._getSymbolData(reelIndex);
-        const symbolConfig = this._getSymbolsConfig(symbolData);
-        let symbol;
-
-        if (this._symbols[reelIndex].length === this.rowsCount + this.borderSymbolsCount * 2)
-            symbol = this._symbols[reelIndex][0]
-        else {
-            const key = symbolConfig.key;
-            symbol = this._pool.getElement(key, symbolConfig);
-            this._symbols[reelIndex].unshift(symbol);
+            return this._getSymbolsConfig(this._service._getRandomSymbolConfig());
+        } else if (this._spinNewSymbols[reelIndex].length > 0) {
+            const symbol = this._spinNewSymbols[reelIndex].pop();    
+            return this._getSymbolsConfig(symbol);
+        } else {
+            Urso.logger.error('ComponentsSlotMachineView checkSymbolsPositions logic fatal error. Kernel is in panic.')
         }
-
-        symbol.data.setSymbolsConfig(symbolConfig, true);
-
-        return symbol
     }
 
-    _addSymbolOnTop(reelIndex) {
-        const symbol = this._getSymbol(reelIndex);
-        const { anchorX, anchorY } = symbol.data.getAnchor();
-
-        const rowsXoffset = this.rowsXoffset[reelIndex] || 0;
-        const rowsYoffset = this.rowsYoffset[reelIndex] || 0;
-        const x = +reelIndex * this._symbolWidth + this._symbolWidth * anchorX + rowsXoffset;
-
-        const minY = this._symbolHeight * anchorY - this._symbolHeight;
-        let y;
-
-        if (this.startSymbolsCreated) {
-            const topSymbol = this._symbols[reelIndex].find(symbol => symbol.data._texture.y === minY)
-            y = topSymbol ? this._symbols[reelIndex][1].data.getPosition().y - this._symbolHeight : minY;
-        } else if (!this._symbols[reelIndex][1]) {
-            y = minY + this._symbolHeight * (this.rowsCount + this.borderSymbolsCount);
-        } else
-            y = this._symbols[reelIndex][1].data.getPosition().y - this._symbolHeight;
-
-        y += rowsYoffset;
-
-        symbol.data.setPosition(x, y);
-
-        return symbol;
+    _setSymbolPositionForDrop(reelIndex, rowIndex, toIndex = null) {
+        const reel = this._symbols[reelIndex];
+        const resultIndex = toIndex === null ? reel.length : toIndex;
+        const { data } = reel[rowIndex];
+        const deltaY = -resultIndex * this._symbolHeight;
+        const { y } = data.getPosition();
+        data.setPosition({ y: y + deltaY });
     }
 
-    _checkNeedAddSymbolOnTop(reelIndex) {
-        return this._remainingBlurSymbolsCount[reelIndex] > 0 || this._spinNewSymbols[reelIndex].length > 0
+    finishSpin() {
+        this._finishSpin = true;
+    }
+
+    finishBounceSpin() {
+        this._bounceTweens = [];
+        this.finishSpin();
     }
 
     _checkNeedUpdateRemainingBlurSymbolsCount(reelIndex) {
-        if (!this._spinNewSymbolsReceived && this._remainingBlurSymbolsCount[reelIndex] === 0)
-            //we need add a new cout for all reels
+        if (!this._finishSpin && this._remainingBlurSymbolsCount[reelIndex] === 0)
+            //we need add a new count for all reels
             for (let i = 0; i < this._remainingBlurSymbolsCount.length; i++)
                 this._remainingBlurSymbolsCount[i]++
     }
-
-    destroyWinSymbols(symbolsPositions) {
-        this._newSymbolsDroping = true;
-
-        const winSymbols = this._getAllWinSymbols(symbolsPositions);
-
-        Object.keys(winSymbols).forEach(reelIndex => {
-            for (let symbol of winSymbols[reelIndex]) {
-                this._remainingBlurSymbolsCount[reelIndex]++
-                this._moveSymbolOnTop(reelIndex, symbol);
-            }
-        })
-
-        setTimeout(() => this._dropNewSymbols(), 10);
-    }
-
-    _getAllWinSymbols(symbolsPositions) {
-        let winSymbols = {};
-
-        symbolsPositions.forEach(position => {
-            const reelIndex = +position[0];
-            const rowIndex = +position[1] + this.borderSymbolsCount;
-            const symbol = this._symbols[reelIndex][rowIndex];
-
-            if (!winSymbols[reelIndex])
-                winSymbols[reelIndex] = [];
-
-            winSymbols[reelIndex].push(symbol);
-        })
-
-        return winSymbols;
-    }
-    // REFACTOR
-    _getSymbolMoveTimes(symbol, rowIndex) {
-        const offset = this._symbolHeight * (this.rowsCount - rowIndex) - this._symbolHeight / 2;
-        const targetPosition = this.rowsCount * this._symbolHeight - offset;
-        const { y } = symbol.data.getPosition();
-        const difference = targetPosition - y ;
-        const timesToMove = difference > 0 ? difference / this._symbolHeight - this.borderSymbolsCount : 0;
-        return timesToMove;
-    }
-
-    _dropNewSymbols() {
-        let delay;
-
-        for (let reelIndex = 0; reelIndex < this.reelsCount; reelIndex++) {
-            delay = reelIndex * this.spinStartInterval;
-
-            for (let rowIndex = 0; rowIndex < this._symbols[reelIndex].length - this.borderSymbolsCount; rowIndex++) {
-                const symbol = this._symbols[reelIndex][rowIndex];
-
-                if (!symbol)
-                    continue
-
-                const times = this._getSymbolMoveTimes(symbol, rowIndex);
-
-                if (times > 0) {
-                    this._dropingSymbolsCount++
-
-                    for (let i = 0; i < times; i++)
-                        this._moveSymbol(symbol, delay, reelIndex);
-                }
-            }
-        }
-
-    }
-
-    tintSymbols(symbols) {
-        if (!this._blackoutOnShowWinlines)
-            return
-
-        for (let reelIndex = 0; reelIndex < this._symbols.length; reelIndex++) {
-            for (let rowIndex = 0; rowIndex < this._symbols[reelIndex].length; rowIndex++) {
-
-                let needTint = true;
-
-                symbols.forEach(symbol => {
-
-                    if (Urso.helper.checkDeepEqual([reelIndex + '', rowIndex - this.borderSymbolsCount], symbol))
-                        needTint = false;
-                })
-
-                this._symbols[reelIndex][rowIndex].data.createAndStartTintAnimation(needTint);
-            }
-        }
-    }
 }
 
-module.exports = ComponentsSlotMachineSpinTypesWheel;
+module.exports = ComponentsSlotMachineBasic;

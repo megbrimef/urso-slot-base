@@ -4,8 +4,8 @@ class ComponentsAutoSpinTemplate {
             {
                 type: Urso.types.objects.BUTTON,
                 name: 'auto',
-                x: 244,
-                y: 916,
+                class: 'uiButton',
+                action: () => Urso.observer.fire('components.autospin.press'),
                 anchorX: 0.5,
                 anchorY: 0.5,
                 buttonFrames: {

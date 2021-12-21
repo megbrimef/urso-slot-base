@@ -15,3 +15,4 @@ require('./winField/_info.js');
 require('./winFrame/_info.js');
 require('./winLines/_info.js');
 require('./winCounter/_info.js');
+require('./ui/_info.js');

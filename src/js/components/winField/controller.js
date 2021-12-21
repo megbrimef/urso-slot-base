@@ -1,4 +1,18 @@
-class ComponentsWinFieldController extends Urso.Core.Components.Base.Controller {
+class ComponentsWinFieldController extends Urso.Core.Components.StateDriven.Controller {
+
+    configActions = {
+        showWinAmountTextAction: {
+            guard: () => this._guardShowWinText(),
+            run: (finishClbk) => this._runShowAmountWinText(finishClbk),
+        },
+        resetWinTextAction: {
+            run: (finishClbk) => this._runResetText(finishClbk)
+        },
+        showWinTextAction: {
+            run: (finishClbk) => this._runShowWinText(finishClbk)
+        } 
+    };
+
     constructor(params) {
         super(params);
         this.texts;
@@ -8,6 +22,29 @@ class ComponentsWinFieldController extends Urso.Core.Components.Base.Controller 
     create() {
         this.texts = Urso.findAll('.winFieldValue');
         this.cheering = Urso.findOne('.cheeringText');
+    }
+
+    _runShowAmountWinText(finishClbk){
+        this._showWinText();
+        finishClbk();
+    }
+
+    _guardShowWinText() {
+        return this._hasWin();
+    }
+
+    _hasWin() {
+        return Urso.localData.get('slotMachine.spinStages.0.slotWin');
+    }
+
+    _runResetText(finishClbk) {
+        this._resetText()
+        finishClbk();
+    }
+    
+    _runShowWinText(finishClbk) {
+        this.cheering.text = 'WIN';
+        finishClbk();
     }
 
     _getWinData(slotMachineData) {
@@ -21,16 +58,10 @@ class ComponentsWinFieldController extends Urso.Core.Components.Base.Controller 
         return { isBonus, totalWin }
     }
 
-    _showWinStartHandler() {
+    _showWinText() {
         const slotMachineData = Urso.localData.get('slotMachine');
-        const { isBonus, totalWin } = this._getWinData(slotMachineData)
-
+        const { totalWin } = this._getWinData(slotMachineData);
         this._updateText(totalWin);
-
-        if (totalWin === 0 && !isBonus) {
-            this.emit('components.winField.showWin.finished', null, 1);
-            return;
-        }
     };
 
     _formatWin(textObj, { currency, text }) {
@@ -44,11 +75,10 @@ class ComponentsWinFieldController extends Urso.Core.Components.Base.Controller 
 
     _showWinQuickFinishHandler() { };
 
-    _resetHandler() {
+    _resetText() {
         const text = '', currency = '';
         this.texts.forEach(textObj => this._formatWin(textObj, { text, currency }));
         this.cheering.text = 'Good luck'
-        this.emit('components.winField.resetDone');
     };
 
     _updateText(win = 0) {
@@ -63,12 +93,12 @@ class ComponentsWinFieldController extends Urso.Core.Components.Base.Controller 
         this._updateText(win);
     }
 
-    _subscribeOnce() {
-        this.addListener('components.winField.showWin.start', this._showWinStartHandler.bind(this));
-        this.addListener('components.winField.showWin.quickFinish', this._showWinQuickFinishHandler.bind(this));
-        this.addListener('components.winField.reset', this._resetHandler.bind(this));
-        this.addListener('components.winField.setText', this._setTextHandler.bind(this));
-    };
+    // _subscribeOnce() {
+        // this.addListener('components.winField.showWin.start', this._showWinStartHandler.bind(this));
+        // this.addListener('components.winField.showWin.quickFinish', this._showWinQuickFinishHandler.bind(this));
+        // this.addListener('components.winField.reset', this._resetHandler.bind(this));
+        // this.addListener('components.winField.setText', this._setTextHandler.bind(this));
+    // };
 }
 
 module.exports = ComponentsWinFieldController;

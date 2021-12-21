@@ -1,10 +1,23 @@
 //TODO: Move to base_game
 class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Controller {
 
-    constructor() {
-        super()
+    _waitingForSpinPress = false;
 
-        this.eventBlank = 'components.autoSpin';
+    configStates = {
+        IDLE: {
+            guard: () => this._idleStateGuard()
+        }
+    }
+
+    configActions = {
+        autospinAction: {
+            run: () => this._runAutoSpin(),
+            terminate: () => this._terminateAutoSpin()
+        },
+        autospinCheckAction: {
+            run: () => this._runAutoSpinCheck(),
+            terminate: () => this._terminateAutoSpinCheck()
+        }
     }
 
     create() {
@@ -12,17 +25,27 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
         this._setAutospinEnabled(false);
     }
 
-    _guard() {
-        return Urso.localData.get('autospin.enabled');
+    _terminateAutoSpinCheck() {
+        this.callFinish('autospinCheckAction');
     }
 
-    _start() {
-        if (Urso.localData.get('spinning'))
-            return;
+    _runAutoSpinCheck() {
+        if(Urso.localData.get('autospin.enabled')){
+            this.callFinish('autospinCheckAction');
+        }
+    }
 
-        this.emit(`${this.eventBlank}.started`);
-        this.emit('components.slotMachine.spinCommand');
-        this._finished();
+    _runAutoSpin() {
+        this._waitingForSpinPress = true;
+    }
+
+    _terminateAutoSpin() {
+        this._waitingForSpinPress = false;
+        this.callFinish('autospinAction');
+    }
+
+    _idleStateGuard() {
+        return !Urso.localData.get('autospin.enabled');
     }
 
     _setAutospinEnabled(isEnabled) {
@@ -37,8 +60,6 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
     _startAutoSpin() {
         this._setAutospinEnabled(true);
         this._setButtonFrameTo('autoPressed');
-
-        this._start();
     }
 
     _stopAutoSpin() {
@@ -46,18 +67,24 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
         this._setButtonFrameTo('autoUnpressed');
     }
 
-    _handleButton(btn = {}) {
-        if (btn.name !== 'auto')
-            return;
+    _switchAutospin() {
+        if(Urso.localData.get('autospin.enabled')) {
+            this._stopAutoSpin();
+        } else {
+            this._startAutoSpin();
+        }
+    }
 
-        (!Urso.localData.get('autospin.enabled')) ?
-            this._startAutoSpin() : this._stopAutoSpin();
+    _buttonPressHandler = () => {
+       this._switchAutospin();
+        if(this._waitingForSpinPress){
+            this._terminateAutoSpin();
+        }
     }
 
     _subscribeOnce() {
         super._subscribeOnce();
-        this.addListener(Urso.events.MODULES_OBJECTS_BUTTON_PRESS, this._handleButton.bind(this));
-        this.addListener('start.autoSpin', this._startAutoSpin.bind(this));
+        this.addListener('components.autospin.press', this._buttonPressHandler);
     }
 
 }
