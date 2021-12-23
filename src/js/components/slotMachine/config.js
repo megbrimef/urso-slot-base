@@ -1,5 +1,4 @@
 class ComponentsSlotMachineConfig {
-
     getBasicConfig() {
         return {
             reelsCount: 5,
@@ -16,40 +15,39 @@ class ComponentsSlotMachineConfig {
             regularEasingParam: 0,
             dropEasingParam: 0,
 
-            spinCompleteDelay: 200, //event delay, after reels stops
+            spinCompleteDelay: 200, // event delay, after reels stops
 
             bounce: {
                 top: false, // { to: { y: -80, x: 0 }, duration: 200 }
-                bottom: false // { to: { y: 80, x: 0 }, duration: 200 }
+                bottom: false, // { to: { y: 80, x: 0 }, duration: 200 }
             },
 
-            symbolSpeed: 1.5, //pixels in MS
-            spinStartInterval: 100, //per reel
+            symbolSpeed: 1.5, // pixels in MS
+            spinStartInterval: 100, // per reel
 
             speedUpReelsFactor: 2.5,
 
-            //intrigue
+            // intrigue
             intrigueSpeedReelsFactor: 1.5,
             intrigueAdditionalSymbols: 20,
 
-            symbolsBlurKeys: [], //array or array of arrays for each reel
-            lastSymbolsBlurStaticKeys: [] //array or array of arrays for each reel [1,2,3,4] or [false,false,[1]]
-        }
+            symbolsBlurKeys: [], // array or array of arrays for each reel
+            // eslint-disable-next-line max-len
+            lastSymbolsBlurStaticKeys: [], // array or array of arrays for each reel [1,2,3,4] or [false,false,[1]]
+        };
     }
 
     getReel15Row1Config() {
-        const basic = this.getBasicConfig(); 
+        const basic = this.getBasicConfig();
         return {
             ...basic,
             reelsCount: 15,
             rowsCount: 1,
-            
-            rowsXoffset: [0, 0, 0, 0, 0, -5, -5, -5, -5, -5, -10, -10, -10, -10, -10], // or array like [15, 20, 30, 40, 50]   //todo
-            rowsYoffset: [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2], // or array like [15, 20, 30, 40, 50]   //todo
-
+            rowsXoffset: [0, 0, 0, 0, 0, -5, -5, -5, -5, -5, -10, -10, -10, -10, -10],
+            rowsYoffset: [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2],
             symbolWidth: 790 / 5,
             symbolHeight: 501 / 3,
-        }
+        };
     }
 
     getCascadeConfig() {
@@ -58,8 +56,8 @@ class ComponentsSlotMachineConfig {
             ...basic,
             regularEasingParam: 75,
             borderSymbolsCount: 0,
-            cascadeDuration: 400
-        }
+            cascadeDuration: 400,
+        };
     }
 
     getDropConfig() {
@@ -67,8 +65,8 @@ class ComponentsSlotMachineConfig {
         return {
             ...basic,
             dropEasingParam: 70,
-            symbolSpeed: 0.2
-        }
+            symbolSpeed: 0.2,
+        };
     }
 
     getAllConfigsMap() {
@@ -81,7 +79,7 @@ class ComponentsSlotMachineConfig {
             basic,
             reel15Row1,
             cascade,
-            drop
+            drop,
         };
     }
 
@@ -89,6 +87,6 @@ class ComponentsSlotMachineConfig {
         const configs = this.getAllConfigsMap();
         return configs[id] || this.getBasicConfig();
     }
-};
+}
 
 module.exports = ComponentsSlotMachineConfig;

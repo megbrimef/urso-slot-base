@@ -1,20 +1,21 @@
 class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Controller {
-    
     configActions = {
         showWinCounterAction: {
             guard: () => this._getTotalWin(),
             run: () => this._runShowWinCounter(),
-            terminate: () => this._terminateShowWinCounter()
+            terminate: () => this._terminateShowWinCounter(),
         },
         finishCounterAction: {
             guard: () => this._getTotalWin(),
             run: () => this._runFinishCounter(),
-            terminate: () => this._terminateFinishCounter()
-        }
+            terminate: () => this._terminateFinishCounter(),
+        },
     };
 
     _counterText = null;
+
     _tween = null;
+
     _finishCounterClbk = null;
 
     create() {
@@ -30,7 +31,7 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
 
         return '';
     }
-    
+
     _runFinishCounter() {
         this._finishCounterClbk = this._useSubcribe('components.slotMachine.stopCommand', () => {
             this._clearFinishCounter();
@@ -46,18 +47,17 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
         this.callFinish('finishCounterAction');
     }
 
-    _runShowWinCounter(){
+    _runShowWinCounter() {
         this._startCounterAnimation();
     }
 
-
     _terminateShowWinCounter() {
-        this._startLastState();   
+        this._startLastState();
     }
 
-    _useSubcribe(event, callback){
-        Urso.observer.addListener(event, callback);
-        return () => Urso.observer.removeListener(event, callback);
+    _useSubcribe(event, callback) {
+        this.addListener(event, callback);
+        return () => this.removeListener(event, callback);
     }
 
     _getTotalWin() {
@@ -75,7 +75,7 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
     }
 
     _killTween() {
-        if(this._tween) {
+        if (this._tween) {
             this._tween.kill();
         }
 
@@ -90,38 +90,40 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
         this._counterText.alpha = 1;
         this._counterText.text = this._getTotalWin();
 
-        this._tween = gsap.to(this._counterText, { 
-            scaleX: 0, 
-            scaleY: 0, 
-            alpha: 0, 
-            delay: delay/1000, 
+        this._tween = gsap.to(this._counterText, {
+            scaleX: 0,
+            scaleY: 0,
+            alpha: 0,
+            delay: delay / 1000,
             onComplete: () => {
                 this.emit('components.winField.showWin.finished');
                 this.callFinish('showWinCounterAction');
-        } });
+            },
+        });
     }
 
     _counterTextTween(obj, winVal) {
         this._killTween();
 
         obj.visible = true;
-        obj.scaleX = obj.scaleY = obj.alpha = 0;
+        obj.scaleX = 0;
+        obj.scaleY = 0;
+        obj.alpha = 0;
         obj.text = 0;
-        
-        let textConfig = {
+
+        const textConfig = {
             scaleX: 1,
             scaleY: 1,
-            alpha: 1, 
+            alpha: 1,
             text: winVal,
             onUpdate: () => {
-                obj.text = obj.text.toFixed(2)
+                obj.text = obj.text.toFixed(2);
             },
             duration: 2,
             onComplete: () => {
-              this._startLastState()
-            }
+                this._startLastState();
+            },
         };
-
 
         this._tween = gsap.to(obj, textConfig);
     }

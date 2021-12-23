@@ -1,4 +1,4 @@
-Urso.SlotBase.Components.AutoSpin= {
-    Controller: require('./controller.js'),
-    Template: require('./template.js')
+Urso.SlotBase.Components.AutoSpin = {
+    Controller: require('./controller'),
+    Template: require('./template'),
 };

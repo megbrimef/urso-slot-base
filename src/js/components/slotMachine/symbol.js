@@ -1,8 +1,12 @@
 class ComponentsSlotMachineSymbol {
     _key = null;
+
     _animationTween = null;
+
     _template = null;
+
     _parent = null;
+
     _texture = null;
 
     setConfig(symbolsConfig) {
@@ -12,10 +16,10 @@ class ComponentsSlotMachineSymbol {
         this._parent = parent;
 
         this._updateTexture();
-    };
+    }
 
     _updateTexture() {
-        if(!this._texture) {
+        if (!this._texture) {
             this._texture = Urso.objects.create(this._template, this._parent, true);
         } else {
             this._texture.changeTexture(this._template.assetKey);
@@ -29,21 +33,21 @@ class ComponentsSlotMachineSymbol {
     destroy() {
         this._texture.destroy(true);
     }
-    
+
     getAnchors() {
         const { anchorX, anchorY } = this._texture;
         return { anchorX, anchorY };
     }
 
-    setPosition ({ x, y }) {
-        if (isFinite(x)) {
+    setPosition({ x, y }) {
+        if (Number.isFinite(x)) {
             this._texture.x = x;
         }
 
-        if (isFinite(y)) {
+        if (Number.isFinite(y)) {
             this._texture.y = y;
         }
-    };
+    }
 
     getPosition() {
         if (!this._texture) {
@@ -56,19 +60,15 @@ class ComponentsSlotMachineSymbol {
     }
 
     animate(clbk) {
-        this._animationTween = gsap.timeline({ defaults: { duration: 1 }});
+        this._animationTween = gsap.timeline({ defaults: { duration: 1 } });
 
         this._animationTween.to(this._texture, { scaleX: 1.2, scaleY: 1.2 })
             .to(this._texture, { scaleX: 1, scaleY: 1, onComplete: clbk });
-
-        
-
-        // this.emit('component.slotMachine.symbol.startAnimation', this.getPosition());
     }
 
     stopAnimation() {
         if (this._animationTween) {
-            this._animationTween.kill(); //todo find way to stop and desroy it?!
+            this._animationTween.kill(); // todo find way to stop and desroy it?!
 
             this._animationTween = null;
 

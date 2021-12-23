@@ -7,7 +7,7 @@ class ComponentsPickItemTemplate {
                 contents: [
                     {
                         type: Urso.types.objects.IMAGE,
-                        assetKey: 'coffin_empty'
+                        assetKey: 'coffin_empty',
                     },
                     {
                         type: Urso.types.objects.IMAGE,
@@ -23,7 +23,7 @@ class ComponentsPickItemTemplate {
                         x: -20,
                         y: -20,
                         scaleX: 0.75,
-                        scaleY: 0.75
+                        scaleY: 0.75,
                     },
                     {
                         type: Urso.types.objects.TEXT,
@@ -32,7 +32,7 @@ class ComponentsPickItemTemplate {
                         anchorY: 0.5,
                         x: 165,
                         y: 250,
-                        text: '0'
+                        text: '0',
                     },
                     {
                         type: Urso.types.objects.IMAGES_ANIMATION,
@@ -59,13 +59,13 @@ class ComponentsPickItemTemplate {
                             'coffin_opening_12',
                             'coffin_opening_13',
                             'coffin_opening_14',
-                            'coffin_opening_15'
-                        ]
-                    }
-                ]
-            }
+                            'coffin_opening_15',
+                        ],
+                    },
+                ],
+            },
         ];
-    };
-};
+    }
+}
 
-module.exports = ComponentsPickItemTemplate ;
+module.exports = ComponentsPickItemTemplate;

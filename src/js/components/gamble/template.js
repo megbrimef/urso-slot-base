@@ -10,8 +10,8 @@ class ComponentsGambleTemplate {
                         type: Urso.types.objects.COMPONENT,
                         componentName: 'bonusBg',
                         options: {
-                            name: 'gamble'
-                        }
+                            name: 'gamble',
+                        },
                     },
                     {
                         type: Urso.types.objects.IMAGE,
@@ -24,7 +24,7 @@ class ComponentsGambleTemplate {
                         assetKey: 'risk_winText',
                         anchorX: 0.5,
                         x: 960,
-                        y: 100
+                        y: 100,
                     },
                     {
                         type: Urso.types.objects.TEXT,
@@ -39,7 +39,7 @@ class ComponentsGambleTemplate {
                         anchorY: 0.5,
                         x: 960,
                         y: 195,
-                        wordWrapWidth: 440
+                        wordWrapWidth: 440,
                     },
                     {
                         type: Urso.types.objects.CONTAINER,
@@ -47,13 +47,12 @@ class ComponentsGambleTemplate {
                         x: 220,
                         y: 400,
                         width: 1340,
-                        contents: []
-                    }
-                ]
-            }
+                        contents: [],
+                    },
+                ],
+            },
         ];
-    };
-
-};
+    }
+}
 
 module.exports = ComponentsGambleTemplate;

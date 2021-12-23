@@ -1,4 +1,5 @@
 const BaseTransportAction = require('./baseTransportAction');
+
 class ModulesStatesManagerActionsTransportInitAction extends BaseTransportAction {
     name = 'transportInitAction';
     event = 'modules.transport.ready';
@@ -6,6 +7,6 @@ class ModulesStatesManagerActionsTransportInitAction extends BaseTransportAction
     _preProcessEvent() {
         Urso.transport.init();
     }
-};
+}
 
 module.exports = ModulesStatesManagerActionsTransportInitAction;

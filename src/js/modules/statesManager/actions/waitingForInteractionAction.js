@@ -1,8 +1,6 @@
+// eslint-disable-next-line max-len
 class ModulesStatesManagerActionsWaitingForInteractionAction extends Urso.Core.Modules.StatesManager.Action {
-    constructor(name) {
-        super(name);
-        this.name = 'waitingForInteractionAction';
-    }
+    name = 'waitingForInteractionAction';
 
     guard() {
         return true;
@@ -13,7 +11,7 @@ class ModulesStatesManagerActionsWaitingForInteractionAction extends Urso.Core.M
         this._interactDone();
     }
 
-    _interactDone = () => {
+    _interactDone() {
         Urso.observer.remove('modules.logic.ui.interact.done', this._interactDoneHandler, true);
         super._onFinish();
     }
@@ -21,10 +19,10 @@ class ModulesStatesManagerActionsWaitingForInteractionAction extends Urso.Core.M
     _interactDoneHandler = () => this._interactDone();
 
     _onFinish() {
-        if(!this._terminating) {
+        if (!this._terminating) {
             Urso.observer.add('modules.logic.ui.interact.done', this._interactDoneHandler, true);
         }
     }
-};
+}
 
 module.exports = ModulesStatesManagerActionsWaitingForInteractionAction;

@@ -1,3 +1,3 @@
-Urso.SlotBase.Components.WinField = {
+Urso.SlotBase.Components.Loader = {
     Controller: require('./controller'),
 };

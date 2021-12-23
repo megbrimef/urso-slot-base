@@ -1,5 +1,4 @@
 class ComponentsPickBonusController extends Urso.Core.Components.StateDriven.Controller {
-
     constructor() {
         super();
 
@@ -18,17 +17,15 @@ class ComponentsPickBonusController extends Urso.Core.Components.StateDriven.Con
     }
 
     get _allPickItems() {
-        return this.common.findAll('.pickItem').map(items => items._controller);
+        return this.common.findAll('.pickItem').map((items) => items._controller);
     }
 
     get _selectedPickItem() {
-        return this._allPickItems.find(i => {
-            return i.id === Urso.localData.get('pickBonus.selected');
-        });
+        return this._allPickItems.find((i) => i.id === Urso.localData.get('pickBonus.selected'));
     }
 
     set _isAllItemsInteractive(isInteractive) {
-        this._allPickItems.forEach(i => i.interactive = isInteractive);
+        this._allPickItems.forEach((i) => { i.interactive = isInteractive; });
     }
 
     _guard() {
@@ -40,7 +37,7 @@ class ComponentsPickBonusController extends Urso.Core.Components.StateDriven.Con
     }
 
     _switchTourchAnimationTo(needShow) {
-        this.common.findAll('.torch').forEach(torch => {
+        this.common.findAll('.torch').forEach((torch) => {
             torch.play('main', needShow);
             torch.visible = needShow;
         });
@@ -56,14 +53,13 @@ class ComponentsPickBonusController extends Urso.Core.Components.StateDriven.Con
             this._isAllItemsInteractive = true;
             this._show();
         }, 1000);
-    };
+    }
 
     _reset() {
         this._container.visible = false;
         this._switchTourchAnimationTo(false);
-        this._allPickItems.forEach(i => i.reset());
+        this._allPickItems.forEach((i) => i.reset());
         this.emit('components.bonusBg.hide');
-
     }
 
     _show() {
@@ -82,10 +78,11 @@ class ComponentsPickBonusController extends Urso.Core.Components.StateDriven.Con
         this._selectedPickItem.loose = win === 0;
 
         setTimeout(() => {
-            if (win === 0)
+            if (win === 0) {
                 this.emit('components.winField.setText', 'LOOSE');
-            else
-                this.emit('components.winField.setText', win)
+            } else {
+                this.emit('components.winField.setText', win);
+            }
 
             this.emit('modules.logic.main.balanceRequest');
         }, 2000);
@@ -94,8 +91,9 @@ class ComponentsPickBonusController extends Urso.Core.Components.StateDriven.Con
     _balanceHandler() {
         const selected = Urso.localData.get('pickBonus.selected');
 
-        if (selected === null || selected === undefined)
+        if (selected === null || selected === undefined) {
             return;
+        }
 
         Urso.localData.set('pickBonus.selected', null);
         this._reset();
@@ -107,7 +105,7 @@ class ComponentsPickBonusController extends Urso.Core.Components.StateDriven.Con
         this.addListener('components.pickItem.clicked', this._pickItemClicked.bind(this));
         this.addListener('pickBonus.updateState', this._updateState.bind(this));
         this.addListener('components.balance.set', this._balanceHandler.bind(this));
-    };
+    }
 }
 
 module.exports = ComponentsPickBonusController;

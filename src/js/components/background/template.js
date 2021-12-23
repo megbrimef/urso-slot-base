@@ -1,12 +1,12 @@
 class ComponentsBackgroundTemplate {
     constructor() {
         this.styles = {
-           '.backgroundImage.active': {
-                visible: true
-           },
-           '.backgroundImage':{
-                visible: false
-           }
+            '.backgroundImage.active': {
+                visible: true,
+            },
+            '.backgroundImage': {
+                visible: false,
+            },
         };
 
         this.objects = [
@@ -14,18 +14,17 @@ class ComponentsBackgroundTemplate {
                 type: Urso.types.objects.IMAGE,
                 name: 'bonus',
                 assetKey: 'bonus',
-                class: 'backgroundImage'
+                class: 'backgroundImage',
 
             },
             {
                 type: Urso.types.objects.IMAGE,
                 name: 'basic',
                 assetKey: 'basic',
-                class: 'backgroundImage'
-            }
+                class: 'backgroundImage',
+            },
         ];
-    };
-
-};
+    }
+}
 
 module.exports = ComponentsBackgroundTemplate;

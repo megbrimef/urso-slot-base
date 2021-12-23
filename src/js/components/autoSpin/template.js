@@ -12,11 +12,11 @@ class ComponentsAutoSpinTemplate {
                     over: 'autoUnpressed',
                     out: 'autoUnpressed',
                     pressed: 'autoPressed',
-                    disabled: 'autoPressed'
+                    disabled: 'autoPressed',
                 },
             },
         ];
-    };
-};
+    }
+}
 
 module.exports = ComponentsAutoSpinTemplate;

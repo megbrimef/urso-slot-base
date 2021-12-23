@@ -1,24 +1,22 @@
-//TODO: Move to base_game
 class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Controller {
-
     _waitingForSpinPress = false;
 
     configStates = {
         IDLE: {
-            guard: () => this._idleStateGuard()
-        }
-    }
+            guard: () => this._idleStateGuard(),
+        },
+    };
 
     configActions = {
         autospinAction: {
             run: () => this._runAutoSpin(),
-            terminate: () => this._terminateAutoSpin()
+            terminate: () => this._terminateAutoSpin(),
         },
         autospinCheckAction: {
             run: () => this._runAutoSpinCheck(),
-            terminate: () => this._terminateAutoSpinCheck()
-        }
-    }
+            terminate: () => this._terminateAutoSpinCheck(),
+        },
+    };
 
     create() {
         this.autoSpin = this.common.findOne('^auto');
@@ -30,7 +28,7 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
     }
 
     _runAutoSpinCheck() {
-        if(Urso.localData.get('autospin.enabled')){
+        if (Urso.localData.get('autospin.enabled')) {
             this.callFinish('autospinCheckAction');
         }
     }
@@ -68,7 +66,7 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
     }
 
     _switchAutospin() {
-        if(Urso.localData.get('autospin.enabled')) {
+        if (Urso.localData.get('autospin.enabled')) {
             this._stopAutoSpin();
         } else {
             this._startAutoSpin();
@@ -76,17 +74,16 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
     }
 
     _buttonPressHandler = () => {
-       this._switchAutospin();
-        if(this._waitingForSpinPress){
+        this._switchAutospin();
+        if (this._waitingForSpinPress) {
             this._terminateAutoSpin();
         }
-    }
+    };
 
     _subscribeOnce() {
         super._subscribeOnce();
         this.addListener('components.autospin.press', this._buttonPressHandler);
     }
-
 }
 
 module.exports = ComponentsAutoSpinController;

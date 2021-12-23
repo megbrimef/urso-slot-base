@@ -9,8 +9,8 @@ class ComponentsPickBonusTemplate {
                         type: Urso.types.objects.COMPONENT,
                         componentName: 'bonusBg',
                         options: {
-                            name: 'pickBonus'
-                        }
+                            name: 'pickBonus',
+                        },
                     },
                     {
                         type: Urso.types.objects.CONTAINER,
@@ -24,8 +24,8 @@ class ComponentsPickBonusTemplate {
                                 class: 'pickItem',
                                 options: {
                                     id: 0,
-                                    event: 'components.pickItem.clicked'
-                                }
+                                    event: 'components.pickItem.clicked',
+                                },
                             },
                             {
                                 type: Urso.types.objects.COMPONENT,
@@ -34,29 +34,29 @@ class ComponentsPickBonusTemplate {
                                 x: 357.5,
                                 options: {
                                     id: 1,
-                                    event: 'components.pickItem.clicked'
-                                }
+                                    event: 'components.pickItem.clicked',
+                                },
                             },
                             {
                                 type: Urso.types.objects.COMPONENT,
                                 componentName: 'PickBonus.PickItem',
                                 class: 'pickItem',
-                                x: 357.5*2,
+                                x: 357.5 * 2,
                                 options: {
                                     id: 2,
-                                    event: 'components.pickItem.clicked'
-                                }
+                                    event: 'components.pickItem.clicked',
+                                },
                             },
                             {
                                 type: Urso.types.objects.COMPONENT,
                                 componentName: 'PickBonus.PickItem',
                                 class: 'pickItem',
-                                x: 357.5*3,
+                                x: 357.5 * 3,
                                 options: {
                                     id: 3,
-                                    event: 'components.pickItem.clicked'
-                                }
-                            }, 
+                                    event: 'components.pickItem.clicked',
+                                },
+                            },
                             {
                                 type: Urso.types.objects.COMPONENT,
                                 componentName: 'PickBonus.PickItem',
@@ -64,16 +64,15 @@ class ComponentsPickBonusTemplate {
                                 x: 1430,
                                 options: {
                                     id: 4,
-                                    event: 'components.pickItem.clicked'
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
+                                    event: 'components.pickItem.clicked',
+                                },
+                            },
+                        ],
+                    },
+                ],
+            },
         ];
-    };
-
-};
+    }
+}
 
 module.exports = ComponentsPickBonusTemplate;

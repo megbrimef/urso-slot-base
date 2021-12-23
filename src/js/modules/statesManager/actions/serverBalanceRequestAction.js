@@ -18,6 +18,6 @@ class ModulesStatesManagerActionsServerBalanceRequestAction extends BaseTranspor
     _preProcessEvent() {
         this.sendRequest('BalanceRequest');
     }
-};
+}
 
 module.exports = ModulesStatesManagerActionsServerBalanceRequestAction;
