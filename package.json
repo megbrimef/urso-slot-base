@@ -1,6 +1,6 @@
 {
   "name": "@urso/slot-base",
-  "version": "0.3.0-dev6",
+  "version": "0.3.0-dev7",
   "description": "HTML5 slot base game",
   "main": "build/js/index.js",
   "author": "Megbrimef",
