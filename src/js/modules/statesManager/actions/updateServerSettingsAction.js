@@ -1,8 +1,6 @@
+// eslint-disable-next-line max-len
 class ModulesStatesManagerActionsUpdateServerSettingsAction extends Urso.Core.Modules.StatesManager.Action {
-    constructor(name) {
-        super(name);
-        this.name = 'updateServerSettingsAction';
-    }
+    name = 'updateServerSettingsAction';
 
     guard() {
         return true;
@@ -16,6 +14,6 @@ class ModulesStatesManagerActionsUpdateServerSettingsAction extends Urso.Core.Mo
         this._updateServerSettings();
         super._onFinish();
     }
-};
+}
 
 module.exports = ModulesStatesManagerActionsUpdateServerSettingsAction;

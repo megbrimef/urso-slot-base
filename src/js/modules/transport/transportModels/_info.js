@@ -5,5 +5,5 @@ Urso.SlotBase.Modules.Transport.TransportModels = {
     CheckBrokenGameRequest: require('./checkBrokenGameRequest'),
     SpinRequest: require('./spinRequest'),
     GambleRequest: require('./gambleRequest'),
-    PickBonusRequest: require('./pickBonusRequest')
-}
+    PickBonusRequest: require('./pickBonusRequest'),
+};

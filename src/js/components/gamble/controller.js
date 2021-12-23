@@ -1,5 +1,4 @@
 class ComponentsGambleController extends Urso.Core.Components.StateDriven.Controller {
-
     constructor() {
         super();
 
@@ -28,13 +27,11 @@ class ComponentsGambleController extends Urso.Core.Components.StateDriven.Contro
     _clearAll() {
         const cards = this.common.findAll('.gambleCard');
 
-        cards.forEach(card => {
-            card.destroy();
-        });
+        cards.forEach((card) => card.destroy());
 
         this.clickedIndexes = [];
 
-        this._cardsContainer._baseObject.removeChildren()
+        this._cardsContainer._baseObject.removeChildren();
     }
 
     _createCards() {
@@ -55,9 +52,9 @@ class ComponentsGambleController extends Urso.Core.Components.StateDriven.Contro
 
     _setInteractive(isInteractive) {
         this._cardsContainer._baseObject.children.forEach((child, index) => {
-
-            if (isInteractive && this.clickedIndexes.indexOf(index) > -1)
+            if (isInteractive && this.clickedIndexes.indexOf(index) > -1) {
                 return;
+            }
 
             child.buttonMode = isInteractive;
             child.interactive = isInteractive;
@@ -65,8 +62,9 @@ class ComponentsGambleController extends Urso.Core.Components.StateDriven.Contro
     }
 
     _startHandler() {
-        if (!Urso.localData.get('gamble.canActivate') || Urso.localData.get('spinning') || Urso.localData.get('autospin.enabled'))
+        if (!Urso.localData.get('gamble.canActivate') || Urso.localData.get('spinning') || Urso.localData.get('autospin.enabled')) {
             return;
+        }
 
         this._showGamble();
     }
@@ -114,8 +112,9 @@ class ComponentsGambleController extends Urso.Core.Components.StateDriven.Contro
     _gambleResponse() {
         this._updateGambleState();
 
-        if (!this._checkCanGamble())
+        if (!this._checkCanGamble()) {
             this._hideGamble();
+        }
     }
 
     _checkCanGamble() {
@@ -155,7 +154,7 @@ class ComponentsGambleController extends Urso.Core.Components.StateDriven.Contro
         this.addListener('modules.logic.main.gambleResponse', this._gambleResponse.bind(this));
         this.addListener('components.gamble.start', this._startHandler.bind(this));
         this.addListener('components.gamble.cardClicked', this._cardClicked.bind(this));
-    };
+    }
 }
 
 module.exports = ComponentsGambleController;

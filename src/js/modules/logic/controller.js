@@ -1,12 +1,11 @@
-
 class ModulesLogicController extends Urso.Core.Modules.Logic.Controller {
-    getAdditionalLogicBlocks(){
+    getAdditionalLogicBlocks() {
         return [
             'Ui.Controller',
             'Transport.Controller',
-            'main'
+            'main',
         ];
-    };
+    }
 }
 
 module.exports = ModulesLogicController;

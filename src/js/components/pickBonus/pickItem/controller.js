@@ -1,58 +1,57 @@
 class ComponentsPickBonusPickItemController extends Urso.Core.Components.Base.Controller {
-
-    constructor(params){
+    constructor(params) {
         super(params);
         this._id = params.id;
         this._event = params.event;
     }
-    
-    create(){
+
+    create() {
         super.create();
         this.reset();
     }
 
-    get _looseImage(){
+    get _looseImage() {
         return this.common.findOne('.loose');
     }
 
-    get _pickItemContainer(){
+    get _pickItemContainer() {
         return this.common.findOne('.pickItemContainer');
     }
 
-    get _openAnimation(){
+    get _openAnimation() {
         return this.common.findOne('.openAnimation');
     }
 
-    get _winText(){
+    get _winText() {
         return this.common.findOne('.winText');
     }
 
-    get id(){
+    get id() {
         return this._id;
     }
-    
-    get _openedImage(){
+
+    get _openedImage() {
         return this.common.findOne('.openedImage');
     }
 
-    set interactive(isInteractive){
+    set interactive(isInteractive) {
         this._pickItemContainer._baseObject.interactive = isInteractive;
         this._pickItemContainer._baseObject.buttonMode = isInteractive;
-        
-        if(isInteractive){
+
+        if (isInteractive) {
             this._pickItemContainer._baseObject.on('click', this._onClick.bind(this));
             this._pickItemContainer._baseObject.on('tap', this._onClick.bind(this));
-        }
-        else 
+        } else {
             this._pickItemContainer._baseObject.removeAllListeners();
+        }
     }
 
-    set winTextValue(text = 0){
+    set winTextValue(text = 0) {
         this._winText.visible = text > 0;
         this._winText.text = text;
     }
 
-    set loose(needLoose){
+    set loose(needLoose) {
         this._looseImage.visible = needLoose;
     }
 
@@ -61,16 +60,16 @@ class ComponentsPickBonusPickItemController extends Urso.Core.Components.Base.Co
         this._openedImage.visible = isOpened;
     }
 
-    _onClick(){
+    _onClick() {
         this.emit(this._event, this._id);
         this.open();
     }
 
-    _onComplete(){
+    _onComplete() {
         this.opened = true;
     }
 
-    open(){
+    open() {
         this._openAnimation.onComplete = this._onComplete.bind(this);
         this._openAnimation.start();
     }

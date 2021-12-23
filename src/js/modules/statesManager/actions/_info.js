@@ -1,4 +1,5 @@
 Urso.SlotBase.Modules.StatesManager.Actions = {
+    BaseTransportAction: require('./baseTransportAction'),
     TransportInitAction: require('./transportInitAction'),
     ServerApiVersionRequestAction: require('./serverApiVersionRequestAction'),
     ServerCheckBrokenGameRequestAction: require('./serverCheckBrokenGameRequestAction'),
@@ -6,5 +7,7 @@ Urso.SlotBase.Modules.StatesManager.Actions = {
     ServerSpinRequestAction: require('./serverSpinRequestAction'),
     ServerBalanceRequestAction: require('./serverBalanceRequestAction'),
     WaitingForInteractionAction: require('./waitingForInteractionAction'),
-    UpdateServerSettingsAction: require('./updateServerSettingsAction')
+    UpdateServerSettingsAction: require('./updateServerSettingsAction'),
+    LoadDefaultSceneAction: require('./loadDefaultSceneAction'),
+    InitUiLogicAction: require('./initUiLogicAction'),
 };

@@ -1,4 +1,5 @@
 window.Urso.SlotBase = {};
-require('./main.js');
-require('./../modules/_info.js');
-require('./../components/_info.js');
+
+require('./main');
+require('../modules/_info');
+require('../components/_info');

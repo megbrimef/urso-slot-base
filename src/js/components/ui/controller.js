@@ -12,27 +12,29 @@ class ComponentsUiController extends Urso.Core.Components.Base.Controller {
             const objs = Urso.findAll(selector);
 
             objs.forEach((obj) => {
-                if(!obj) {
+                if (!obj) {
                     return Urso.logger.error(`Object with name '${selector}' was not found!`);
                 }
-    
-                if(typeof visible !== 'undefined') {
+
+                if (typeof visible !== 'undefined') {
                     obj.visible = visible;
                 }
-    
-                if(typeof enabled !== 'undefined' && obj.enable && obj.disable) {
-                    const method = enabled ? 'enable': 'disable';
+
+                if (typeof enabled !== 'undefined' && obj.enable && obj.disable) {
+                    const method = enabled ? 'enable' : 'disable';
                     obj[method]();
                 }
+
+                return true;
             });
-        }
+        };
     }
-        
+
     _stateUpdateHandler = (data) => this._stateUpdate(data);
 
-    _subscribeOnce(){
+    _subscribeOnce() {
         this.addListener('components.ui.state.update', this._stateUpdateHandler);
-    };
+    }
 }
 
 module.exports = ComponentsUiController;

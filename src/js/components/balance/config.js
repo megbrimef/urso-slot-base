@@ -1,11 +1,9 @@
-class ComponentsBalanceConfig { 
-
+class ComponentsBalanceConfig {
     get() {
         return {
-            showCurrencySymbol: false
-        }
+            showCurrencySymbol: false,
+        };
     }
-
 }
 
 module.exports = ComponentsBalanceConfig;

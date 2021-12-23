@@ -1,6 +1,6 @@
 Urso.SlotBase.Components.PickBonus = {
-    Controller: require('./controller.js'),
-    Template: require('./template')
+    Controller: require('./controller'),
+    Template: require('./template'),
 };
 
-require('./pickItem/_info')
+require('./pickItem/_info');

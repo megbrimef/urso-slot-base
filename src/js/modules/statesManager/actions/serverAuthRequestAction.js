@@ -1,9 +1,10 @@
 const BaseTransportAction = require('./baseTransportAction');
+
 class ModulesStatesManagerActionsServerAuthRequestAction extends BaseTransportAction {
     name = 'serverAuthRequestAction';
 
     _postProcessEvent(data) {
-        const { 
+        const {
             betMultiplier,
             bets,
             coinValues,
@@ -12,7 +13,7 @@ class ModulesStatesManagerActionsServerAuthRequestAction extends BaseTransportAc
             defaultLines,
             extrabet,
             gameParameters,
-            sessionId
+            sessionId,
         } = data;
 
         this._sesId = sessionId;
@@ -22,18 +23,18 @@ class ModulesStatesManagerActionsServerAuthRequestAction extends BaseTransportAc
 
         Urso.localData.set('extraBet', { betMultiplier, extrabet });
         Urso.localData.set('coins', { coins: coinValues, value: defaultCoinValue });
-        Urso.localData.set('bets', { bets: bets, value: defaultBet });
+        Urso.localData.set('bets', { bets, value: defaultBet });
         Urso.localData.set('linesCfg', avaliableLines);
         Urso.localData.set('lines', { lines: defaultLines, value: linesVal });
         Urso.localData.set('payoutsCfg', payouts);
         Urso.localData.set('slotMachine.initialSymbols', initialSymbols);
 
-        return true; 
+        return true;
     }
 
     _preProcessEvent() {
         this.sendRequest('AuthRequest');
     }
-};
+}
 
 module.exports = ModulesStatesManagerActionsServerAuthRequestAction;

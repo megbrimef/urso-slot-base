@@ -7,31 +7,31 @@ class ComponentsGambleCardTemplate {
                     {
                         type: Urso.types.objects.IMAGE,
                         assetKey: 'risk_card_closed',
-                        class: 'closed'
+                        class: 'closed',
                     },
                     {
                         type: Urso.types.objects.IMAGE,
                         assetKey: 'risk_card_red_opened',
                         visible: false,
-                        class: 'red'
+                        class: 'red',
                     },
                     {
                         type: Urso.types.objects.IMAGE,
                         assetKey: 'risk_card_black_opened',
                         visible: false,
-                        class: 'black'
+                        class: 'black',
                     },
                     {
                         type: Urso.types.objects.IMAGE,
                         assetKey: 'risk_card_shadow',
                         class: 'shadow',
                         y: 700,
-                        x: -170
-                    }
-                ]
-            }
+                        x: -170,
+                    },
+                ],
+            },
         ];
-    };
-};
+    }
+}
 
 module.exports = ComponentsGambleCardTemplate;

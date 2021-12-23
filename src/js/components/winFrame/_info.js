@@ -1,5 +1,5 @@
 Urso.SlotBase.Components.WinFrame = {
-    Controller: require('./controller.js'),
-    Template: require('./template.js'),
-    View: require('./view.js')
+    Controller: require('./controller'),
+    Template: require('./template'),
+    View: require('./view'),
 };
