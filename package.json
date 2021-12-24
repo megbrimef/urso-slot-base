@@ -3,7 +3,7 @@
   "version": "0.3.0-dev8",
   "description": "HTML5 slot base game",
   "main": "build/js/index.js",
-  "author": "Megbrimef",
+  "author": "LCG",
   "license": "MIT",
   "scripts": {
     "build:prod": "webpack --config webpack.config.js --mode=production",
