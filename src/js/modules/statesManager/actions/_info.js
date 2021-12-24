@@ -9,4 +9,8 @@ Urso.SlotBase.Modules.StatesManager.Actions = {
     ServerAuthRequestAction: require('./serverAuthRequestAction'),
     LoadDefaultSceneAction: require('./loadDefaultSceneAction'),
     InitUiLogicAction: require('./initUiLogicAction'),
+    UpdateBalanceAction: require('./updateBalanceAction'),
+    MakeBetAction: require('./makeBetAction'),
+    UpdateWinTextAction: require('./updateWinTextAction'),
+    ResetWinTextAction: require('./resetWinTextAction'),
 };

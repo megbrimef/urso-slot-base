@@ -56,7 +56,7 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
 
             START_SPIN: {
                 sequence: [
-                    { action: 'balanceMakeBetAction' },
+                    { action: 'makeBetAction' },
                     { action: 'regularSpinStartAction' },
                     { action: 'serverSpinRequestAction' },
                     { action: 'updateSlotMachineDataAction' },

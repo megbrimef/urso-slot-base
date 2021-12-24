@@ -1,10 +1,29 @@
 class ModulesLogicBaseUiElementController {
     _subscribed = false;
     _state = false;
+    _class = null;
     _actions = [];
 
     init() {
         this._subscribeOnce();
+    }
+
+    get _config() {
+        return Urso.getInstance('Modules.Logic.Ui.Config').getConfig();
+    }
+
+    get _currency() {
+        const { showCurrencyType } = this._config;
+        const { currentCurrency, currentSymbol } = Urso.localData.get('currency');
+
+        switch (showCurrencyType) {
+        case 'currency':
+            return currentCurrency;
+        case 'symbol':
+            return currentSymbol;
+        default:
+            return '';
+        }
     }
 
     _stateChanged(stateName) {
@@ -31,6 +50,7 @@ class ModulesLogicBaseUiElementController {
         let state = {
             visible: this._checkVisible(),
             enabled: this._checkEnabled(),
+            text: this._setText(),
         };
 
         state = this._beforeStateUpdate(state);
@@ -45,6 +65,8 @@ class ModulesLogicBaseUiElementController {
     _checkEnabled() {
         return false;
     }
+
+    _setText() {}
 
     _beforeStateUpdate(state) {
         return state;

@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-class ModulesLogicBaseUiButtonsSpinButtonController extends Urso.SlotBase.Modules.Logic.Ui.BaseInteraciveUiElementController {
+class ModulesLogicBaseUiButtonsSpinButtonController extends Urso.SlotBase.Modules.Logic.Ui.BaseInteractiveUiElementController {
     _type = this.TYPES.BUTTON;
 
     _class = 'spinButton';
