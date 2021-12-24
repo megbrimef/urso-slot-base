@@ -5,46 +5,40 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
             run: () => this._runShowWinCounter(),
             terminate: () => this._terminateShowWinCounter(),
         },
-        finishCounterAction: {
-            guard: () => this._getTotalWin(),
-            run: () => this._runFinishCounter(),
-            terminate: () => this._terminateFinishCounter(),
-        },
     };
 
-    _counterText = null;
+    _counterTween = null;
+    _showHideTween = null;
+    _showParams = null;
 
-    _tween = null;
-
-    _finishCounterClbk = null;
-
-    create() {
-        this._counterText = this.common.findOne('^counterText');
+    get _config() {
+        return this.getInstance('Config').get();
     }
 
-    get currency() {
-        const { currency } = Urso.localData.get('balance');
+    get _counterText() {
+        return this.common.findOne('^counterText');
+    }
 
-        if (currency === 'USD') {
-            return '$';
+    get _bigWinCounterText() {
+        return this.common.findOne('^bigWinCounterText');
+    }
+
+    get _bigWinAnimation() {
+        return this.common.findOne('^bigWinAnimation');
+    }
+
+    get _currency() {
+        const { showCurrencyType } = this._config;
+        const { currentCurrency, currentSymbol } = Urso.localData.get('currency');
+
+        switch (showCurrencyType) {
+        case 'currency':
+            return currentCurrency;
+        case 'symbol':
+            return currentSymbol;
+        default:
+            return '';
         }
-
-        return '';
-    }
-
-    _runFinishCounter() {
-        this._finishCounterClbk = this._useSubcribe('components.slotMachine.stopCommand', () => {
-            this._clearFinishCounter();
-        });
-    }
-
-    _terminateFinishCounter() {
-        this._clearFinishCounter();
-    }
-
-    _clearFinishCounter() {
-        this._finishCounterClbk();
-        this.callFinish('finishCounterAction');
     }
 
     _runShowWinCounter() {
@@ -55,11 +49,6 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
         this._startLastState();
     }
 
-    _useSubcribe(event, callback) {
-        this.addListener(event, callback);
-        return () => this.removeListener(event, callback);
-    }
-
     _getTotalWin() {
         const slotMachineData = Urso.localData.get('slotMachine');
         const { totalWin } = slotMachineData.spinStages[0].slotWin;
@@ -67,65 +56,176 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
     }
 
     _startCounterAnimation() {
-        const totalWin = this._getTotalWin();
-        const bet = Urso.localData.get('bets.value');
+        this._reset();
 
-        this._counterText.y = totalWin >= (bet * 10) ? 700 : 500;
-        this._counterTextTween(this._counterText, totalWin, this.firstWin);
+        const totalWin = this._getTotalWin();
+        this._showParams = this._getShowParams(totalWin);
+
+        this._runCounterTextAnimation(totalWin);
+        this._runShowAnimation(this._showParams);
     }
 
-    _killTween() {
-        if (this._tween) {
-            this._tween.kill();
+    _runShowAnimation({ type }) {
+        if (type === 'big') {
+            this._runBigWinAnimation();
+            return;
         }
 
-        this._tween = null;
+        this._runRegularWinAnimation();
     }
 
-    _startLastState(delay = 1000) {
-        this._killTween();
+    _runBigWinAnimation() {
+        const { showAnimationName } = this._showParams;
+        this._bigWinAnimation.play(showAnimationName);
 
-        this._counterText.scaleX = 1;
-        this._counterText.scaleY = 1;
-        this._counterText.alpha = 1;
-        this._counterText.text = this._getTotalWin();
+        this._bigWinAnimation._baseObject.state.clearListeners();
+        this._bigWinAnimation._baseObject.state.addListener({
+            complete: () => {
+                this._bigWinAnimation._baseObject.state.clearListeners();
+                this._bigWinShowComplete();
+            },
+        });
+    }
 
-        this._tween = gsap.to(this._counterText, {
+    _bigWinShowComplete() {
+        const { loopAnimationName } = this._showParams;
+        this._bigWinAnimation.play(loopAnimationName, true);
+    }
+
+    _reset() {
+        this._showParams = null;
+        this._counterText.text = 0;
+        this._counterText.alpha = 0;
+        this._counterText.scaleX = 0;
+        this._counterText.scaleY = 0;
+    }
+
+    _runRegularWinAnimation() {
+        const { showDuration } = this._showParams;
+
+        this._showHideTween = gsap.to(this._counterText, {
+            alpha: 1,
+            scaleX: 1,
+            scaleY: 1,
+            duration: showDuration / 1000,
+            ease: 'back.out(2)',
+        });
+    }
+
+    _runCounterTextAnimation(totalWin) {
+        const duration = this._getCounterDuration(totalWin);
+
+        this._counterTween = gsap.to(this._counterText, {
+            text: totalWin,
+            onUpdate: () => {
+                this._setTextSafe(this._counterText, this._counterText.text);
+                this._setTextSafe(this._bigWinCounterText, this._counterText.text);
+            },
+            duration,
+            onComplete: () => this._runHideAnimation(),
+        });
+    }
+
+    _runHideAnimation() {
+        const { type } = this._showParams;
+
+        if (type === 'big') {
+            this._runBigWinHideAnimation();
+            return;
+        }
+
+        this._runRegularHideAnimation();
+    }
+
+    _runBigWinHideAnimation() {
+        const { hideAnimationName, hideDelay } = this._showParams;
+
+        setTimeout(() => {
+            this._bigWinAnimation._baseObject.state.clearListeners();
+            this._bigWinAnimation.play(hideAnimationName);
+
+            this._bigWinAnimation._baseObject.state.addListener({
+                complete: () => {
+                    this._bigWinAnimation._baseObject.state.clearListeners();
+                    this._bigWinHideComplete();
+                },
+            });
+        }, hideDelay);
+    }
+
+    _bigWinHideComplete() {
+        this._reset();
+        this.callFinish('showWinCounterAction');
+    }
+
+    _runRegularHideAnimation() {
+        const { hideDuration, hideDelay } = this._showParams;
+
+        this._showHideTween = gsap.to(this._counterText, {
+            alpha: 0,
             scaleX: 0,
             scaleY: 0,
-            alpha: 0,
-            delay: delay / 1000,
+            duration: hideDuration / 1000,
+            delay: hideDelay / 1000,
+            ease: 'back.in(2)',
             onComplete: () => {
-                this.emit('components.winField.showWin.finished');
                 this.callFinish('showWinCounterAction');
             },
         });
     }
 
-    _counterTextTween(obj, winVal) {
-        this._killTween();
+    _killTweens() {
+        if (this._counterTween) {
+            this._counterTween.kill();
+        }
 
-        obj.visible = true;
-        obj.scaleX = 0;
-        obj.scaleY = 0;
-        obj.alpha = 0;
-        obj.text = 0;
+        if (this._showHideTween) {
+            this._showHideTween.kill();
+        }
 
-        const textConfig = {
-            scaleX: 1,
-            scaleY: 1,
-            alpha: 1,
-            text: winVal,
-            onUpdate: () => {
-                obj.text = obj.text.toFixed(2);
-            },
-            duration: 2,
-            onComplete: () => {
-                this._startLastState();
-            },
-        };
+        this._showHideTween = null;
+        this._counterTween = null;
+    }
 
-        this._tween = gsap.to(obj, textConfig);
+    _getCounterDuration(winAmount) {
+        const { durationFactor } = this._showParams;
+        return winAmount * (durationFactor / 1000);
+    }
+
+    _startLastState() {
+        const totalWin = this._getTotalWin();
+        this._killTweens();
+
+        this._counterText.alpha = 1;
+        this._counterText.scaleX = 1;
+        this._counterText.scaleY = 1;
+        this._setTextSafe(this._counterText, totalWin);
+        this._setTextSafe(this._bigWinCounterText, totalWin);
+
+        this._runHideAnimation();
+    }
+
+    _formatWinText(winVal) {
+        return Number(winVal).toFixed(2);
+    }
+
+    _setTextSafe(textObj, text) {
+        if (textObj) {
+            textObj.text = this._formatWinText(text);
+        }
+    }
+
+    _getFactorParams(winVal) {
+        const { winThresholdsDurations } = this._config;
+        const { value } = Urso.localData.get('totalBet');
+        const factors = Object.keys(winThresholdsDurations).sort().reverse();
+        const currFactor = winVal / value;
+        const factor = factors.filter((fcr) => +fcr <= currFactor).shift();
+        return winThresholdsDurations[factor];
+    }
+
+    _getShowParams(winVal) {
+        return this._getFactorParams(winVal);
     }
 }
 

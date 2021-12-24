@@ -3,16 +3,8 @@ class ModulesLogicUiController {
         return `Modules.Logic.Ui${path}`;
     }
 
-    _getControllersToInit() {
-        return {
-            Buttons: [
-                'SpinButtonController',
-            ],
-        };
-    }
-
     init() {
-        const controllersToInit = this._getControllersToInit();
+        const controllersToInit = this.getInstance('Config').getControllers();
         this._initControllersRecursive(controllersToInit);
     }
 

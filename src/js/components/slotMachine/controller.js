@@ -18,10 +18,10 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
             run: () => this._runFinishingSpinAction(),
             terminate: () => this._terminateFinishingSpinAction(),
         },
-        fastSpinAction: {
-            run: () => this._runFastSpin(),
-            terminate: () => this._finishFastSpin(),
-        },
+        // fastSpinAction: {
+        //     run: () => this._runFastSpin(),
+        //     terminate: () => this._finishFastSpin(),
+        // },
         dropAction: {
             run: (finishClbk) => this._runDrop(finishClbk),
         },
@@ -72,18 +72,18 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         this._service.speedUpReels();
     }
 
-    _runFastSpin() {
-        this._addComponentListener('stopCommand', this._fastSpinHandler);
-    }
+    // _runFastSpin() {
+    //     this._addComponentListener('stopCommand', this._fastSpinHandler);
+    // }
 
-    _fastSpinHandler = () => {
-        this._finishFastSpin();
-    };
+    // _fastSpinHandler = () => {
+    //     this._finishFastSpin();
+    // };
 
-    _finishFastSpin() {
-        this._removeComponentListener('stopCommand', this._fastSpinHandler);
-        this.callFinish('fastSpinAction');
-    }
+    // _finishFastSpin() {
+    //     this._removeComponentListener('stopCommand', this._fastSpinHandler);
+    //     this.callFinish('fastSpinAction');
+    // }
 
     _hasWin() {
         return this._getWinlines().length > 0;

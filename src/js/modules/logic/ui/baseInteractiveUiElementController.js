@@ -1,8 +1,7 @@
 const BaseUiElementController = require('./baseUiElementController');
 
-class ModulesLogicBaseInteraciveUiElementController extends BaseUiElementController {
+class ModulesLogicBaseInteractiveUiElementController extends BaseUiElementController {
     _type = null;
-    _class = null;
     _canFireInteract = false;
 
     TYPES = {
@@ -43,7 +42,7 @@ class ModulesLogicBaseInteraciveUiElementController extends BaseUiElementControl
             break;
 
         default:
-            Urso.logger.error(`There is no or wrong type '${this._type}' setted!`);
+            Urso.logger.error(`There is no or wrong type '${this._type}' was set!`);
             return;
         }
 
@@ -73,4 +72,4 @@ class ModulesLogicBaseInteraciveUiElementController extends BaseUiElementControl
     }
 }
 
-module.exports = ModulesLogicBaseInteraciveUiElementController;
+module.exports = ModulesLogicBaseInteractiveUiElementController;
