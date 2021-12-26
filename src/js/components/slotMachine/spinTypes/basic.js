@@ -1,19 +1,13 @@
 class ComponentsSlotMachineBasic {
     _config = null;
-
     _service = null;
-
     _pool = null;
-
     _dropMatrix = null;
-
     _bounceTweens = false;
-
     _moveMatrix = [];
-
     _animatedSymbolsMap = {};
-
     _reelMoving = [];
+    _turboModeEnabled = false;
 
     constructor() {
         this._symbols = [];
@@ -22,7 +16,7 @@ class ComponentsSlotMachineBasic {
         this._symbolHeight = null;
 
         this._spinning = false;
-        this._remainingBlurSymbolsCount = 0;
+        this._remainingBlurSymbolsCount = [];
 
         this._finishSpin = false;
         this._spinNewSymbols = [];
@@ -224,7 +218,7 @@ class ComponentsSlotMachineBasic {
         this._symbols[reel][row].data.stopAnimation();
     }
 
-    symbolStopAllAnimationHandler() {
+    symbolStopAllAnimation() {
         this._animatedSymbolsMap = {};
         this._symbols.forEach((reel) => reel.forEach((sym) => sym.data.stopAnimation()));
     }
@@ -634,6 +628,30 @@ class ComponentsSlotMachineBasic {
                 this._remainingBlurSymbolsCount[i]++;
             }
         }
+    }
+
+    updateSymbolsTintConfig(tint) {
+        this._symbols.forEach((reel) => reel.forEach(({ data }) => data.setTintConfig(tint)));
+    }
+
+    setSymbolsTint(type) {
+        this._symbols.forEach((reel) => reel.forEach(({ data }) => data.setTintType(type)));
+    }
+
+    setTurboMode(isEnabled) {
+        this._turboModeEnabled = isEnabled;
+
+        this._updateTurboMode();
+    }
+
+    _updateTurboMode() {
+        if (this._turboModeEnabled) {
+            this._remainingBlurSymbolsCount = this._getTurboModeBlurCounts();
+        }
+    }
+
+    _getTurboModeBlurCounts() {
+        return this._remainingBlurSymbolsCount.map((_, i) => i);
     }
 }
 

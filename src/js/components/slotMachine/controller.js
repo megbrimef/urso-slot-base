@@ -5,6 +5,9 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         DROP: {
             guard: () => this._hasWin(),
         },
+        FINISH_WIN_ROUND: {
+            guard: () => this._hasWin(),
+        },
     };
 
     configActions = {
@@ -18,16 +21,20 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
             run: () => this._runFinishingSpinAction(),
             terminate: () => this._terminateFinishingSpinAction(),
         },
-        // fastSpinAction: {
-        //     run: () => this._runFastSpin(),
-        //     terminate: () => this._finishFastSpin(),
-        // },
         dropAction: {
             run: (finishClbk) => this._runDrop(finishClbk),
         },
-        stopAllSymbolsAnimationAction: {
-            run: () => {},
-            terminate: () => this._terminateStopAllSymbols(),
+        updateSymbolsTintConfigAction: {
+            run: (finishClbk) => this._runUpdateSymbolsTintConfig(finishClbk),
+        },
+        setSymbolsDarkenTintAction: {
+            run: (finishClbk) => this._runSetSymbolsDarkenTint(finishClbk),
+        },
+        setSymbolsDefaultTintAction: {
+            run: (finishClbk) => this._runSetSymbolsDefaultTint(finishClbk),
+        },
+        updateTurboModeAction: {
+            run: (finishClbk) => this._runUpdateTurboMode(finishClbk),
         },
     };
 
@@ -72,19 +79,6 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         this._service.speedUpReels();
     }
 
-    // _runFastSpin() {
-    //     this._addComponentListener('stopCommand', this._fastSpinHandler);
-    // }
-
-    // _fastSpinHandler = () => {
-    //     this._finishFastSpin();
-    // };
-
-    // _finishFastSpin() {
-    //     this._removeComponentListener('stopCommand', this._fastSpinHandler);
-    //     this.callFinish('fastSpinAction');
-    // }
-
     _hasWin() {
         return this._getWinlines().length > 0;
     }
@@ -105,9 +99,29 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         finishClbk();
     }
 
-    _terminateStopAllSymbols() {
-        this._service.symbolStopAllAnimationHandler();
-        this.callFinish('stopAllSymbolsAnimationAction');
+    _runUpdateSymbolsTintConfig(finishClbk) {
+        this._service.updateSymbolsTintConfig();
+        finishClbk();
+    }
+
+    _runSetSymbolsDarkenTint(finishClbk) {
+        this._service.setSymbolsDarkenTint();
+        finishClbk();
+    }
+
+    _runSetSymbolsDefaultTint(finishClbk) {
+        this._service.setSymbolsDefaultTint();
+        finishClbk();
+    }
+
+    // ACTION
+    _guardStartTurboMode() {
+        return Urso.localData.get('settings.turboMode');
+    }
+
+    _runUpdateTurboMode(finishClbk) {
+        this._service.updateTurboMode();
+        finishClbk();
     }
 
     // //position: {reel:2, row:1}
@@ -128,9 +142,11 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
     //  */
     // _intrigueHandler = (reelIndexFrom) => this._service.intrigue(reelIndexFrom);
 
-    // _symbolStopAllAnimation() {
-    //     this._service.symbolStopAllAnimationHandler();
-    // }
+    _symbolStopAllAnimationHandler = () => this._service.symbolStopAllAnimation();
+
+    _symbolStopAllAnimation() {
+        this._service.symbolStopAllAnimation();
+    }
 
     _drop(matrix) {
         this._service.setDropMatrix(Urso.helper.transpose(matrix));
@@ -152,6 +168,7 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
     _subscribeOnce = () => {
         super._subscribeOnce();
         this._addComponentListener('symbolAnimate', this._symbolAnimateHandler);
+        this._addComponentListener('symbolAnimateStop', this._symbolStopAllAnimationHandler);
         this._addComponentListener('spinComplete', this._spinCompleteHandler);
     };
 }

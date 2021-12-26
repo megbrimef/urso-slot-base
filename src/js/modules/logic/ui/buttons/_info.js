@@ -3,4 +3,5 @@ Urso.SlotBase.Modules.Logic.Ui.Buttons = {
     BetIncreaseButtonController: require('./betIncreaseButtonController'),
     BetDecreaseButtonController: require('./betDecreaseButtonController'),
     BetMaxButtonController: require('./betMaxButtonController'),
+    TurboModeButtonController: require('./turboModeButtonController'),
 };

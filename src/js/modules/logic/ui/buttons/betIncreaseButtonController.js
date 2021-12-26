@@ -1,8 +1,8 @@
 // eslint-disable-next-line max-len
-class ModulesLogicBaseUiButtonsbetIncreaseButtonController extends Urso.SlotBase.Modules.Logic.Ui.BaseInteractiveUiElementController {
+class ModulesLogicBaseUiButtonsBetIncreaseButtonController extends Urso.SlotBase.Modules.Logic.Ui.BaseInteractiveUiElementController {
     _type = this.TYPES.BUTTON;
     _class = 'betIncreaseButton';
-    _enableStates = ['IDLE'];
+    _enableStates = ['IDLE', 'FINISH_WIN_ROUND'];
 
     _checkVisible() {
         return true;
@@ -37,4 +37,4 @@ class ModulesLogicBaseUiButtonsbetIncreaseButtonController extends Urso.SlotBase
     }
 }
 
-module.exports = ModulesLogicBaseUiButtonsbetIncreaseButtonController;
+module.exports = ModulesLogicBaseUiButtonsBetIncreaseButtonController;
