@@ -1,13 +1,11 @@
 class ComponentsSlotMachineSymbol {
     _key = null;
-
     _animationTween = null;
-
     _template = null;
-
     _parent = null;
-
     _texture = null;
+    _tintCfg = null;
+    _curTint = null;
 
     setConfig(symbolsConfig) {
         const { key, template, parent } = symbolsConfig;
@@ -59,16 +57,52 @@ class ComponentsSlotMachineSymbol {
         return { x, y };
     }
 
-    animate(clbk) {
-        this._animationTween = gsap.timeline({ defaults: { duration: 1 } });
+    animate(onAnimationFinishCallback) {
+        const onAnimationFinishCallbacks = [onAnimationFinishCallback];
 
+        if (this._tintCfg) {
+            onAnimationFinishCallbacks.unshift(() => this._updateTint(this._curTint));
+            this._updateTint(this._tintCfg.default);
+        }
+
+        this._createAndRunAnimation(onAnimationFinishCallbacks);
+    }
+
+    _createAndRunAnimation(animationFinishCallbacks = []) {
+        this._animationTween = gsap.timeline({ defaults: { duration: 1 } });
         this._animationTween.to(this._texture, { scaleX: 1.2, scaleY: 1.2 })
-            .to(this._texture, { scaleX: 1, scaleY: 1, onComplete: clbk });
+            .to(this._texture, {
+                scaleX: 1,
+                scaleY: 1,
+                onComplete: this._makeOnAnimationCompleteClbk(animationFinishCallbacks),
+            });
+    }
+
+    _makeOnAnimationCompleteClbk(animationFinishCallbacks) {
+        return () => {
+            animationFinishCallbacks.forEach((clbk) => clbk());
+        };
+    }
+
+    setTintConfig(tint) {
+        this._tintCfg = tint;
+    }
+
+    setTintType(type) {
+        this._curTint = this._tintCfg[type] || this._tintCfg.default;
+
+        this._updateTint(this._curTint);
+    }
+
+    _updateTint(tint) {
+        if (typeof tint !== 'undefined') {
+            this._texture.tint = tint;
+        }
     }
 
     stopAnimation() {
         if (this._animationTween) {
-            this._animationTween.kill(); // todo find way to stop and desroy it?!
+            this._animationTween.kill(); // todo find way to stop and destroy it?!
 
             this._animationTween = null;
 

@@ -17,6 +17,12 @@ class ComponentsSlotMachineConfig {
 
             spinCompleteDelay: 200, // event delay, after reels stops
 
+            tint: {
+                default: 0xFFFFFF,
+                darken: 0x555555,
+                duration: 500,
+            },
+
             bounce: {
                 top: false, // { to: { y: -80, x: 0 }, duration: 200 }
                 bottom: false, // { to: { y: 80, x: 0 }, duration: 200 }

@@ -64,8 +64,9 @@ class ComponentsSlotMachineService {
         ];
     }
 
-    showAllSymbolsAmation() {
+    showAllSymbolsAnimation() {
         const { reelsCount, rowsCount, borderSymbolsCount } = this._cfg;
+
         for (let reel = 0; reel < reelsCount; reel++) {
             for (let row = borderSymbolsCount; row < rowsCount - borderSymbolsCount; row++) {
                 this.symbolAnimate({ reel, row });
@@ -179,8 +180,8 @@ class ComponentsSlotMachineService {
         return (symbolKey) => mappedSymbolsData[symbolKey];
     }
 
-    symbolStopAllAnimationHandler() {
-        this._view.symbolStopAllAnimationHandler();
+    symbolStopAllAnimation() {
+        this._view.symbolStopAllAnimation();
     }
 
     prepareDrop(wonSymbols) {
@@ -195,6 +196,24 @@ class ComponentsSlotMachineService {
 
         this._view.setConfig(drop);
         this._view.setDropMatrix(dropMatrix);
+    }
+
+    updateSymbolsTintConfig() {
+        const { tint } = this._cfg;
+        this._view.updateSymbolsTintConfig(tint);
+    }
+
+    setSymbolsDarkenTint() {
+        this._view.setSymbolsTint('darken');
+    }
+
+    setSymbolsDefaultTint() {
+        this._view.setSymbolsTint('default');
+    }
+
+    updateTurboMode() {
+        const turboMode = Urso.localData.get('settings.turboMode');
+        this._view.setTurboMode(turboMode);
     }
 }
 
