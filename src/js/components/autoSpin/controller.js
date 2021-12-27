@@ -15,6 +15,10 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
             guard: () => this._guardResumeAutospin(),
             run: (finishClbk) => this._runUpdateAutospinCounter(finishClbk),
         },
+        checkAutospinAction: {
+            guard: () => this._guardResumeAutospin(),
+            run: (finishClbk) => this._runCheckAutospin(finishClbk),
+        },
     };
 
     create() {
@@ -33,14 +37,22 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
     }
 
     _runAutoSpin() {
-        // let left = Urso.localData.get('autospin.left');
-
-        // if (--left >= 0) {
-        //     Urso.localData.set('autospin.left', left);
         this._finishAutoSpinAction();
-        // } else {
-        //     this._setAutospinEnabled(false);
-        // }
+    }
+
+    get _noAutoSpinsLeft() {
+        return Urso.localData.get('autospin.left') === 0;
+    }
+
+    _runAutoSpinChecks() {
+        if (this._noAutoSpinsLeft) {
+            this._setAutospinEnabled(false);
+        }
+    }
+
+    _runCheckAutospin(finishCallback) {
+        this._runAutoSpinChecks();
+        finishCallback();
     }
 
     _runUpdateAutospinCounter(finishClbk) {
@@ -48,8 +60,6 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
 
         if (--left >= 0) {
             Urso.localData.set('autospin.left', left);
-        } else {
-            this._setAutospinEnabled(false);
         }
 
         finishClbk();
@@ -77,7 +87,6 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
 
     _setAutospinEnabled(isEnabled) {
         Urso.localData.set('autospin.enabled', isEnabled);
-        Urso.localData.set('autospin.left', 0);
     }
 
     _setButtonFrameTo(frameName) {
