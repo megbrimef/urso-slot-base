@@ -8,7 +8,13 @@ class ComponentsUiController extends Urso.Core.Components.Base.Controller {
 
     _applyState(data) {
         return (selector) => {
-            const { visible, enabled, text } = data[selector];
+            const {
+                visible,
+                enabled,
+                text,
+                checked,
+            } = data[selector];
+
             const objs = Urso.findAll(selector);
 
             objs.forEach((obj) => {
@@ -27,6 +33,12 @@ class ComponentsUiController extends Urso.Core.Components.Base.Controller {
 
                 if (typeof text !== 'undefined' && (typeof obj.text !== 'undefined')) {
                     obj.text = text;
+                }
+
+                if (typeof checked !== 'undefined' && (typeof obj.switchStatus !== 'undefined')) {
+                    if (checked !== (obj.status === 'pressed')) {
+                        obj.switchStatus();
+                    }
                 }
 
                 return true;
