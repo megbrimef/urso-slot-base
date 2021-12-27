@@ -24,6 +24,14 @@ class ComponentsSlotMachineSymbol {
         }
     }
 
+    hide() {
+        this._texture.visible = false;
+    }
+
+    show() {
+        this._texture.visible = true;
+    }
+
     prepareToDrop() {
         this._texture.visible = false;
     }
