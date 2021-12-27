@@ -147,13 +147,13 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
             this._bigWinAnimation._baseObject.state.addListener({
                 complete: () => {
                     this._bigWinAnimation._baseObject.state.clearListeners();
-                    this._bigWinHideComplete();
+                    this._winHideComplete();
                 },
             });
         }, hideDelay);
     }
 
-    _bigWinHideComplete() {
+    _winHideComplete() {
         this._reset();
         this.callFinish('showWinCounterAction');
     }
@@ -168,9 +168,7 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
             duration: hideDuration / 1000,
             delay: hideDelay / 1000,
             ease: 'back.in(2)',
-            onComplete: () => {
-                this.callFinish('showWinCounterAction');
-            },
+            onComplete: () => this._winHideComplete(),
         });
     }
 
