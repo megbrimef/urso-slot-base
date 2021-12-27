@@ -84,33 +84,6 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
         this.autoSpin.setButtonFrame('over', frameName);
         this.autoSpin.setButtonFrame('out', frameName);
     }
-
-    // _startAutoSpin() {
-    //     this._setAutospinEnabled(true);
-    //     this._setButtonFrameTo('autoPressed');
-    // }
-
-    // _stopAutoSpin() {
-    //     this._setAutospinEnabled(false);
-    //     this._setButtonFrameTo('autoUnpressed');
-    // }
-
-    // _switchAutospin() {
-    //     if (Urso.localData.get('autospin.enabled')) {
-    //         this._stopAutoSpin();
-    //     } else {
-    //         this._startAutoSpin();
-    //     }
-    // }
-
-    // _buttonPressHandler = () => {
-    //     this._switchAutospin();
-    // };
-
-    // _subscribeOnce() {
-    //     super._subscribeOnce();
-    //     // this.addListener('components.autospin.press', this._buttonPressHandler);
-    // }
 }
 
 module.exports = ComponentsAutoSpinController;

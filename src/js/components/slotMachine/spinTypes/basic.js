@@ -45,7 +45,7 @@ class ComponentsSlotMachineBasic {
         this._setSymbolsPosition();
         this._createMask();
 
-        this._switchMaskAndBorderSymbols(false);
+        this._switchMaskVisibility(false);
     }
 
     _createMask() {
@@ -60,36 +60,36 @@ class ComponentsSlotMachineBasic {
         }, this.common.object);
     }
 
-    _switchMaskAndBorderSymbols(isVisible) {
+    _switchBorderSymbolsVisibility(reelIndex, isVisible) {
         const { borderSymbolsCount } = this._config;
+        const reel = this._symbols[reelIndex];
 
-        this.common.object._baseObject.mask = isVisible ? this.mask._baseObject : null;
-        this.mask.visible = isVisible;
+        for (let symIndex = 0; symIndex < borderSymbolsCount; symIndex++) {
+            const { data } = reel[symIndex];
 
-        for (let reelIndex = 0; reelIndex < this._symbols.length; reelIndex++) {
-            const reel = this._symbols[reelIndex];
-            for (let symIndex = 0; symIndex < borderSymbolsCount; symIndex++) {
-                const { data } = reel[symIndex];
-
-                if (isVisible) {
-                    data.show();
-                } else {
-                    data.hide();
-                }
-            }
-
-            const startIndex = reel.length - borderSymbolsCount;
-
-            for (let symIndex = startIndex; symIndex < reel.length; symIndex++) {
-                const { data } = reel[symIndex];
-
-                if (isVisible) {
-                    data.show();
-                } else {
-                    data.hide();
-                }
+            if (isVisible) {
+                data.show();
+            } else {
+                data.hide();
             }
         }
+
+        const startIndex = reel.length - borderSymbolsCount;
+
+        for (let symIndex = startIndex; symIndex < reel.length; symIndex++) {
+            const { data } = reel[symIndex];
+
+            if (isVisible) {
+                data.show();
+            } else {
+                data.hide();
+            }
+        }
+    }
+
+    _switchMaskVisibility(isVisible) {
+        this.common.object._baseObject.mask = isVisible ? this.mask._baseObject : null;
+        this.mask.visible = isVisible;
     }
 
     setDropMatrix(matrix) {
@@ -343,7 +343,7 @@ class ComponentsSlotMachineBasic {
             this._tweenReel(reelIndex, delay);
         }
 
-        this._switchMaskAndBorderSymbols(true);
+        this._switchMaskVisibility(true);
     }
 
     _startTopBounce(reelIndex, delay) {
@@ -609,7 +609,7 @@ class ComponentsSlotMachineBasic {
         this._dropMatrix = null;
         const type = this._dropMatrix ? 'drop' : 'basic';
         this._service.spinCompleted(type);
-        this._switchMaskAndBorderSymbols(false);
+        this._switchMaskVisibility(false);
     }
 
     _checkCanTweenReel(reelIndex) {
