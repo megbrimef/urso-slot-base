@@ -17,6 +17,8 @@ class ComponentsSlotMachineConfig {
 
             spinCompleteDelay: 200, // event delay, after reels stops
 
+            hideMaskOnSpinComplete: true,
+
             tint: {
                 default: 0xFFFFFF,
                 darken: 0x555555,
