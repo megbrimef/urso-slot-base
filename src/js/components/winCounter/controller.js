@@ -191,12 +191,16 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
     }
 
     _startLastState() {
+        const { type } = this._showParams;
         const totalWin = this._getTotalWin();
         this._killTweens();
 
-        this._counterText.alpha = 1;
-        this._counterText.scaleX = 1;
-        this._counterText.scaleY = 1;
+        if (type === 'regular') {
+            this._counterText.alpha = 1;
+            this._counterText.scaleX = 1;
+            this._counterText.scaleY = 1;
+        }
+
         this._setTextSafe(this._counterText, totalWin);
         this._setTextSafe(this._bigWinCounterText, totalWin);
 
