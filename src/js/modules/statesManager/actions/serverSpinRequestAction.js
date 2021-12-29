@@ -5,6 +5,10 @@ class ModulesStatesManagerActionsServerSpinRequestAction extends BaseTransportAc
 
     _postProcessEvent(data) {
         Urso.localData.set('slotMachine', data);
+
+        const canGamble = Urso.localData.get('slotMachine.spinStages.0.slotWin.canGamble');
+        Urso.localData.set('gamble.canGamble', canGamble);
+
         return true;
     }
 

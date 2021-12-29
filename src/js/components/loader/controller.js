@@ -11,15 +11,15 @@ class ComponentsLoaderController extends Urso.Core.Components.StateDriven.Contro
         },
     };
 
-    _gameWasInited = false;
+    _gameWasInitiated = false;
 
     _guardInitGame() {
-        return !this._gameWasInited;
+        return !this._gameWasInitiated;
     }
 
     _runHideLoader(finishClbk) {
         this._hideLoader();
-        this._gameWasInited = true;
+        this._gameWasInitiated = true;
         finishClbk();
     }
 

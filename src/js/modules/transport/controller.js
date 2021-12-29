@@ -9,7 +9,7 @@ class ModulesTransportController extends Urso.Core.Modules.Transport.Controller 
 
     sendRequest({ requestName, data }) {
         const requestNameCapitalized = Urso.helper.capitaliseFirstLetter(requestName);
-        const requestModel = this.getInstance(`TransportModels.${requestNameCapitalized}`, data);
+        const requestModel = this.getInstance(`Models.${requestNameCapitalized}`, data);
 
         if (!requestModel) {
             Urso.logger.error(`Transport model ${requestName} not found!`);
@@ -27,9 +27,17 @@ class ModulesTransportController extends Urso.Core.Modules.Transport.Controller 
         this.emit('modules.transport.ready', null, 100);
     }
 
-    onTransportMessage({ action, data }) {
+    onTransportMessage(response) {
+        if (!response) {
+            return false;
+        }
+
+        const { action, data } = response;
+
         const type = action.replace('Response', '');
         this.emit('modules.transport.receive', { type, data });
+
+        return true;
     }
 
     onTransportMessageHandler = (response) => this.onTransportMessage(response);

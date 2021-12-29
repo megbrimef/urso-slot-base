@@ -2,6 +2,7 @@
 class ModulesStatesManagerActionsBaseEventDrivenAction extends Urso.Core.Modules.StatesManager.Action {
     event = null;
     name = null;
+    _actionFinish = super._onFinish;
 
     guard() {
         return true;
@@ -10,11 +11,10 @@ class ModulesStatesManagerActionsBaseEventDrivenAction extends Urso.Core.Modules
     _processEvent = (responseData) => {
         const data = responseData && responseData.data ? responseData.data : {};
 
-        this._removeListeners();
-
         const needFinish = this._postProcessEvent(data);
 
         if (needFinish) {
+            this._removeListeners();
             super._onFinish();
         }
     };
