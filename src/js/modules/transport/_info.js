@@ -3,4 +3,4 @@ Urso.SlotBase.Modules.Transport = {
     Controller: require('./controller'),
 };
 
-require('./transportModels/_info');
+require('./models/_info');

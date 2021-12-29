@@ -622,20 +622,25 @@ class ComponentsSlotMachineBasic {
         return this._symbolHeight / this._config.symbolSpeed;
     }
 
-    // TODO: RENAME
     _getCurrentSymbolConfig(reelIndex) {
+        let symId = null;
+
         if (this._remainingBlurSymbolsCount[reelIndex] > 0) {
             this._remainingBlurSymbolsCount[reelIndex]--;
-            return this._getSymbolsConfig(this._service._getRandomSymbolConfig());
+            symId = this._service._getRandomSymbolConfig();
         }
 
         if (this._spinNewSymbols[reelIndex].length > 0) {
-            const symbol = this._spinNewSymbols[reelIndex].pop();
-            return this._getSymbolsConfig(symbol);
+            symId = this._spinNewSymbols[reelIndex].pop();
         }
 
-        Urso.logger.error('ComponentsSlotMachineView checkSymbolsPositions logic fatal error. Kernel is in panic.');
-        return null;
+        const symbol = this._getSymbolsConfig(symId);
+
+        if (!symbol) {
+            Urso.logger.error('ComponentsSlotMachineView checkSymbolsPositions logic fatal error. Kernel is in panic.');
+        }
+
+        return symbol;
     }
 
     _setSymbolPositionForDrop(reelIndex, rowIndex, toIndex = null) {

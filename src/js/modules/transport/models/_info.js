@@ -1,4 +1,4 @@
-Urso.SlotBase.Modules.Transport.TransportModels = {
+Urso.SlotBase.Modules.Transport.Models = {
     ApiVersionRequest: require('./apiVersionRequest'),
     AuthRequest: require('./authRequest'),
     BalanceRequest: require('./balanceRequest'),
