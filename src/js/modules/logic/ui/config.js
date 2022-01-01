@@ -20,6 +20,7 @@ class ModulesLogicUiConfig {
                 'BalanceController',
                 'LinesController',
                 'WinController',
+                'ClockController',
             ],
         };
     }

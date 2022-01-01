@@ -4,4 +4,5 @@ Urso.SlotBase.Modules.Logic.Ui.Info = {
     BalanceController: require('./balanceController'),
     LinesController: require('./linesController'),
     WinController: require('./winController'),
+    ClockController: require('./clockController'),
 };

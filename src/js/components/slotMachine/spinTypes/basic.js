@@ -628,9 +628,7 @@ class ComponentsSlotMachineBasic {
         if (this._remainingBlurSymbolsCount[reelIndex] > 0) {
             this._remainingBlurSymbolsCount[reelIndex]--;
             symId = this._service._getRandomSymbolConfig();
-        }
-
-        if (this._spinNewSymbols[reelIndex].length > 0) {
+        } else if (this._spinNewSymbols[reelIndex].length > 0) {
             symId = this._spinNewSymbols[reelIndex].pop();
         }
 
