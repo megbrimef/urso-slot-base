@@ -14,11 +14,10 @@ class ComponentsSlotMachineTween {
         this._currentTime = 0;
         this._tweenIndex = 0;
 
-        this._globalTimeScale = 1;
         Object.defineProperties(this, {
             "globalTimeScale": {
-                "get": function () { return this._globalTimeScale; },
-                "set": function (v) { this._globalTimeScale = v; },
+                "get": function () { return Urso.scenes.timeScale; },
+                "set": function (v) { Urso.logger.error('ComponentsSlotMachineTween: you cannot set globalTimeScale'); },
             },
         });
 
