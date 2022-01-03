@@ -148,7 +148,7 @@ class ComponentsGambleController extends Urso.Core.Components.StateDriven.Contro
         } else if (classesArr.includes('black')) {
             this._selectedIndex = 0;
         } else {
-            Urso.logger.error('Undefined button was pressed!');
+            Urso.logger.error('ComponentsGambleController: Undefined button was pressed!');
         }
     }
 }

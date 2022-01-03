@@ -19,7 +19,7 @@ class ComponentsUiController extends Urso.Core.Components.Base.Controller {
 
             objs.forEach((obj) => {
                 if (!obj) {
-                    return Urso.logger.error(`Object with name '${selector}' was not found!`);
+                    return Urso.logger.error(`ComponentsUiController: Object with name '${selector}' was not found!`);
                 }
 
                 if (typeof visible !== 'undefined') {
