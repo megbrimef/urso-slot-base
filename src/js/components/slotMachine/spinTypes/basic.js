@@ -227,11 +227,18 @@ class ComponentsSlotMachineBasic {
         }
     }
 
+    get _isAnimationComplete() {
+        return Object.keys(this._animatedSymbolsMap).length === 0;
+    }
+
     _animationCompletedHandler(key) {
         return () => {
             delete this._animatedSymbolsMap[key];
 
-            if (Object.keys(this._animatedSymbolsMap).length === 0) {
+            console.log('===> FINISHED', key, Object.keys(this._animatedSymbolsMap));
+
+            if (this._isAnimationComplete) {
+                console.log('===> CYCLE FINISHED');
                 Urso.observer.fire('components.slotMachine.cycleFinished');
             }
         };
@@ -240,19 +247,17 @@ class ComponentsSlotMachineBasic {
     // position: {reel:2, row:1}
     symbolAnimate({ reel, row }) {
         const key = `${reel}_${row}`;
-        this._animatedSymbolsMap[key] = true;
+        console.log('===> ANIMATE', key, this._animatedSymbolsMap);
         this._symbols[reel][row].data.animate(this._animationCompletedHandler(key));
+        this._animatedSymbolsMap[key] = true;
     }
 
     symbolStopAnimation({ reel, row }) {
-        const key = `${reel}_${row}`;
-        delete this._animatedSymbolsMap[key];
         this._symbols[reel][row].data.stopAnimation();
     }
 
     symbolStopAllAnimation() {
-        this._animatedSymbolsMap = {};
-        this._symbols.forEach((reel) => reel.forEach((sym) => sym.data.stopAnimation()));
+        this._symbols.forEach((reel, reelIndex) => reel.forEach((_, rowIndex) => this.symbolStopAnimation({ reel: reelIndex, row: rowIndex })));
     }
 
     speedUpReels() {
