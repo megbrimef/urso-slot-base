@@ -6,6 +6,7 @@ class ComponentsSlotMachineSymbol {
     _texture = null;
     _tintCfg = null;
     _curTint = null;
+    _animationFinishCallbacks = [];
 
     setConfig(symbolsConfig) {
         const { key, template, parent } = symbolsConfig;
@@ -66,29 +67,32 @@ class ComponentsSlotMachineSymbol {
     }
 
     animate(onAnimationFinishCallback) {
-        const onAnimationFinishCallbacks = [onAnimationFinishCallback];
+        this.stopAnimation();
+
+        this._animationFinishCallbacks = [onAnimationFinishCallback];
 
         if (this._tintCfg) {
-            onAnimationFinishCallbacks.unshift(() => this._updateTint(this._curTint));
+            this._animationFinishCallbacks.unshift(() => this._updateTint(this._curTint));
             this._updateTint(this._tintCfg.default);
         }
 
-        this._createAndRunAnimation(onAnimationFinishCallbacks);
+        this._createAndRunAnimation();
     }
 
-    _createAndRunAnimation(animationFinishCallbacks = []) {
+    _createAndRunAnimation() {
         this._animationTween = gsap.timeline({ defaults: { duration: 1 } });
         this._animationTween.to(this._texture, { scaleX: 1.2, scaleY: 1.2 })
             .to(this._texture, {
                 scaleX: 1,
                 scaleY: 1,
-                onComplete: this._makeOnAnimationCompleteClbk(animationFinishCallbacks),
+                onComplete: this._makeOnAnimationCompleteClbk(),
             });
     }
 
-    _makeOnAnimationCompleteClbk(animationFinishCallbacks) {
+    _makeOnAnimationCompleteClbk() {
         return () => {
-            animationFinishCallbacks.forEach((clbk) => clbk());
+            this._animationFinishCallbacks.forEach((clbk) => clbk());
+            this._animationTween = null;
         };
     }
 
@@ -116,6 +120,8 @@ class ComponentsSlotMachineSymbol {
 
             this._texture.scaleX = 1;
             this._texture.scaleY = 1;
+
+            this._makeOnAnimationCompleteClbk()();
         }
     }
 }

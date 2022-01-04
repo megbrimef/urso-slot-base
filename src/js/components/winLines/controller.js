@@ -36,7 +36,6 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
 
     _terminateShowWinlinesAnimationAll() {
         this.emit('components.slotMachine.symbolAnimateStop');
-        this._animateAllCycleFinishedHandler();
     }
 
     // ACTION showWinlinesAnimationByOneAction
