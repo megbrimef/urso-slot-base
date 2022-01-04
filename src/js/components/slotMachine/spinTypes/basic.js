@@ -235,10 +235,7 @@ class ComponentsSlotMachineBasic {
         return () => {
             delete this._animatedSymbolsMap[key];
 
-            console.log('===> FINISHED', key, Object.keys(this._animatedSymbolsMap));
-
             if (this._isAnimationComplete) {
-                console.log('===> CYCLE FINISHED');
                 Urso.observer.fire('components.slotMachine.cycleFinished');
             }
         };
@@ -247,7 +244,6 @@ class ComponentsSlotMachineBasic {
     // position: {reel:2, row:1}
     symbolAnimate({ reel, row }) {
         const key = `${reel}_${row}`;
-        console.log('===> ANIMATE', key, this._animatedSymbolsMap);
         this._symbols[reel][row].data.animate(this._animationCompletedHandler(key));
         this._animatedSymbolsMap[key] = true;
     }
@@ -257,6 +253,7 @@ class ComponentsSlotMachineBasic {
     }
 
     symbolStopAllAnimation() {
+        // eslint-disable-next-line max-len
         this._symbols.forEach((reel, reelIndex) => reel.forEach((_, rowIndex) => this.symbolStopAnimation({ reel: reelIndex, row: rowIndex })));
     }
 
