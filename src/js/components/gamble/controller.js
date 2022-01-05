@@ -7,6 +7,9 @@ class ComponentsGambleController extends Urso.Core.Components.StateDriven.Contro
         GAMBLE: {
             guard: () => this._guardGambleState(),
         },
+        WAITING_FOR_GAMBLE: {
+            guard: () => this._guardWaitingForGambleState(),
+        },
     };
 
     configActions = {
@@ -30,6 +33,10 @@ class ComponentsGambleController extends Urso.Core.Components.StateDriven.Contro
     };
 
     _guardGambleState() {
+        return this._canGamble;
+    }
+
+    _guardWaitingForGambleState() {
         return this._canGamble;
     }
 

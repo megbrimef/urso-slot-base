@@ -32,7 +32,7 @@ class ModulesTransportController extends Urso.Core.Modules.Transport.Controller 
             return false;
         }
 
-        const { action, data } = response;
+        const { action = '', data = {} } = response;
 
         const type = action.replace('Response', '');
         this.emit('modules.transport.receive', { type, data });
