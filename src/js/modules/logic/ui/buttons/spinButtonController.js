@@ -5,11 +5,11 @@ class ModulesLogicBaseUiButtonsSpinButtonController extends Urso.SlotBase.Module
     _canFireInteract = true;
 
     _checkVisible() {
-        return true;
+        return ['IDLE', 'FINISH_WIN_ROUND'].includes(this._state);
     }
 
     _checkEnabled() {
-        return true;
+        return this._actions.includes('waitingForInteractionAction');
     }
 }
 

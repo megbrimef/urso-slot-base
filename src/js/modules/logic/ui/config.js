@@ -12,6 +12,8 @@ class ModulesLogicUiConfig {
                 'BetDecreaseButtonController',
                 'BetMaxButtonController',
                 'SpinButtonController',
+                'SkipButtonController',
+                'CollectButtonController',
                 'TurboModeButtonController',
             ],
             Info: [
