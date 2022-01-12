@@ -2,6 +2,7 @@ const BaseTransportAction = require('./baseTransportAction');
 
 class ModulesStatesManagerActionsServerSpinRequestAction extends BaseTransportAction {
     name = 'serverSpinRequestAction';
+    serverActionType = 'Spin';
 
     _postProcessEvent(data) {
         Urso.localData.set('slotMachine', data);

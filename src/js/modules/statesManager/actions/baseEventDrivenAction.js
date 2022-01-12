@@ -8,7 +8,7 @@ class ModulesStatesManagerActionsBaseEventDrivenAction extends Urso.Core.Modules
         return true;
     }
 
-    _processEvent = (responseData) => {
+    _processEvent(responseData) {
         const data = responseData && responseData.data ? responseData.data : {};
 
         const needFinish = this._postProcessEvent(data);
@@ -17,7 +17,7 @@ class ModulesStatesManagerActionsBaseEventDrivenAction extends Urso.Core.Modules
             this._removeListeners();
             super._onFinish();
         }
-    };
+    }
 
     _postProcessEvent() { return true; }
     _preProcessEvent() {}
