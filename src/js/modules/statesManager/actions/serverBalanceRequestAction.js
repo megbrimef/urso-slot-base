@@ -12,7 +12,7 @@ class ModulesStatesManagerActionsServerBalanceRequestAction extends BaseTranspor
     }
     _postProcessEvent({ currency, totalAmount }) {
         Urso.localData.set('balance', { currency, totalAmount });
-        return true; 
+        return true;
     }
 
     _preProcessEvent() {

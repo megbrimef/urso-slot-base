@@ -39,13 +39,13 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
                 all: [
                     { action: 'showWinAmountTextAction' },
                     {
-                        race: [            
+                        race: [
                             { action: 'waitingForInteractionAction' },
                             { action: 'showWinlinesAnimationByOneAction' },
-                            { action: 'stopWinlinesAnimationAction' }
-                        ]
-                    }
-                ]
+                            { action: 'stopWinlinesAnimationAction' },
+                        ],
+                    },
+                ],
             },
 
             RESET_WIN_STATE: {

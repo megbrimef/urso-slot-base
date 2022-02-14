@@ -3,7 +3,7 @@ class ComponentsSlotMachineService {
 
     constructor() {
         this.id = null;
-        this._view = this.getInstance('Basic');
+        this._view = this.getInstance('Wheel');
         this._config = this.getInstance('Config');
         this._symbolsCfg = this.getInstance('Symbols');
         this._cfg = null;

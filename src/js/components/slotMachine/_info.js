@@ -6,6 +6,6 @@ Urso.SlotBase.Components.SlotMachine = {
     Symbol: require('./symbol'),
     Tween: require('./tween'),
     Template: require('./template'),
-    Basic: require('./spinTypes/basic'),
+    Wheel: require('./spinTypes/wheel'),
     Cascade: require('./spinTypes/cascade'),
 };
