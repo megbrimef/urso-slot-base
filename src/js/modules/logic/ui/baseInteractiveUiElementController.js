@@ -22,7 +22,7 @@ class ModulesLogicBaseInteractiveUiElementController extends BaseUiElementContro
             break;
 
         case this.TYPES.SLIDER:
-            event = Urso.events.MODULES_OBJECTS_SLIDER_SET_NEW_VALUE;
+            event = Urso.events.MODULES_OBJECTS_SLIDER_HANDLE_DROP;
             break;
 
         case this.TYPES.CHECKBOX:
