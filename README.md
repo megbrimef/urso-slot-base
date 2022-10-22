@@ -1,4 +1,4 @@
-# URSO HTML5 Slot Machine
+URSO HTML5 Slot Machine
 =============
 
 ![ursojs.io logo](https://ursojs.io/img/logo.png)
