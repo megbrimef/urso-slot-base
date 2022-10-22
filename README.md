@@ -127,10 +127,12 @@ This is a standard set of states that is being supplemented during the developme
 
 Module for working with the server part of the game.
 
-The component contains the base models that are located (see src\js\modules\transport\models)
+The component contains the base models that are located (see src\js\modules\transport\models).
 Here we receive information from the server side, as well as send the necessary requests to the server.
 
 ### License ###
 Built using Urso web engine.
+
 By Lancecat Games
+
 This content is released under the (http://opensource.org/licenses/MIT) MIT License.
