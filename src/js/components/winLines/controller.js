@@ -3,23 +3,25 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
 
     configStates = {
         SHOW_WIN: {
-            guard: () => this._hasWin
-        }
+            guard: () => this._hasWin,
+        },
     };
-   
+
     configActions = {
         showWinlinesAnimationAllAction: {
+            guard: () => this._hasWin,
             run: () => this._runShowWinlinesAnimationAll(),
+            terminate: () => this._terminateShowWinlinesAnimationAll(),
         },
         showWinlinesAnimationByOneAction: {
             guard: () => this._hasWin,
             run: () => this._runShowWinlinesAnimationByOne(),
-            terminate: () => this._terminateShowWinLinesAnimationByOne()
-        }
+            terminate: () => this._terminateShowWinLinesAnimationByOne(),
+        },
     };
 
     get _hasWin() {
-        return Urso.localData.get('slotMachine.spinStages.0.slotWin');
+        return Urso.localData.get('slotMachine.spinStages.0.slotWin.lineWinAmounts');
     }
 
     _animateAllCycleFinishedHandler = () => {
@@ -27,11 +29,14 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
         this.callFinish('showWinlinesAnimationAllAction');
     };
 
-    _runShowWinlinesAnimationAll(){
+    _runShowWinlinesAnimationAll() {
         this._subscribeCycleFinished(this._animateAllCycleFinishedHandler);
         this._showWinlinesAnimationAll();
     }
 
+    _terminateShowWinlinesAnimationAll() {
+        this.emit('components.slotMachine.symbolAnimateStop');
+    }
 
     // ACTION showWinlinesAnimationByOneAction
     _runShowWinlinesAnimationByOne() {
@@ -43,10 +48,10 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
         this._unsubscribeCycleFinished(this._byOneCycleFinishedHandler);
         this.callFinish('showWinlinesAnimationByOneAction');
     }
-    
+
     _byOneCycleFinishedHandler = () => {
         this._startAnimateByOne();
-    }
+    };
 
     _subscribeCycleFinished(clbk) {
         this.addListener('components.slotMachine.cycleFinished', clbk);
@@ -59,7 +64,7 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
     _showWinlinesAnimationAll() {
         const slotMachineData = Urso.localData.get('slotMachine');
         const firstStageSlotWin = slotMachineData.spinStages[0].slotWin;
-        const lineWinAmounts = firstStageSlotWin.lineWinAmounts;
+        const { lineWinAmounts } = firstStageSlotWin;
 
         for (let i = 0; i < lineWinAmounts.length; i++) {
             const line = lineWinAmounts[i];
@@ -67,14 +72,14 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
             this._animateLine(line.selectedLine);
             this._runSymbolAnimation(line);
         }
-    };
+    }
 
     _runSymbolAnimation(line) {
         for (let j = 0; j < line.wonSymbols.length; j++) {
             const [reel, row] = line.wonSymbols[j];
             this.emit('components.slotMachine.symbolAnimate', { reel: +reel, row: +row });
         }
-    };
+    }
 
     _animateLine(lineIndex) {
         const line = this.common.findOne(`^line${lineIndex}`);
@@ -84,30 +89,32 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
             line.setAnimationConfig({
                 onComplete: () => {
                     line.visible = false;
-                }
+                },
             });
 
             const animationName = this._getAnimationName(lineIndex);
             line.play(animationName);
         }
-    };
+    }
 
     _getAnimationName(lineIndex) {
         switch (+lineIndex) {
-            case 0:
-            case 1:
-            case 2:
-                return 'l0';
+        case 0:
+        case 1:
+        case 2:
+            return 'l0';
 
-            case 6:
-            case 5:
-                return 'l5';
+        case 6:
+        case 5:
+            return 'l5';
 
-            case 3:
-            case 4:
-            case 7:
-            case 8:
-                return 'l7';
+        case 3:
+        case 4:
+        case 7:
+        case 8:
+            return 'l7';
+        default:
+            return null;
         }
     }
 
@@ -115,30 +122,19 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
         const slotMachineData = Urso.localData.get('slotMachine');
         const firstStageSlotWin = slotMachineData.spinStages[0].slotWin;
 
-    
-        if(!firstStageSlotWin.lineWinAmounts[this._animateByOneIndex]){
+        if (!firstStageSlotWin.lineWinAmounts[this._animateByOneIndex]) {
             this._animateByOneIndex = 0;
         }
-
-        firstStageSlotWin.lineWinAmounts[this._animateByOneIndex];
 
         const line = firstStageSlotWin.lineWinAmounts[this._animateByOneIndex++];
         this._runSymbolAnimation(line);
         this._animateLine(line.selectedLine);
-    };
-
-    _animateByOneStop() {
-        // if(this._animateByOneIndex === -1)
-        //     return;
-
-        // this._animateByOneIndex = -1;
-        // this._stopAllAnimation();
-    };
+    }
 
     _stopAllAnimation() {
         const winlines = this.common.findAll('.winline');
 
-        winlines.forEach(winline => {
+        winlines.forEach((winline) => {
             winline._baseObject.animation.stop();
             winline._baseObject.animation.reset();
             winline.visible = false;
@@ -146,14 +142,6 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
 
         this.emit('components.winlines.animateByOne.finished', null, 1);
     }
-
-    // _subscribeOnce() {
-        // super._subscribeOnce();
-        // this.addListener('components.winlines.animateAll.start', this._animateAllStartHandler.bind(this));
-        // this.addListener('components.winlines.animateByOne.start', this._animateByOneStartHandler.bind(this));
-        // this.addListener('components.slotMachine.spinCommand', this._animateByOneStop.bind(this));
-        // this.addListener('components.winlines.stop', this._animateByOneStop.bind(this));
-    // };
 }
 
 module.exports = ComponentsWinLinesController;

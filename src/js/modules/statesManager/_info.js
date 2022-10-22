@@ -1,5 +1,5 @@
 Urso.SlotBase.Modules.StatesManager = {
-    ConfigStates: require('./configStates.js'),
+    ConfigStates: require('./configStates'),
 };
 
 require('./actions/_info');

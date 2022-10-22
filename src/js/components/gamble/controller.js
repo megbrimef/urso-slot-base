@@ -1,161 +1,163 @@
 class ComponentsGambleController extends Urso.Core.Components.StateDriven.Controller {
+    _gambleGameShowed = false;
+    _viewInstance = false;
+    _selectedIndex = -1;
 
-    constructor() {
-        super();
+    configStates = {
+        GAMBLE: {
+            guard: () => this._guardGambleState(),
+        },
+        WAITING_FOR_GAMBLE: {
+            guard: () => this._guardWaitingForGambleState(),
+        },
+    };
 
-        this._cardsContainer = null;
-        this._gambleContainer = null;
-        this._gambleWinText = null;
+    configActions = {
+        showGambleAction: {
+            guard: () => this._guardShowGamble(),
+            run: () => this._runShowGamble(),
+        },
+        waitingForCardChoose: {
+            run: () => this._runWaitingForCardChoose(),
+        },
+        serverSendGambleRequestAction: {
+            run: () => this._runServerSendGambleRequest(),
+        },
+        updateGambleWinAction: {
+            run: (finishClbk) => this._runUpdateGambleWin(finishClbk),
+        },
+        hideGambleAction: {
+            guard: () => this._guardHideGamble(),
+            run: () => this._runHideGamble(),
+        },
+    };
 
-        this.cardsCount = 4;
-        this.clickedIndexes = [];
-        this.eventBlank = 'components.gamble';
+    _guardGambleState() {
+        return this._canGamble;
+    }
+
+    _guardWaitingForGambleState() {
+        return this._canGamble;
+    }
+
+    // SHOW GAMBLE ACTION
+    _guardShowGamble() {
+        return !this._gambleGameShowed;
+    }
+
+    _runShowGamble() {
+        this._gambleGameShowed = true;
+        this._view.show(this._showFinished.bind(this));
+    }
+
+    // WAITING FOR CARD CHOOSE ACTION
+    _runWaitingForCardChoose() {
+        this._view.enableCards();
+        this._subscribeForButtonsPress();
+    }
+
+    _gambleButtonPressed({ class: classes }) {
+        this._view.disableCards();
+        this._unsubscribeForButtonsPress();
+        this._updateSelectedIndex(classes);
+        this.callFinish('waitingForCardChoose');
+    }
+
+    _isGambleButtonPressed({ class: classes }) {
+        return classes.split(' ').includes('gambleCard');
+    }
+
+    _buttonPressed(params) {
+        if (this._isGambleButtonPressed(params)) {
+            this._gambleButtonPressed(params);
+        }
+    }
+
+    _buttonPressHandler = (params) => this._buttonPressed(params);
+
+    _subscribeForButtonsPress() {
+        this.addListener(Urso.events.MODULES_OBJECTS_BUTTON_PRESS, this._buttonPressHandler);
+    }
+
+    _unsubscribeForButtonsPress() {
+        this.removeListener(Urso.events.MODULES_OBJECTS_BUTTON_PRESS, this._buttonPressHandler);
+    }
+
+    // SERVER SEND GAMBLE REQUEST ACTION
+    _runServerSendGambleRequest() {
+        this._subscribeForServerResponse();
+        if (this._selectedIndex >= 0) {
+            const model = Urso.getInstance('Modules.Transport.Models.GambleRequest', { data: { index: this._selectedIndex } });
+            Urso.transport.send(model);
+        }
+    }
+
+    _serverResponseHandler = (data) => this._serverResponse(data);
+
+    _serverResponse({ data: { canGamble, totalWin } }) {
+        Urso.localData.set('gamble', { canGamble, totalWin });
+
+        this._unsubscribeForServerResponse();
+        this.callFinish('serverSendGambleRequestAction');
+    }
+
+    _subscribeForServerResponse() {
+        this.addListener('modules.transport.receive', this._serverResponseHandler);
+    }
+
+    _unsubscribeForServerResponse() {
+        this.removeListener('modules.transport.receive', this._serverResponseHandler);
+    }
+
+    // UPDATE GAMBLE WIN ACTION
+    _runUpdateGambleWin(finishClbk) {
+        finishClbk();
+    }
+
+    // HIDE GAMBLE ACTION
+    _guardHideGamble() {
+        return !this._canGamble && this._gambleGameShowed;
+    }
+
+    _runHideGamble() {
+        this._gambleGameShowed = false;
+        this._view.hide(this._hideFinished.bind(this));
     }
 
     create() {
-        super.create();
-
-        this._cardsContainer = this.common.findOne('^gambleCardsContainer');
-        this._gambleContainer = this.common.findOne('^gambleContainer');
-        this._gambleWinText = this.common.findOne('^gambleWinText');
-        this._gambleContainer._baseObject.interactive = true;
+        this._view.create();
     }
 
-    _guard() {
-        return Urso.localData.get('gamble.canActivate');
+    get _canGamble() {
+        return Urso.localData.get('gamble.canGamble');
     }
 
-    _clearAll() {
-        const cards = this.common.findAll('.gambleCard');
-
-        cards.forEach(card => {
-            card.destroy();
-        });
-
-        this.clickedIndexes = [];
-
-        this._cardsContainer._baseObject.removeChildren()
+    get _view() {
+        if (!this._viewInstance) {
+            this._viewInstance = this.getInstance('View');
+        }
+        return this._viewInstance;
     }
 
-    _createCards() {
-        for (let i = 0; i < this.cardsCount; i++) {
-            const cardTpl = this.getInstance('CardTemplate').objects[0];
-            const card = Urso.objects.create(cardTpl, this._cardsContainer);
-            const containerClass = `index${i}`;
-            card.addClass('gambleCard');
-            card.addClass(containerClass);
-            const cardClosed = card._baseObject.children[0];
-            const dW = this._cardsContainer.width - (this.cardsCount * cardClosed.width);
-            card._baseObject.x = i * (dW + cardClosed.width);
-            card._baseObject.interactive = true;
-            card._baseObject.on('click', () => this.emit(`${this.eventBlank}.cardClicked`, i));
-            card._baseObject.on('tap', () => this.emit(`${this.eventBlank}.cardClicked`, i));
+    _showFinished() {
+        this.callFinish('showGambleAction');
+    }
+
+    _hideFinished() {
+        this.callFinish('hideGambleAction');
+    }
+
+    _updateSelectedIndex(classes) {
+        const classesArr = classes.split(' ');
+
+        if (classesArr.includes('red')) {
+            this._selectedIndex = 0;
+        } else if (classesArr.includes('black')) {
+            this._selectedIndex = 0;
+        } else {
+            Urso.logger.error('ComponentsGambleController: Undefined button was pressed!');
         }
     }
-
-    _setInteractive(isInteractive) {
-        this._cardsContainer._baseObject.children.forEach((child, index) => {
-
-            if (isInteractive && this.clickedIndexes.indexOf(index) > -1)
-                return;
-
-            child.buttonMode = isInteractive;
-            child.interactive = isInteractive;
-        });
-    }
-
-    _startHandler() {
-        if (!Urso.localData.get('gamble.canActivate') || Urso.localData.get('spinning') || Urso.localData.get('autospin.enabled'))
-            return;
-
-        this._showGamble();
-    }
-
-    _showGamble() {
-        setTimeout(() => {
-            this.emit('components.bonusBg.show', 'gamble');
-            this._gambleContainer.visible = true;
-            this._clearAll();
-            this._createCards();
-            this._setInteractive(true);
-            this._updateWinText();
-        }, 500);
-    }
-
-    _start() { }
-
-    _cardClicked(clickedIndex) {
-        this.clickedIndexes.push(clickedIndex);
-        this._setInteractive(false);
-        this.emit(`${this.eventBlank}.sendRequest`);
-    }
-
-    _updateWinText() {
-        const { totalWin } = Urso.localData.get('gamble');
-        this._gambleWinText.text = totalWin;
-        this.emit('components.winField.setText', totalWin);
-
-        if (+totalWin === 0) {
-            this.emit('components.winlines.stop');
-        }
-    }
-
-    _updateGambleState() {
-        const { canGamble, totalWin } = Urso.localData.get('gamble');
-        const isRedCard = canGamble && totalWin > 0;
-
-        this._hideClosedCard();
-        this._openCard(isRedCard);
-
-        this._setInteractive(isRedCard);
-        this._updateWinText();
-    }
-
-    _gambleResponse() {
-        this._updateGambleState();
-
-        if (!this._checkCanGamble())
-            this._hideGamble();
-    }
-
-    _checkCanGamble() {
-        const { canGamble } = Urso.localData.get('gamble');
-        return canGamble;
-    }
-
-    _hideGamble() {
-        setTimeout(() => {
-            this.emit('components.bonusBg.hide');
-            this._gambleContainer.visible = false;
-            this.emit(`${this.eventBlank}.closed`);
-            this._finished();
-        }, 2000);
-    }
-
-    _getLastClickedIndex() {
-        return this.clickedIndexes[this.clickedIndexes.length - 1];
-    }
-
-    _hideClosedCard() {
-        const lastIndex = this._getLastClickedIndex();
-        const closedTexture = this.common.findOne(`.gambleCard.index${lastIndex} .closed`);
-        closedTexture.visible = false;
-    }
-
-    _openCard(isRed) {
-        const textureName = isRed ? 'red' : 'black';
-        const lastIndex = this._getLastClickedIndex();
-        const cardTexture = this.common.findOne(`.gambleCard.index${lastIndex} .${textureName}`);
-        cardTexture.visible = true;
-    }
-
-    _subscribeOnce() {
-        super._subscribeOnce();
-
-        this.addListener('modules.logic.main.gambleResponse', this._gambleResponse.bind(this));
-        this.addListener('components.gamble.start', this._startHandler.bind(this));
-        this.addListener('components.gamble.cardClicked', this._cardClicked.bind(this));
-    };
 }
 
 module.exports = ComponentsGambleController;

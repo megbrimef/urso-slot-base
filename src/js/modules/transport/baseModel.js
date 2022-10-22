@@ -1,5 +1,5 @@
 class BaseModel {
-    constructor(action, sesId, data = {}){
+    constructor(action, sesId, data = {}) {
         this.action = action;
         this.result = true;
         this.sesId = sesId;

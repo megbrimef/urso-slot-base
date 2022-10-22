@@ -1,18 +1,17 @@
 class ComponentsBackgroundController extends Urso.Core.Components.Base.Controller {
-
-    create(){
+    create() {
         this.emit('background.changeBackground', 'basic');
     }
 
-    _changeBackgoundHandler(bgName){
+    _changeBackgoundHandler(bgName) {
         const images = Urso.findAll('.backgroundImage');
-        images.forEach(bgImage => {
+        images.forEach((bgImage) => {
             const mustBeVisible = bgName === bgImage._originalModel.name;
             bgImage.visible = mustBeVisible;
         });
     }
 
-    _subscribeOnce(){
+    _subscribeOnce() {
         this.addListener('background.changeBackground', this._changeBackgoundHandler);
     }
 }

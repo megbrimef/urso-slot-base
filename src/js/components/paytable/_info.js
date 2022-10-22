@@ -1,3 +1,3 @@
 Urso.SlotBase.Components.Paytable = {
-    Controller: require('./controller.js')
+    Controller: require('./controller'),
 };

@@ -3,11 +3,11 @@ class ComponentsSlotMachineService {
 
     constructor() {
         this.id = null;
-        this._view = this.getInstance('Basic');
+        this._view = this.getInstance('Wheel');
         this._config = this.getInstance('Config');
         this._symbolsCfg = this.getInstance('Symbols');
         this._cfg = null;
-        
+
         this._view.setService(this);
     }
 
@@ -26,25 +26,25 @@ class ComponentsSlotMachineService {
         this._view.setConfig(this._cfg);
     }
 
-    startSpin() {   
-        if (this._spinning){
+    startSpin() {
+        if (this._spinning) {
             return false;
         }
 
         this._spinning = true;
         Urso.localData.set('spinning', true);
-    
+
         this._view.startSpin();
         this.emit('components.slotMachine.spinStarted');
-    };
+        return true;
+    }
 
     spinCompleted(type) {
-        const { spinCompleteDelay } = this._cfg; 
-        
+        const { spinCompleteDelay } = this._cfg;
         this._spinning = false;
         Urso.localData.set('spinning', false);
         this.emit('components.slotMachine.spinComplete', { type }, spinCompleteDelay);
-    } 
+    }
 
     setSpinNewSymbols(symbolsKeys) {
         const decorated = this._decorateWithBorder(symbolsKeys);
@@ -60,63 +60,69 @@ class ComponentsSlotMachineService {
         return [
             ...upperBorder,
             ...symbols,
-            ...bottomBorder
-        ]
+            ...bottomBorder,
+        ];
     }
 
-    showAllSymbolsAmation() {
+    showAllSymbolsAnimation() {
         const { reelsCount, rowsCount, borderSymbolsCount } = this._cfg;
-       for (let reel = 0; reel < reelsCount; reel++) {
-           for (let row = borderSymbolsCount; row < rowsCount - borderSymbolsCount; row++) {
-               this.symbolAnimate({ reel, row });
-           }
-           
-       }
+
+        for (let reel = 0; reel < reelsCount; reel++) {
+            for (let row = borderSymbolsCount; row < rowsCount - borderSymbolsCount; row++) {
+                this.symbolAnimate({ reel, row });
+            }
+        }
     }
 
     finishSpin() {
         this._view.finishSpin();
     }
 
-    symbolAnimate({ reel, row }) { 
+    symbolAnimate({ reel, row }) {
         row += this._cfg.borderSymbolsCount;
         this._view.symbolAnimate({ reel, row });
-    };
+    }
 
     symbolStopAnimation(position) {
         this._view.symbolStopAnimation(position);
     }
-
     speedUpReels() {
         this._view.speedUpReels();
     }
-    
+
     intrigue(reelIndexFrom) {
         this._view.intrigue(reelIndexFrom);
     }
-    
+
     _getSymbolsKeysArray() {
         return Object.keys(this._getMappedSymbolsData());
     }
 
+    _mappedSymbolReducer() {
+        return [
+            (acc, { key, template }) => ({ ...acc, [key]: { key, template } }),
+            {},
+        ];
+    }
+
     _getMappedSymbolsData() {
         const symbols = this._symbolsCfg.get();
-        return symbols.reduce((acc, { key, template }) => ({ ...acc, [key]: { key, template }}), {});
+        return symbols.reduce(...this._mappedSymbolReducer());
     }
 
     _getNewMatrix(reels, rows, fillValue = null) {
         let { reelsCount, rowsCount } = this._cfg;
 
-        reelsCount = isFinite(reels) ? reels : reelsCount;
-        rowsCount = isFinite(rows) ? rows : rowsCount;
+        reelsCount = Number.isFinite(reels) ? reels : reelsCount;
+        rowsCount = Number.isFinite(rows) ? rows : rowsCount;
 
         if (!reelsCount || !rowsCount) {
             return [];
         }
 
         return (new Array(rowsCount)).fill([])
-            .map((reel) => new Array(reelsCount).fill(fillValue));
-    }   
+            .map(() => new Array(reelsCount).fill(fillValue));
+    }
 
     _getRandomSymbolMatrix(reels, rows) {
         const matrix = this._getNewMatrix(reels, rows);
@@ -137,20 +143,28 @@ class ComponentsSlotMachineService {
         if (initialSymbols.length === 0) {
             initialSymbols = this._getRandomSymbolMatrix();
         }
-        
+
         return this._trimMatrix(initialSymbols);
-    };
+    }
 
     _trimMatrix(symbols) {
         const matrix = this._getNewMatrix();
-        return matrix.map((reel, reIndex) => 
-            reel.map((sym, roIndex) => matrix[reIndex][roIndex] = symbols[reIndex][roIndex]));
+
+        for (let reelIndex = 0; reelIndex < matrix.length; reelIndex++) {
+            const reel = matrix[reelIndex];
+
+            for (let rowIndex = 0; rowIndex < reel.length; rowIndex++) {
+                matrix[reelIndex][rowIndex] = symbols[reelIndex][rowIndex];
+            }
+        }
+
+        return matrix;
     }
 
     _getRandomSymbol() {
         const symbolsArray = this._getSymbolsKeysArray();
         return this._getRandomIndexFromArray(symbolsArray);
-    };
+    }
 
     _getSymbolsConfigs(initialSymbols) {
         return initialSymbols
@@ -166,20 +180,40 @@ class ComponentsSlotMachineService {
         return (symbolKey) => mappedSymbolsData[symbolKey];
     }
 
-    symbolStopAllAnimationHandler() {
-        this._view.symbolStopAllAnimationHandler();
+    symbolStopAllAnimation() {
+        this._view.symbolStopAllAnimation();
     }
 
     prepareDrop(wonSymbols) {
         const { borderSymbolsCount, reelsCount, rowsCount } = this._cfg;
-        const totalRows = rowsCount + borderSymbolsCount * 2
+        const totalRows = rowsCount + borderSymbolsCount * 2;
         const dropMatrix = this._getNewMatrix(totalRows, reelsCount, false);
-        wonSymbols.forEach(([reel, row]) => dropMatrix[reel][+row + borderSymbolsCount] = true);
+        wonSymbols.forEach(([reel, row]) => {
+            dropMatrix[reel][+row + borderSymbolsCount] = true;
+        });
 
         const drop = this._config.getConfigById('drop');
 
         this._view.setConfig(drop);
         this._view.setDropMatrix(dropMatrix);
+    }
+
+    updateSymbolsTintConfig() {
+        const { tint } = this._cfg;
+        this._view.updateSymbolsTintConfig(tint);
+    }
+
+    setSymbolsDarkenTint() {
+        this._view.setSymbolsTint('darken');
+    }
+
+    setSymbolsDefaultTint() {
+        this._view.setSymbolsTint('default');
+    }
+
+    updateTurboMode() {
+        const turboMode = Urso.localData.get('settings.turboMode');
+        this._view.setTurboMode(turboMode);
     }
 }
 

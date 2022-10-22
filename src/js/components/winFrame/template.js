@@ -1,13 +1,14 @@
 class ComponentsWinFrameTemplate {
     constructor() {
-        this.objects = [ 
+        this.objects = [
             {
                 type: Urso.types.objects.CONTAINER,
                 name: 'sparks',
                 contents: [],
-                x: 320, y: 160
-            }
-        ]
+                x: 320,
+                y: 160,
+            },
+        ];
     }
 }
 

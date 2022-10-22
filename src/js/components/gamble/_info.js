@@ -1,5 +1,5 @@
 Urso.SlotBase.Components.Gamble = {
-    CardTemplate: require('./cardTemplate.js'),
-    Controller: require('./controller.js'),
-    Template: require('./template.js')
+    Controller: require('./controller'),
+    Template: require('./template'),
+    View: require('./view'),
 };

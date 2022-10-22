@@ -1,10 +1,10 @@
 const Wheel = require('./wheel');
-class ComponentsSlotMachineCascade extends Wheel {
 
+class ComponentsSlotMachineCascade extends Wheel {
     _wasDropped = [];
-    
+
     _getOneSymbolTweenDuration() {
-        if(this._dropMatrix) {
+        if (this._dropMatrix) {
             return super._getOneSymbolTweenDuration();
         }
 
@@ -23,9 +23,8 @@ class ComponentsSlotMachineCascade extends Wheel {
 
     _moveDone(reelIndex) {
         return () => {
-            if(this._dropMatrix) {
-                
-                if(reelIndex === this._config.reelsCount - 1){
+            if (this._dropMatrix) {
+                if (reelIndex === this._config.reelsCount - 1) {
                     this._dropMatrix = null;
                 }
 
@@ -33,7 +32,7 @@ class ComponentsSlotMachineCascade extends Wheel {
                 return;
             }
 
-            if(!this._wasDropped[reelIndex]) {
+            if (!this._wasDropped[reelIndex]) {
                 this._moveAllSymbolsToTop(reelIndex);
                 this._tweenReel(reelIndex);
                 this._wasDropped[reelIndex] = true;
@@ -41,7 +40,7 @@ class ComponentsSlotMachineCascade extends Wheel {
             }
 
             this._onReelStopCallback(reelIndex);
-        }
+        };
     }
 
     _makeRegularMoveMatrix() {
@@ -49,7 +48,7 @@ class ComponentsSlotMachineCascade extends Wheel {
         return super._makeRegularMoveMatrix(rowsCount);
     }
 
-    _startSpin(){
+    _startSpin() {
         super._startSpin();
         this._wasDropped = new Array(this._symbols.length).fill(false);
     }

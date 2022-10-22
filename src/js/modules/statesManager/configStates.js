@@ -3,50 +3,71 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
         super();
 
         this.contents = {
-            // INIT_GAME: {
-            //     sequence: [
-            //         { action: 'updateServerSettingsAction' },
-            //         { action: 'transportInitAction' },
-            //         { action: 'serverApiVersionRequestAction' },
-            //         { action: 'serverCheckBrokenGameRequestAction' },
-            //         { action: 'serverAuthRequestAction' },
-            //
-            //     ]
-            // },
+            INIT_GAME: {
+                sequence: [
+                    {
+                        all: [
+                            {
+                                sequence: [
+                                    { action: 'updateServerSettingsAction' },
+                                    { action: 'transportInitAction' },
+                                    { action: 'serverApiVersionRequestAction' },
+                                    { action: 'serverCheckBrokenGameRequestAction' },
+                                    { action: 'serverAuthRequestAction' },
+                                    { action: 'serverBalanceRequestAction' },
+                                ],
+                            },
+                            {
+                                sequence: [
+                                    { action: 'loadDefaultSceneAction' },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        all: [
+                            { action: 'initUiLogicAction' },
+                            { action: 'updateBalanceAction' },
+                            { action: 'updateBetLinesAction' },
+                            { action: 'hideLoaderAction' },
+                        ],
+                    },
+                ],
+            },
 
             IDLE: {
                 all: [
                     { action: 'showWinAmountTextAction' },
                     {
-                        race: [            
+                        race: [
                             { action: 'waitingForInteractionAction' },
                             { action: 'showWinlinesAnimationByOneAction' },
-                            { action: 'stopWinlinesAnimationAction' }
-                        ]
-                    }
-                ]
+                            { action: 'stopWinlinesAnimationAction' },
+                        ],
+                    },
+                ],
             },
 
             RESET_WIN_STATE: {
                 all: [
-                    { action: 'resetWinTextAction' }
-                ]
+                    { action: 'resetWinTextAction' },
+                ],
             },
 
             START_SPIN: {
                 sequence: [
-                    { action: 'balanceMakeBetAction' },
+                    { action: 'makeBetAction' },
                     { action: 'regularSpinStartAction' },
                     { action: 'serverSpinRequestAction' },
                     { action: 'updateSlotMachineDataAction' },
-                ]
+                ],
             },
 
             FINISH_SPIN: {
                 race: [
                     { action: 'finishingSpinAction' },
-                    { action: 'fastSpinAction' }
-                ]
+                    { action: 'fastSpinAction' },
+                ],
             },
 
             SHOW_WIN: {
@@ -57,9 +78,9 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
                         race: [
                             { action: 'finishCounterAction' },
                             { action: 'showWinCounterAction' },
-                        ]
-                    }
-                ]
+                        ],
+                    },
+                ],
             },
 
             // DROP: {
@@ -76,18 +97,15 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
             FINISH_ROUND: {
 
                 sequence: [
-                    { action: 'serverBalanceRequestAction' }
-                ]
-
-
+                    { action: 'serverBalanceRequestAction' },
+                ],
             },
         };
-    };
+    }
 
     get() {
         return this.contents;
-    };
-
-};
+    }
+}
 
 module.exports = ModulesStatesManagerConfigStates;

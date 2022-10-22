@@ -1,4 +1,4 @@
 Urso.SlotBase.Components.WinCounter = {
-    Controller: require('./controller.js'),
-    Template: require('./template.js')
+    Config: require('./config'),
+    Controller: require('./controller'),
 };

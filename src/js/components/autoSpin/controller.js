@@ -1,24 +1,25 @@
-//TODO: Move to base_game
 class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Controller {
-
-    _waitingForSpinPress = false;
-
     configStates = {
         IDLE: {
-            guard: () => this._idleStateGuard()
-        }
-    }
+            guard: () => this._idleStateGuard(),
+        },
+    };
 
     configActions = {
-        autospinAction: {
+        resumeAutospinAction: {
+            guard: () => this._guardResumeAutospin(),
             run: () => this._runAutoSpin(),
-            terminate: () => this._terminateAutoSpin()
+            terminate: () => this._terminateAutoSpin(),
         },
-        autospinCheckAction: {
-            run: () => this._runAutoSpinCheck(),
-            terminate: () => this._terminateAutoSpinCheck()
-        }
-    }
+        updateAutospinCounterAction: {
+            guard: () => this._guardResumeAutospin(),
+            run: (finishClbk) => this._runUpdateAutospinCounter(finishClbk),
+        },
+        checkAutospinAction: {
+            guard: () => this._guardResumeAutospin(),
+            run: (finishClbk) => this._runCheckAutospin(finishClbk),
+        },
+    };
 
     create() {
         this.autoSpin = this.common.findOne('^auto');
@@ -30,22 +31,58 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
     }
 
     _runAutoSpinCheck() {
-        if(Urso.localData.get('autospin.enabled')){
+        if (Urso.localData.get('autospin.enabled')) {
             this.callFinish('autospinCheckAction');
         }
     }
 
     _runAutoSpin() {
-        this._waitingForSpinPress = true;
+        this._finishAutoSpinAction();
+    }
+
+    get _noAutoSpinsLeft() {
+        return Urso.localData.get('autospin.left') === 0;
+    }
+
+    _runAutoSpinChecks() {
+        if (this._noAutoSpinsLeft) {
+            this._setAutospinEnabled(false);
+        }
+    }
+
+    _runCheckAutospin(finishCallback) {
+        this._runAutoSpinChecks();
+        finishCallback();
+    }
+
+    _runUpdateAutospinCounter(finishClbk) {
+        let left = Urso.localData.get('autospin.left');
+
+        if (--left >= 0) {
+            Urso.localData.set('autospin.left', left);
+        }
+
+        finishClbk();
+    }
+
+    _guardResumeAutospin() {
+        return this._isAutoSpinEnabled;
+    }
+
+    _finishAutoSpinAction() {
+        this.callFinish('resumeAutospinAction');
     }
 
     _terminateAutoSpin() {
-        this._waitingForSpinPress = false;
-        this.callFinish('autospinAction');
+        this._finishAutoSpinAction();
     }
 
     _idleStateGuard() {
-        return !Urso.localData.get('autospin.enabled');
+        return !this._isAutoSpinEnabled;
+    }
+
+    get _isAutoSpinEnabled() {
+        return Urso.localData.get('autospin.enabled');
     }
 
     _setAutospinEnabled(isEnabled) {
@@ -56,37 +93,6 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
         this.autoSpin.setButtonFrame('over', frameName);
         this.autoSpin.setButtonFrame('out', frameName);
     }
-
-    _startAutoSpin() {
-        this._setAutospinEnabled(true);
-        this._setButtonFrameTo('autoPressed');
-    }
-
-    _stopAutoSpin() {
-        this._setAutospinEnabled(false);
-        this._setButtonFrameTo('autoUnpressed');
-    }
-
-    _switchAutospin() {
-        if(Urso.localData.get('autospin.enabled')) {
-            this._stopAutoSpin();
-        } else {
-            this._startAutoSpin();
-        }
-    }
-
-    _buttonPressHandler = () => {
-       this._switchAutospin();
-        if(this._waitingForSpinPress){
-            this._terminateAutoSpin();
-        }
-    }
-
-    _subscribeOnce() {
-        super._subscribeOnce();
-        this.addListener('components.autospin.press', this._buttonPressHandler);
-    }
-
 }
 
 module.exports = ComponentsAutoSpinController;
