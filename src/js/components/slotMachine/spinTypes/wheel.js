@@ -188,6 +188,8 @@ class ComponentsSlotMachineWheel {
     }
 
     _updateMatrixForDrop() {
+        this._switchBorderSymbolsAllVisibility(true);
+
         for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++) {
             const reel = this._dropMatrix[reelIndex];
 
@@ -196,7 +198,7 @@ class ComponentsSlotMachineWheel {
 
             for (let rowIndex = reel.length - 1; rowIndex >= 0; rowIndex--) {
                 const prevNeedMove = reel[rowIndex];
-
+                
                 if (prevNeedMove) {
                     moveAmount++;
                     this._setSymbolPositionForDrop(reelIndex, rowIndex, moveAmount + rowIndex);
@@ -660,6 +662,7 @@ class ComponentsSlotMachineWheel {
         const { data } = reel[rowIndex];
         const deltaY = -resultIndex * this._symbolHeight;
         const { y } = data.getPosition();
+
         data.setPosition({ y: y + deltaY });
     }
 
