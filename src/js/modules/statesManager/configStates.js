@@ -73,8 +73,8 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
                             { action: 'showWinlinesAnimationAllAction' },
                             {
                                 race: [
-                                    { action: 'showWinCounterAction' },
                                     { action: 'waitingForInteractionAction' },
+                                    { action: 'showWinCounterAction' },
                                 ],
                             },
                         ]
