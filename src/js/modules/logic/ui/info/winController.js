@@ -4,7 +4,7 @@ class ModulesLogicBaseUiInfoWinController extends Urso.SlotBase.Modules.Logic.Ui
     _lastWin = 0;
 
     _setText() {
-        return `${this._lastWin.toFixed(2)}${this._currency}`;
+        return this._lastWin === 0 ? '' : `${this._lastWin.toFixed(2)}${this._currency}`;
     }
 
     _checkVisible() {
@@ -26,9 +26,8 @@ class ModulesLogicBaseUiInfoWinController extends Urso.SlotBase.Modules.Logic.Ui
 
     _extendedSubscribeOnce() {
         super._extendedSubscribeOnce();
-
-        this.addListener('modules.logic.ui.win.reset', this._resetHandler, true);
         this.addListener('modules.logic.ui.win.show', this._showHandler, true);
+        this.addListener('modules.logic.ui.win.reset', this._resetHandler, true);
     }
 }
 
