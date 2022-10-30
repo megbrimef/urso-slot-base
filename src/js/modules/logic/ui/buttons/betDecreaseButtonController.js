@@ -1,40 +1,18 @@
 // eslint-disable-next-line max-len
-class ModulesLogicBaseUiButtonsBetDecreaseButtonController extends Urso.SlotBase.Modules.Logic.Ui.BaseInteractiveUiElementController {
-    _type = this.TYPES.BUTTON;
+const BetIncreaseButtonController = require('./betIncreaseButtonController');
+class ModulesLogicBaseUiButtonsBetDecreaseButtonController extends BetIncreaseButtonController {
     _class = 'betDecreaseButton';
 
     _enableStates = ['IDLE', 'FINISH_WIN_ROUND'];
 
-    _checkVisible() {
-        return true;
-    }
-
-    get _isFirst() {
+    get _needBlock() {
         const { bets, value } = Urso.localData.get('bets');
         return bets.indexOf(value) === 0;
     }
 
-    get _isInEnableState() {
-        return this._enableStates.includes(this._state);
-    }
-
-    _checkEnabled() {
-        return !this._isFirst && this._isInEnableState;
-    }
-
-    _interactDone() {
-        this.emit('modules.logic.ui.bet.decrease');
-    }
-
-    _betUpdated() {
-        this._updateUiState();
-    }
-
-    _betUpdatedHandler = () => this._betUpdated();
-
-    _extendedSubscribeOnce() {
-        super._extendedSubscribeOnce();
-        this.addListener('modules.logic.ui.bet.updated', this._betUpdatedHandler, true);
+    get _nextValue() {
+        let { bets, value } = Urso.localData.get('bets');
+        return bets[bets.indexOf(value) - 1];
     }
 }
 

@@ -10,12 +10,11 @@ class ComponentsWinCounterConfig {
                     hideDelay: 1000,
                 },
                 10: {
-                    type: 'big',
-                    durationFactor: 2000,
+                    type: 'regular',
+                    durationFactor: 20,
+                    showDuration: 500,
+                    hideDuration: 500,
                     hideDelay: 1000,
-                    showAnimationName: 'show',
-                    loopAnimationName: 'loop',
-                    hideAnimationName: 'hide',
                 },
             },
             smoothTransition: false, // TODO: implement

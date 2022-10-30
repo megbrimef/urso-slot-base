@@ -8,7 +8,7 @@ class ModulesLogicBaseUiButtonsBetIncreaseButtonController extends Urso.SlotBase
         return true;
     }
 
-    get _isLast() {
+    get _needBlock() {
         const { bets, value } = Urso.localData.get('bets');
         return bets.indexOf(value) === (bets.length - 1);
     }
@@ -18,18 +18,20 @@ class ModulesLogicBaseUiButtonsBetIncreaseButtonController extends Urso.SlotBase
     }
 
     _checkEnabled() {
-        return !this._isLast && this._isInEnableState;
+        return !this._needBlock && this._isInEnableState;
+    }
+
+    get _nextValue() {
+        let { bets, value } = Urso.localData.get('bets');
+        return bets[bets.indexOf(value) + 1];
     }
 
     _interactDone() {
-        this.emit('modules.logic.ui.bet.increase');
+        Urso.localData.set('bets.value', this._nextValue);
+        this.emit('modules.logic.ui.bet.updated');
     }
 
-    _betUpdated() {
-        this._updateUiState();
-    }
-
-    _betUpdatedHandler = () => this._betUpdated();
+    _betUpdatedHandler = () => this._updateUiState();
 
     _extendedSubscribeOnce() {
         super._extendedSubscribeOnce();

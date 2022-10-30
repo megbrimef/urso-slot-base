@@ -1,6 +1,6 @@
 // eslint-disable-next-line max-len
-class ModulesStatesManagerActionsUpdateSetWinTextAction extends Urso.Core.Modules.StatesManager.Action {
-    name = 'setWinTextAction';
+class ModulesStatesManagerActionsUpdateWinTextAction extends Urso.Core.Modules.StatesManager.Action {
+    name = 'updateWinTextAction';
 
     _getWin() {
         return Urso.localData.get('slotMachine.spinStages.0.slotWin.totalWin');
@@ -20,4 +20,4 @@ class ModulesStatesManagerActionsUpdateSetWinTextAction extends Urso.Core.Module
     }
 }
 
-module.exports = ModulesStatesManagerActionsUpdateSetWinTextAction;
+module.exports = ModulesStatesManagerActionsUpdateWinTextAction;

@@ -15,7 +15,7 @@ class ComponentsBetLinesController extends Urso.Core.Components.StateDriven.Cont
 
     _getCurrencyText() {
         const { showCurrencyType } = this._config.get();
-        const { currentSymbol, currentCurrency } = Urso.localData.get('currency');
+        const { currentSymbol, currentCurrency } = Urso.localData.get('balance.currency');
 
         switch (showCurrencyType) {
         case 'currency':

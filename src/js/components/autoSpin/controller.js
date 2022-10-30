@@ -1,13 +1,7 @@
 class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Controller {
-    configStates = {
-        IDLE: {
-            guard: () => this._idleStateGuard(),
-        },
-    };
 
     configActions = {
         resumeAutospinAction: {
-            guard: () => this._guardResumeAutospin(),
             run: () => this._runAutoSpin(),
             terminate: () => this._terminateAutoSpin(),
         },
@@ -37,6 +31,22 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
     }
 
     _runAutoSpin() {
+        this._subscribeOnUpdate();
+
+        if(Urso.localData.get('autospin.enabled')) {
+            this._finishAutoSpinAction();
+        }
+    }
+
+    _unsubscribeOnUpdate() {
+        this.removeListener('modules.logic.ui.auto.update', this._onUpdateHandler);
+    }
+
+    _subscribeOnUpdate() {
+        this.addListener('modules.logic.ui.auto.update', this._onUpdateHandler);
+    }
+
+    _onUpdateHandler = () => {
         this._finishAutoSpinAction();
     }
 
@@ -70,6 +80,7 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
     }
 
     _finishAutoSpinAction() {
+        this._unsubscribeOnUpdate();
         this.callFinish('resumeAutospinAction');
     }
 
@@ -87,11 +98,6 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
 
     _setAutospinEnabled(isEnabled) {
         Urso.localData.set('autospin.enabled', isEnabled);
-    }
-
-    _setButtonFrameTo(frameName) {
-        this.autoSpin.setButtonFrame('over', frameName);
-        this.autoSpin.setButtonFrame('out', frameName);
     }
 }
 

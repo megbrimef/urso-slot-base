@@ -14,7 +14,7 @@ class ModulesLogicBaseUiElementController {
 
     get _currency() {
         const { showCurrencyType } = this._config;
-        const { currentCurrency, currentSymbol } = Urso.localData.get('currency');
+        const { currentCurrency, currentSymbol } = Urso.localData.get('balance.currency');
 
         switch (showCurrencyType) {
         case 'currency':
@@ -28,7 +28,6 @@ class ModulesLogicBaseUiElementController {
 
     _stateChanged(stateName) {
         this._state = stateName;
-        this._updateUiState();
     }
 
     _actionStart(actionName) {
@@ -42,8 +41,6 @@ class ModulesLogicBaseUiElementController {
         if (actionIndex >= 0) {
             this._actions.splice(actionIndex, 1);
         }
-
-        this._updateUiState();
     }
 
     _getUiState() {
