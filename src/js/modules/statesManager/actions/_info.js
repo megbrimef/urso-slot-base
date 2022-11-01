@@ -13,5 +13,5 @@ Urso.SlotBase.Modules.StatesManager.Actions = {
     UpdateBalanceAction: require('./updateBalanceAction'),
     MakeBetAction: require('./makeBetAction'),
     UpdateWinTextAction: require('./updateWinTextAction'),
-    ResetWinTextAction: require('./resetWinTextAction'),
+    ResetWinTextAction: require('./resetWinTextAction')
 };

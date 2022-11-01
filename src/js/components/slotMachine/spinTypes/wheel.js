@@ -46,6 +46,7 @@ class ComponentsSlotMachineWheel {
         this._createMask();
 
         this._switchMaskVisibility(false);
+        this._switchBorderSymbolsAllVisibility(false);
     }
 
     _createMask() {
@@ -58,6 +59,14 @@ class ComponentsSlotMachineWheel {
             name: 'slotMachineMask',
             rectangle: [0, 0, this._symbolWidth * reelsCount, this._symbolHeight * rowsCount],
         }, this.common.object);
+    }
+
+    _switchBorderSymbolsAllVisibility(isVisible) {
+        const { reelsCount } = this._config;
+
+        for (let i = 0; i < reelsCount; i++) {
+            this._switchBorderSymbolsVisibility(i, isVisible)
+        }
     }
 
     _switchBorderSymbolsVisibility(reelIndex, isVisible) {
@@ -179,6 +188,8 @@ class ComponentsSlotMachineWheel {
     }
 
     _updateMatrixForDrop() {
+        this._switchBorderSymbolsAllVisibility(true);
+
         for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++) {
             const reel = this._dropMatrix[reelIndex];
 
@@ -187,7 +198,7 @@ class ComponentsSlotMachineWheel {
 
             for (let rowIndex = reel.length - 1; rowIndex >= 0; rowIndex--) {
                 const prevNeedMove = reel[rowIndex];
-
+                
                 if (prevNeedMove) {
                     moveAmount++;
                     this._setSymbolPositionForDrop(reelIndex, rowIndex, moveAmount + rowIndex);
@@ -346,6 +357,7 @@ class ComponentsSlotMachineWheel {
         }
 
         this._switchMaskVisibility(true);
+        this._switchBorderSymbolsAllVisibility(true);
     }
 
     _startTopBounce(reelIndex, delay) {
@@ -612,6 +624,7 @@ class ComponentsSlotMachineWheel {
         const type = this._dropMatrix ? 'drop' : 'basic';
         this._service.spinCompleted(type);
         this._switchMaskVisibility(false);
+        this._switchBorderSymbolsAllVisibility(false);
     }
 
     _checkCanTweenReel(reelIndex) {
@@ -649,6 +662,7 @@ class ComponentsSlotMachineWheel {
         const { data } = reel[rowIndex];
         const deltaY = -resultIndex * this._symbolHeight;
         const { y } = data.getPosition();
+
         data.setPosition({ y: y + deltaY });
     }
 

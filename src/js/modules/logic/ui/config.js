@@ -8,13 +8,18 @@ class ModulesLogicUiConfig {
     getControllers() {
         return {
             Buttons: [
+                'AutoSpinButtonController',
                 'BetIncreaseButtonController',
+                'BetIncreaseButtonCircularController',
                 'BetDecreaseButtonController',
+                'BetDecreaseButtonCircularController',
+                'LineIncreaseButtonController',
+                'LineIncreaseButtonCircularController',
                 'BetMaxButtonController',
                 'SpinButtonController',
                 'SkipButtonController',
                 'CollectButtonController',
-                'TurboModeButtonController',
+                'TurboModeButtonController', 
             ],
             Info: [
                 'BetController',
@@ -23,6 +28,7 @@ class ModulesLogicUiConfig {
                 'LinesController',
                 'WinController',
                 'ClockController',
+                'CheeringController'
             ],
         };
     }

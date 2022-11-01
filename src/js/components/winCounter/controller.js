@@ -29,7 +29,7 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
 
     get _currency() {
         const { showCurrencyType } = this._config;
-        const { currentCurrency, currentSymbol } = Urso.localData.get('currency');
+        const { currentCurrency, currentSymbol } = Urso.localData.get('balance.currency');
 
         switch (showCurrencyType) {
         case 'currency':

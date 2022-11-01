@@ -20,6 +20,7 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
                             {
                                 sequence: [
                                     { action: 'loadDefaultSceneAction' },
+                                    { action: 'finishGameInitAction' }
                                 ],
                             },
                         ],
@@ -36,15 +37,10 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
             },
 
             IDLE: {
-                all: [
-                    { action: 'showWinAmountTextAction' },
-                    {
-                        race: [
-                            { action: 'waitingForInteractionAction' },
-                            { action: 'showWinlinesAnimationByOneAction' },
-                            { action: 'stopWinlinesAnimationAction' },
-                        ],
-                    },
+                race: [
+                    { action: 'showWinlinesAnimationByOneAction' },
+                    { action: 'waitingForInteractionAction' },
+                    { action: 'resumeAutospinAction' },
                 ],
             },
 
@@ -66,21 +62,30 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
             FINISH_SPIN: {
                 race: [
                     { action: 'finishingSpinAction' },
-                    { action: 'fastSpinAction' },
+                    { action: 'waitingForInteractionAction' },
                 ],
             },
 
             SHOW_WIN: {
-                all: [
-                    { action: 'showWinTextAction' },
-                    { action: 'showWinlinesAnimationAllAction' },
+                sequence: [
                     {
-                        race: [
-                            { action: 'finishCounterAction' },
-                            { action: 'showWinCounterAction' },
-                        ],
+                        all: [
+                            { action: 'showWinlinesAnimationAllAction' },
+                            {
+                                race: [
+                                    { action: 'waitingForInteractionAction' },
+                                    { action: 'showWinCounterAction' },
+                                ],
+                            },
+                        ]
                     },
-                ],
+                    { action: 'updateWinTextAction' },
+                    { 
+                        all: [
+                            { action: 'serverBalanceRequestAction' },
+                        ]
+                    },
+                ]        
             },
 
             // DROP: {
@@ -93,13 +98,6 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
             //     ],
             //     nextState: ['SHOW_WIN']
             // },
-
-            FINISH_ROUND: {
-
-                sequence: [
-                    { action: 'serverBalanceRequestAction' },
-                ],
-            },
         };
     }
 

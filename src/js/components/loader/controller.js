@@ -9,6 +9,9 @@ class ComponentsLoaderController extends Urso.Core.Components.StateDriven.Contro
         hideLoaderAction: {
             run: (finishClbk) => this._runHideLoader(finishClbk),
         },
+        finishGameInitAction: {
+            run: (finishClbk) => this._runFinishGameInit(finishClbk)
+        }
     };
 
     _gameWasInitiated = false;
@@ -19,9 +22,13 @@ class ComponentsLoaderController extends Urso.Core.Components.StateDriven.Contro
 
     _runHideLoader(finishClbk) {
         this._hideLoader();
-        this._gameWasInitiated = true;
         finishClbk();
     }
+
+    _runFinishGameInit(finishClbk) {
+        this._gameWasInitiated = true;
+        finishClbk();
+    } 
 
     _hideLoader() {
         const wrapper = document.querySelector('.wrapper');

@@ -3,42 +3,18 @@ class ModulesLogicBaseUiInfoLinesController extends Urso.SlotBase.Modules.Logic.
     _class = 'linesVal';
 
     _setText() {
-        const { value } = Urso.localData.get('lines');
-        return value;
+        return Urso.localData.get('lines.value');
     }
 
     _checkVisible() {
         return true;
     }
 
-    _update() {
-        this._updateUiState();
-    }
-
-    _increase() {
-        // TODO: IMPLEMENT INCREASE
-    }
-
-    _decrease() {
-        // TODO: IMPLEMENT DECREASE
-    }
-
-    set() {
-        // TODO: IMPLEMENT SET
-    }
-
-    _updateHandler = () => this._update();
-    _increaseHandler = () => this._increase();
-    _decreaseHandler = () => this._decrease();
-    _setHandler = (value) => this._set(value);
+    _updateLineHandler = () => this._updateUiState();
 
     _extendedSubscribeOnce() {
         super._extendedSubscribeOnce();
-
-        this.addListener('modules.logic.ui.lines.increase', this._updateHandler, true);
-        this.addListener('modules.logic.ui.lines.increase', this._increaseHandler, true);
-        this.addListener('modules.logic.ui.lines.decrease', this._decreaseHandler, true);
-        this.addListener('modules.logic.ui.lines.set', this._setHandler, true);
+        this.addListener('modules.logic.ui.line.updated', this._updateLineHandler, true);
     }
 }
 

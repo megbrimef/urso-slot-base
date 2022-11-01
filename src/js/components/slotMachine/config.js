@@ -30,7 +30,7 @@ class ComponentsSlotMachineConfig {
                 bottom: false, // { to: { y: 80, x: 0 }, duration: 200 }
             },
 
-            symbolSpeed: 1.5, // pixels in MS
+            symbolSpeed: 3, // pixels in MS
             spinStartInterval: 100, // per reel
 
             speedUpReelsFactor: 2.5,
