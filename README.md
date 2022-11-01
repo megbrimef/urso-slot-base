@@ -21,6 +21,7 @@ This is slot machine game Engine. Main components for the slot machines creation
 - You can find more information on the [official website](https://ursojs.io/)
 - Explore working [examples](https://ursojs.io/examples.html) demos and see the code structure
 - Clone [examples repository](https://github.com/megbrimef/urso-examples) to fast learning
+- Join [discord channel](https://discord.gg/JauD9CbDHA) to ask questions and read changelogs
 
 ### How to ###
 
