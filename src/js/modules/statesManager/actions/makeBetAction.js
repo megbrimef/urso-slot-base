@@ -1,6 +1,6 @@
 // eslint-disable-next-line max-len
-class ModulesStatesManagerActionsUpdateBalanceAction extends Urso.Core.Modules.StatesManager.Action {
-    name = 'updateBalanceAction';
+class ModulesStatesManagerActionsMakeBetAction extends Urso.Core.Modules.StatesManager.Action {
+    name = 'makeBetAction';
 
     guard() {
         return true;
@@ -12,4 +12,4 @@ class ModulesStatesManagerActionsUpdateBalanceAction extends Urso.Core.Modules.S
     }
 }
 
-module.exports = ModulesStatesManagerActionsUpdateBalanceAction;
+module.exports = ModulesStatesManagerActionsMakeBetAction;
