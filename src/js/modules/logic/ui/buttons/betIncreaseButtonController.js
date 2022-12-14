@@ -28,7 +28,7 @@ class ModulesLogicBaseUiButtonsBetIncreaseButtonController extends Urso.SlotBase
 
     _interactDone() {
         Urso.localData.set('bets.value', this._nextValue);
-        this.emit('modules.logic.ui.bet.updated');
+        this.emit('modules.logic.ui.bet.update');
     }
 
     _betUpdatedHandler = () => this._updateUiState();
