@@ -187,24 +187,32 @@ class ComponentsSlotMachineWheel {
         }
     }
 
-    _updateMatrixForDrop() {
+     _updateMatrixForDrop() {
         this._switchBorderSymbolsAllVisibility(true);
 
         for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++) {
             const reel = this._dropMatrix[reelIndex];
-
-            let moveAmount = 0;
             const maxMoveAmount = reel.filter((row) => row).length;
 
+            let moveAmount = 0;
             for (let rowIndex = reel.length - 1; rowIndex >= 0; rowIndex--) {
-                const prevNeedMove = reel[rowIndex];
                 
-                if (prevNeedMove) {
+                if (reel[rowIndex]) {
                     moveAmount++;
                     this._setSymbolPositionForDrop(reelIndex, rowIndex, moveAmount + rowIndex);
                 }
+                
+                if(moveAmount === 0) {
+                    continue;
+                }
 
-                this._moveMatrix[reelIndex][rowIndex] = prevNeedMove ? maxMoveAmount : moveAmount;
+               this._moveMatrix[reelIndex][rowIndex] = reel[rowIndex] ? maxMoveAmount : moveAmount;
+
+               if(!reel[rowIndex]) {
+                    const temp = this._moveMatrix[reelIndex][rowIndex + 1];
+                    this._moveMatrix[reelIndex][rowIndex + 1] = this._moveMatrix[reelIndex][rowIndex];
+                    this._moveMatrix[reelIndex][rowIndex] = temp;
+               }
             }
         }
     }
