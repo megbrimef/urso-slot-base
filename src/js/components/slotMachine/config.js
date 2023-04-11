@@ -73,7 +73,15 @@ class ComponentsSlotMachineConfig {
         return {
             ...basic,
             dropEasingParam: 70,
-            symbolSpeed: 0.2,
+            symbolSpeed: 0.3,
+            dropBounce: {
+                bottom: [
+                    { x: 0, y: -40, duration: 130, ease: 'power2.out' },
+                    { x: 0, y: 0, duration: 130, ease: 'power2.in' },
+                    { x: 0, y: -20, duration: 65, ease: 'power2.out' },
+                    { x: 0, y: 0, duration: 65, ease: 'power2.in' },
+                ]
+            }
         };
     }
 

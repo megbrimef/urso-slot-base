@@ -6,35 +6,66 @@ class ComponentsSlotMachineSymbol {
     _texture = null;
     _tintCfg = null;
     _curTint = null;
+    _container = null;
     _animationFinishCallbacks = [];
+    _bottomDropBounceTween = null;
 
     setConfig(symbolsConfig) {
         const { key, template, parent } = symbolsConfig;
+        
         this._key = key;
         this._template = template;
         this._parent = parent;
 
+        this._checkContainer();
         this._updateTexture();
+
+        this._bottomDropBounceTween = null;
+    }
+
+    reset() {
+        this._bottomDropBounceTween = null;
+    }
+
+    _checkContainer() {
+        if (!this._container) {
+            this._container = Urso.objects.create({ type: Urso.types.objects.CONTAINER }, this._parent, true);
+        }
     }
 
     _updateTexture() {
         if (!this._texture) {
-            this._texture = Urso.objects.create(this._template, this._parent, true);
+            this._texture = Urso.objects.create(this._template, this._container, true);
         } else {
             this._texture.changeTexture(this._template.assetKey);
         }
     }
 
+    playDropAnimation() {
+        const { dropBounce } = this.getInstance('Config').getDropConfig();
+
+        if(this._bottomDropBounceTween || !dropBounce) {
+            return;
+        }
+        
+        const { bottom = [] } = dropBounce;
+        this._bottomDropBounceTween = gsap.timeline();
+
+        bottom.forEach(({ x, y, duration, ease = 'none' }) => {
+            this._bottomDropBounceTween.to(this._texture, { x, y, duration: duration / 1000, ease })
+        });
+    }
+
     hide() {
-        this._texture.visible = false;
+        this._container.visible = false;
     }
 
     show() {
-        this._texture.visible = true;
+        this._container.visible = true;
     }
 
     prepareToDrop() {
-        this._texture.visible = false;
+        this._container.visible = false;
     }
 
     destroy() {
@@ -48,20 +79,20 @@ class ComponentsSlotMachineSymbol {
 
     setPosition({ x, y }) {
         if (Number.isFinite(x)) {
-            this._texture.x = x;
+            this._container.x = x;
         }
 
         if (Number.isFinite(y)) {
-            this._texture.y = y;
+            this._container.y = y;
         }
     }
 
     getPosition() {
-        if (!this._texture) {
+        if (!this._container) {
             return null;
         }
 
-        const { x, y } = this._texture;
+        const { x, y } = this._container;
 
         return { x, y };
     }

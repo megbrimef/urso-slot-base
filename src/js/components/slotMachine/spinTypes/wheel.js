@@ -362,6 +362,7 @@ class ComponentsSlotMachineWheel {
             }
 
             this._tweenReel(reelIndex, delay);
+            this._symbols[reelIndex].forEach(e => e.data.reset());
         }
 
         this._switchMaskVisibility(true);
@@ -526,6 +527,11 @@ class ComponentsSlotMachineWheel {
             const { easeY } = this._calculateEasing(easingData);
             const maxY = y + this._symbolHeight * to.y;
             const curY = y + target.y * to.y + easeY;
+
+            if(this._dropMatrix && ~~maxY === ~~data.getPosition().y && this._moveMatrix[reelIndex][rowIndex]) {
+                data.playDropAnimation();
+            }
+
             data.setPosition({
                 y: curY > maxY ? maxY : curY,
             });
@@ -610,11 +616,13 @@ class ComponentsSlotMachineWheel {
 
         this._runLandingAnimations(reelIndex);
 
-        this._setBounce('bottom');
+        if(!this._dropMatrix) {
+            this._setBounce('bottom');
 
-        if (this._bounceTweens) {
-            this._startBottomBounce(reelIndex);
-            return;
+            if (this._bounceTweens) {
+                this._startBottomBounce(reelIndex);
+                return;
+            }
         }
 
         this._finishSpinIfNeeded(reelIndex);
