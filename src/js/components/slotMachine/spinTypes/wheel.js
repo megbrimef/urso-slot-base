@@ -8,6 +8,8 @@ class ComponentsSlotMachineWheel {
     _animatedSymbolsMap = {};
     _reelMoving = [];
     _turboModeEnabled = false;
+    _destroyAnimations = {};
+    _dropTweens = {}
 
     constructor() {
         this._symbols = [];
@@ -225,19 +227,146 @@ class ComponentsSlotMachineWheel {
 
     setSpinNewSymbols(symbolsConfigs) {
         this._spinNewSymbols = symbolsConfigs;
+    }
 
-        // TODO: move to separate method for action call
-        if (this._dropMatrix) {
+    _onPlayDestroySymbolFinish(key, finishClbk) {
+        return () => {
+            delete this._destroyAnimations[key];
+
+            if(Object.keys(this._destroyAnimations).length === 0) {
+                finishClbk();   
+            }
+        }
+    }
+
+    runPlayDestroyAnimation(finishClbk) {
+        for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++) {
+            const reel = this._dropMatrix[reelIndex];
+            for (let rowIndex = 0; rowIndex < reel.length; rowIndex++) {
+               if(reel[rowIndex]) {
+                    this._destroyAnimations[`${reelIndex}_${rowIndex}`] = true;
+                    this._symbols[reelIndex][rowIndex].data
+                        .playDestroyAnimation(this._onPlayDestroySymbolFinish(`${reelIndex}_${rowIndex}`, finishClbk));
+               }
+            }
+        }
+    }
+
+    runPrepareSlotMachineForDrop() {
+       if (this._dropMatrix) {
             this._updateMatrixForDrop();
             this._sortSymbols();
             this._updateSymbolsMatrix();
-            this._startSpin();
+            this._switchMaskVisibility(true);
+            this._switchBorderSymbolsAllVisibility(true);
         }
+    }
+
+    _playDropAnimation(key, symbols, config, callback) {
+        const { duration, delay, ease } = config;
+        symbols.forEach(([ reelIndex, rowIndex ], index) => {
+            const { data } = this._symbols[reelIndex][rowIndex];
+            const moveParam = this._moveMatrix[reelIndex][rowIndex];
+            const { y, x } = data.getPosition();
+            const from = { y };
+            const toY = y + this._symbolHeight * moveParam ;
+            
+            this._dropTweens[`${key}_${reelIndex}_${rowIndex}`] = gsap.to(from, {
+                y: toY,
+                delay: delay * index,
+                duration,
+                ease,
+                onUpdate: () => {
+                    data.setPosition({ x, y: from.y });
+                },
+                onComplete: () => {
+
+                    data.playDropLandingAnimation(key, () => {
+                        delete this._dropTweens[`${key}_${reelIndex}_${rowIndex}`];
+
+                        if(Object.keys(this._dropTweens).filter(symKey => symKey.includes(key)).length === 0) {
+                            callback();
+                        }
+                    })
+                }
+            });
+
+            this._dropTweens[`${key}_${reelIndex}_${rowIndex}`].timeScale(this._timeScale);
+        });
+    }
+    
+    runDropRemainingSymbols(finishClbk) {
+        if(!this._dropMatrix) {
+            finishClbk();
+            return;
+        }
+
+        const { borderSymbolsCount, rowsCount, dropRemainSymbols } = this._config;
+
+        const remaningDropSymbols = [];
+
+        for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++)  {
+            const reel = this._dropMatrix[reelIndex];
+            let symbolsFromBoard = reel
+                .slice(borderSymbolsCount, -borderSymbolsCount)
+                
+                
+            let symbolsFromBoardAmount = symbolsFromBoard.filter(drop => drop).length;
+            let lastIndex = symbolsFromBoard.findIndex(drop => !drop);
+            
+            let wasWin = false;
+            for (let rowIndex = rowsCount - 1; rowIndex >= 0; rowIndex--) {
+                if(wasWin && !reel[rowIndex + borderSymbolsCount]) {
+                    remaningDropSymbols.push([reelIndex, rowIndex + borderSymbolsCount + symbolsFromBoardAmount - lastIndex]);
+                }
+
+                if(reel[rowIndex + borderSymbolsCount]) {
+                    wasWin = true;
+                }
+            }
+        }
+
+        if(remaningDropSymbols.length === 0) {
+            finishClbk();
+            return;
+        }
+        
+        this._playDropAnimation('one', remaningDropSymbols, dropRemainSymbols, finishClbk);
+    }
+
+    runDropNewSymbols() {
+        const { borderSymbolsCount, dropNewSymbols } = this._config;
+
+        const newDropSymbols = [];
+        for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++)  {
+            const reel = this._dropMatrix[reelIndex];
+            const symbolsFromTopAmount = reel.filter(drop => drop).length;
+            for (let rowIndex = symbolsFromTopAmount; rowIndex > 0; rowIndex--) {
+                newDropSymbols.push([reelIndex, rowIndex + borderSymbolsCount - 1]);
+            }
+        }
+
+        this._playDropAnimation('two', newDropSymbols, dropNewSymbols, () => {
+            this._setSymbolsPosition();
+            this._updateSymbolsMatrix();
+            this._onSpinStopCallback();
+        });
+    }
+
+    speedUpDrop(type) {
+        const { speedUpTimescale } = type === 'remaining' ? this._config['dropRemainingSymbols'] : this._config['dropNewSymbols'];
+
+        this._timeScale = speedUpTimescale;
+
+        Object.keys(this._dropTweens).forEach(key => {
+            this._dropTweens[key].timeScale(this._timeScale);
+        });
     }
 
     _updateSymbolsMatrix() {
         for (let reelIndex = 0; reelIndex < this._spinNewSymbols.length; reelIndex++) {
             const reel = this._spinNewSymbols[reelIndex];
+
             for (let rowIndex = 0; rowIndex < reel.length; rowIndex++) {
                 const symbolConfig = this._getSymbolsConfig(reel[rowIndex]);
                 const { data } = this._symbols[reelIndex][rowIndex];
@@ -507,42 +636,22 @@ class ComponentsSlotMachineWheel {
 
         return { easeY };
     }
-
-    _getEasingParam() {
-        const { dropEasingParam, regularEasingParam } = this._config;
-        return this._dropMatrix ? dropEasingParam : regularEasingParam;
-    }
-
-    _updateCallback({ reelIndex, rowIndex, easingParam = 0 }) {
+    
+    _updateCallback({ reelIndex, rowIndex }) {
         const { data } = this._symbols[reelIndex][rowIndex];
         const { y } = data.getPosition();
         const to = this._getReelFinishPosition(reelIndex, rowIndex);
-        return ({ target }, progress) => {
-            const easingData = {
-                easingParam,
-                rowIndex,
-                progress,
-                to,
-            };
-            const { easeY } = this._calculateEasing(easingData);
-            const maxY = y + this._symbolHeight * to.y;
-            const curY = y + target.y * to.y + easeY;
-
-            if(this._dropMatrix && ~~maxY === ~~data.getPosition().y && this._moveMatrix[reelIndex][rowIndex]) {
-                data.playDropAnimation();
-            }
-
+        return ({ target }) => {
             data.setPosition({
-                y: curY > maxY ? maxY : curY,
+                y: y + target.y * to.y
             });
         };
     }
 
     _setupReelTween(tween, reelIndex) {
         tween.onComplete.addOnce(this._moveDone(reelIndex));
-        const easingParam = this._getEasingParam();
         for (let rowIndex = 0; rowIndex < this._symbols[reelIndex].length; rowIndex++) {
-            tween.onUpdateCallback(this._updateCallback({ reelIndex, rowIndex, easingParam }));
+            tween.onUpdateCallback(this._updateCallback({ reelIndex, rowIndex }));
         }
     }
 
@@ -636,8 +745,8 @@ class ComponentsSlotMachineWheel {
     }
 
     _onSpinStopCallback() {
-        this._dropMatrix = null;
         const type = this._dropMatrix ? 'drop' : 'basic';
+        this._dropMatrix = null;
         this._service.spinCompleted(type);
         this._switchMaskVisibility(false);
         this._switchBorderSymbolsAllVisibility(false);
@@ -684,6 +793,10 @@ class ComponentsSlotMachineWheel {
 
     finishSpin() {
         this._finishSpin = true;
+    }
+
+    runFinishDrop() {
+        this.finishSpin();
     }
 
     finishBounceSpin() {
