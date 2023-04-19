@@ -71,13 +71,15 @@ class ComponentsSlotMachineConfig {
             ...basic,
             dropRemainSymbols: {
                 delay: 0,
-                duration: 72/1000,
+                duration: 200/1000,
                 speedUpTimescale: 2,
+                ease: 'expo.out'
             },
             dropNewSymbols: {
-                delay: 140/1000,
-                duration: 120/1000,
+                delay: 250/1000,
+                duration: 200/1000,
                 speedUpTimescale: 2,
+                ease: 'expo.out'
             },
             dropBounce: {
                 bottom: [

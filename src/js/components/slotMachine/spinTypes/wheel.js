@@ -263,7 +263,7 @@ class ComponentsSlotMachineWheel {
     }
 
     _playDropAnimation(key, symbols, config, callback) {
-        const { duration, delay } = config;
+        const { duration, delay, ease } = config;
         symbols.forEach(([ reelIndex, rowIndex ], index) => {
             const { data } = this._symbols[reelIndex][rowIndex];
             const moveParam = this._moveMatrix[reelIndex][rowIndex];
@@ -275,6 +275,7 @@ class ComponentsSlotMachineWheel {
                 y: toY,
                 delay: delay * index,
                 duration,
+                ease,
                 onUpdate: () => {
                     data.setPosition({ x, y: from.y });
                 },
@@ -302,42 +303,50 @@ class ComponentsSlotMachineWheel {
 
         const { borderSymbolsCount, rowsCount, dropRemainSymbols } = this._config;
 
-        const firstStageDropSymbols = [];
+        const remaningDropSymbols = [];
 
         for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++)  {
             const reel = this._dropMatrix[reelIndex];
-            let symbolsFromBoardAmount = reel
+            let symbolsFromBoard = reel
                 .slice(borderSymbolsCount, -borderSymbolsCount)
-                .filter(drop => !drop).length;
+                
+                
+            let symbolsFromBoardAmount = symbolsFromBoard.filter(drop => drop).length;
+            let lastIndex = symbolsFromBoard.findIndex(drop => !drop);
             
+            let wasWin = false;
             for (let rowIndex = rowsCount - 1; rowIndex >= 0; rowIndex--) {
-                if(reel[rowIndex + borderSymbolsCount] && symbolsFromBoardAmount-- > 0) {
-                    firstStageDropSymbols.push([reelIndex, rowIndex + borderSymbolsCount])
+                if(wasWin && !reel[rowIndex + borderSymbolsCount]) {
+                    remaningDropSymbols.push([reelIndex, rowIndex + borderSymbolsCount + symbolsFromBoardAmount - lastIndex]);
+                }
+
+                if(reel[rowIndex + borderSymbolsCount]) {
+                    wasWin = true;
                 }
             }
         }
-  
-        if(firstStageDropSymbols.length === 0) {
+
+        if(remaningDropSymbols.length === 0) {
             finishClbk();
             return;
         }
         
-        this._playDropAnimation('one', firstStageDropSymbols, dropRemainSymbols, finishClbk);
+        this._playDropAnimation('one', remaningDropSymbols, dropRemainSymbols, finishClbk);
     }
 
     runDropNewSymbols() {
         const { borderSymbolsCount, dropNewSymbols } = this._config;
 
-        const secondStageDropSymbols = [];
+        const newDropSymbols = [];
         for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++)  {
             const reel = this._dropMatrix[reelIndex];
             const symbolsFromTopAmount = reel.filter(drop => drop).length;
             for (let rowIndex = symbolsFromTopAmount; rowIndex > 0; rowIndex--) {
-                secondStageDropSymbols.push([reelIndex, rowIndex + borderSymbolsCount - 1]);
+                newDropSymbols.push([reelIndex, rowIndex + borderSymbolsCount - 1]);
             }
         }
 
-        this._playDropAnimation('two', secondStageDropSymbols, dropNewSymbols, () => {
+        this._playDropAnimation('two', newDropSymbols, dropNewSymbols, () => {
             this._setSymbolsPosition();
             this._updateSymbolsMatrix();
             this._onSpinStopCallback();
