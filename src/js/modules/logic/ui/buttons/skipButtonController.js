@@ -5,7 +5,7 @@ class ModulesLogicBaseUiButtonsSkipButtonController extends Urso.SlotBase.Module
     _canFireInteract = true;
 
     _checkVisible() {
-        return ['FINISH_SPIN', 'SHOW_WIN', 'START_SPIN'].includes(this._state);
+        return ['FINISH_SPIN', 'SHOW_WIN', 'START_SPIN', 'DROP'].includes(this._state);
     }
 
     _checkEnabled() {

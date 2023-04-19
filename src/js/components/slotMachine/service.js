@@ -74,6 +74,10 @@ class ComponentsSlotMachineService {
         }
     }
 
+    runFinishDrop() {
+        this._view.runFinishDrop();
+    }
+    
     finishSpin() {
         this._view.finishSpin();
     }
@@ -214,6 +218,26 @@ class ComponentsSlotMachineService {
     updateTurboMode() {
         const turboMode = Urso.localData.get('settings.turboMode');
         this._view.setTurboMode(turboMode);
+    }
+
+    runPlayDestroyAnimation(finishClbk) {
+        this._view.runPlayDestroyAnimation(finishClbk);
+    }
+
+    runPrepareSlotMachineForDrop() {
+        this._view.runPrepareSlotMachineForDrop()
+    }
+
+    runDropRemainingSymbols(finishClbk) {
+        this._view.runDropRemainingSymbols(finishClbk);
+    }
+
+    runDropNewSymbols() {
+        this._view.runDropNewSymbols(() => this._spinCompleted('drop'));
+    }
+
+    speedUpDrop(type) {
+        this._view.speedUpDrop(type);
     }
 }
 

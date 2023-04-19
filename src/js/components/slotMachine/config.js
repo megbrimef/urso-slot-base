@@ -12,9 +12,6 @@ class ComponentsSlotMachineConfig {
 
             blurAlpha: 0.5,
             borderSymbolsCount: 2,
-            regularEasingParam: 0,
-            dropEasingParam: 0,
-
             spinCompleteDelay: 200, // event delay, after reels stops
 
             hideMaskOnSpinComplete: true,
@@ -72,14 +69,22 @@ class ComponentsSlotMachineConfig {
         const basic = this.getBasicConfig();
         return {
             ...basic,
-            dropEasingParam: 70,
-            symbolSpeed: 0.3,
+            dropRemainSymbols: {
+                delay: 0,
+                duration: 72/1000,
+                speedUpTimescale: 2,
+            },
+            dropNewSymbols: {
+                delay: 140/1000,
+                duration: 120/1000,
+                speedUpTimescale: 2,
+            },
             dropBounce: {
                 bottom: [
-                    { x: 0, y: -40, duration: 130, ease: 'power2.out' },
-                    { x: 0, y: 0, duration: 130, ease: 'power2.in' },
-                    { x: 0, y: -20, duration: 65, ease: 'power2.out' },
-                    { x: 0, y: 0, duration: 65, ease: 'power2.in' },
+                    { x: 0, y: -10, duration: 136, ease: 'power2.out' },
+                    { x: 0, y: 0, duration: 136, ease: 'power2.in' },
+                    { x: 0, y: -5, duration: 136/2, ease: 'power2.out' },
+                    { x: 0, y: 0, duration: 136/2, ease: 'power2.in' },
                 ]
             }
         };

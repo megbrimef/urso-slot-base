@@ -41,18 +41,26 @@ class ComponentsSlotMachineSymbol {
         }
     }
 
-    playDropAnimation() {
+    playDropLandingAnimation(stage, onComplete) {
         const { dropBounce } = this.getInstance('Config').getDropConfig();
 
         if(this._bottomDropBounceTween || !dropBounce) {
+            onComplete();
             return;
         }
         
         const { bottom = [] } = dropBounce;
         this._bottomDropBounceTween = gsap.timeline();
 
-        bottom.forEach(({ x, y, duration, ease = 'none' }) => {
-            this._bottomDropBounceTween.to(this._texture, { x, y, duration: duration / 1000, ease })
+        bottom.forEach(({ x, y, duration, ease = 'none' }, index) =>  {
+            const onCompleteClbk = index === (bottom.length - 1) ? onComplete: () => {};
+            this._bottomDropBounceTween.to(this._texture, { 
+                x,
+                y, 
+                duration: duration / 1000, 
+                ease,
+                onComplete: onCompleteClbk
+            })
         });
     }
 
@@ -64,8 +72,9 @@ class ComponentsSlotMachineSymbol {
         this._container.visible = true;
     }
 
-    prepareToDrop() {
+    playDestroyAnimation(clbk) {
         this._container.visible = false;
+        setTimeout(clbk, 1);
     }
 
     destroy() {
