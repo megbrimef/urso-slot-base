@@ -52,14 +52,27 @@ class ComponentsSlotMachineWheel {
     }
 
     _createMask() {
-        const { borderSymbolsCount } = this._config;
+        const { borderSymbolsCount, maskObjectRectangles } = this._config;
         const reelsCount = this._symbols.length;
         const rowsCount = this._symbols[0].length - borderSymbolsCount * 2;
+
+        const params = {
+            reelsCount: reelsCount,
+            rowsCount: rowsCount,
+            symbolWidth: this._symbolWidth,
+            symbolHeight: this._symbolHeight
+        };
+
+        const maskObjectRectanglesValue = maskObjectRectangles.map(
+            (rectString) => eval(
+                Urso.helper.interpolate(rectString, params)
+            )
+        );
 
         this.mask = Urso.objects.create({
             type: Urso.types.objects.MASK,
             name: 'slotMachineMask',
-            rectangle: [0, 0, this._symbolWidth * reelsCount, this._symbolHeight * rowsCount],
+            rectangles: maskObjectRectanglesValue,
         }, this.common.object);
     }
 
@@ -189,7 +202,7 @@ class ComponentsSlotMachineWheel {
         }
     }
 
-     _updateMatrixForDrop() {
+    _updateMatrixForDrop() {
         this._switchBorderSymbolsAllVisibility(true);
 
         for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++) {
@@ -198,23 +211,23 @@ class ComponentsSlotMachineWheel {
 
             let moveAmount = 0;
             for (let rowIndex = reel.length - 1; rowIndex >= 0; rowIndex--) {
-                
+
                 if (reel[rowIndex]) {
                     moveAmount++;
                     this._setSymbolPositionForDrop(reelIndex, rowIndex, moveAmount + rowIndex);
                 }
-                
-                if(moveAmount === 0) {
+
+                if (moveAmount === 0) {
                     continue;
                 }
 
-               this._moveMatrix[reelIndex][rowIndex] = reel[rowIndex] ? maxMoveAmount : moveAmount;
+                this._moveMatrix[reelIndex][rowIndex] = reel[rowIndex] ? maxMoveAmount : moveAmount;
 
-               if(!reel[rowIndex]) {
+                if (!reel[rowIndex]) {
                     const temp = this._moveMatrix[reelIndex][rowIndex + 1];
                     this._moveMatrix[reelIndex][rowIndex + 1] = this._moveMatrix[reelIndex][rowIndex];
                     this._moveMatrix[reelIndex][rowIndex] = temp;
-               }
+                }
             }
         }
     }
@@ -233,8 +246,8 @@ class ComponentsSlotMachineWheel {
         return () => {
             delete this._destroyAnimations[key];
 
-            if(Object.keys(this._destroyAnimations).length === 0) {
-                finishClbk();   
+            if (Object.keys(this._destroyAnimations).length === 0) {
+                finishClbk();
             }
         }
     }
@@ -243,17 +256,17 @@ class ComponentsSlotMachineWheel {
         for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++) {
             const reel = this._dropMatrix[reelIndex];
             for (let rowIndex = 0; rowIndex < reel.length; rowIndex++) {
-               if(reel[rowIndex]) {
+                if (reel[rowIndex]) {
                     this._destroyAnimations[`${reelIndex}_${rowIndex}`] = true;
                     this._symbols[reelIndex][rowIndex].data
                         .playDestroyAnimation(this._onPlayDestroySymbolFinish(`${reelIndex}_${rowIndex}`, finishClbk));
-               }
+                }
             }
         }
     }
 
     runPrepareSlotMachineForDrop() {
-       if (this._dropMatrix) {
+        if (this._dropMatrix) {
             this._updateMatrixForDrop();
             this._sortSymbols();
             this._updateSymbolsMatrix();
@@ -264,13 +277,13 @@ class ComponentsSlotMachineWheel {
 
     _playDropAnimation(key, symbols, config, callback) {
         const { duration, delay, ease } = config;
-        symbols.forEach(([ reelIndex, rowIndex ], index) => {
+        symbols.forEach(([reelIndex, rowIndex], index) => {
             const { data } = this._symbols[reelIndex][rowIndex];
             const moveParam = this._moveMatrix[reelIndex][rowIndex];
             const { y, x } = data.getPosition();
             const from = { y };
-            const toY = y + this._symbolHeight * moveParam ;
-            
+            const toY = y + this._symbolHeight * moveParam;
+
             this._dropTweens[`${key}_${reelIndex}_${rowIndex}`] = gsap.to(from, {
                 y: toY,
                 delay: delay * index,
@@ -284,7 +297,7 @@ class ComponentsSlotMachineWheel {
                     data.playDropLandingAnimation(key, () => {
                         delete this._dropTweens[`${key}_${reelIndex}_${rowIndex}`];
 
-                        if(Object.keys(this._dropTweens).filter(symKey => symKey.includes(key)).length === 0) {
+                        if (Object.keys(this._dropTweens).filter(symKey => symKey.includes(key)).length === 0) {
                             callback();
                         }
                     })
@@ -294,9 +307,9 @@ class ComponentsSlotMachineWheel {
             this._dropTweens[`${key}_${reelIndex}_${rowIndex}`].timeScale(this._timeScale);
         });
     }
-    
+
     runDropRemainingSymbols(finishClbk) {
-        if(!this._dropMatrix) {
+        if (!this._dropMatrix) {
             finishClbk();
             return;
         }
@@ -305,32 +318,32 @@ class ComponentsSlotMachineWheel {
 
         const remaningDropSymbols = [];
 
-        for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++)  {
+        for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++) {
             const reel = this._dropMatrix[reelIndex];
             let symbolsFromBoard = reel
                 .slice(borderSymbolsCount, -borderSymbolsCount)
-                
-                
+
+
             let symbolsFromBoardAmount = symbolsFromBoard.filter(drop => drop).length;
             let lastIndex = symbolsFromBoard.findIndex(drop => !drop);
-            
+
             let wasWin = false;
             for (let rowIndex = rowsCount - 1; rowIndex >= 0; rowIndex--) {
-                if(wasWin && !reel[rowIndex + borderSymbolsCount]) {
+                if (wasWin && !reel[rowIndex + borderSymbolsCount]) {
                     remaningDropSymbols.push([reelIndex, rowIndex + borderSymbolsCount + symbolsFromBoardAmount - lastIndex]);
                 }
 
-                if(reel[rowIndex + borderSymbolsCount]) {
+                if (reel[rowIndex + borderSymbolsCount]) {
                     wasWin = true;
                 }
             }
         }
 
-        if(remaningDropSymbols.length === 0) {
+        if (remaningDropSymbols.length === 0) {
             finishClbk();
             return;
         }
-        
+
         this._playDropAnimation('one', remaningDropSymbols, dropRemainSymbols, finishClbk);
     }
 
@@ -338,7 +351,7 @@ class ComponentsSlotMachineWheel {
         const { borderSymbolsCount, dropNewSymbols } = this._config;
 
         const newDropSymbols = [];
-        for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++)  {
+        for (let reelIndex = 0; reelIndex < this._dropMatrix.length; reelIndex++) {
             const reel = this._dropMatrix[reelIndex];
             const symbolsFromTopAmount = reel.filter(drop => drop).length;
             for (let rowIndex = symbolsFromTopAmount; rowIndex > 0; rowIndex--) {
@@ -636,7 +649,7 @@ class ComponentsSlotMachineWheel {
 
         return { easeY };
     }
-    
+
     _updateCallback({ reelIndex, rowIndex }) {
         const { data } = this._symbols[reelIndex][rowIndex];
         const { y } = data.getPosition();
@@ -688,8 +701,8 @@ class ComponentsSlotMachineWheel {
 
     _isIntrigueInProgress(reelIndex) {
         return this._intrigue
-                && reelIndex >= this._intrigueStartsFrom
-                && reelIndex === (this._lastStoppedReelIndex + 1);
+            && reelIndex >= this._intrigueStartsFrom
+            && reelIndex === (this._lastStoppedReelIndex + 1);
     }
 
     _getTweenTimeScale(reelIndex) {
@@ -717,7 +730,7 @@ class ComponentsSlotMachineWheel {
         this._startBounce(clbk, reelIndex, 0, bounce.bottom);
     }
 
-    _runLandingAnimations() {}
+    _runLandingAnimations() { }
 
     _onReelStopCallback(reelIndex) {
         this._lastStoppedReelIndex = reelIndex;
@@ -725,7 +738,7 @@ class ComponentsSlotMachineWheel {
 
         this._runLandingAnimations(reelIndex);
 
-        if(!this._dropMatrix) {
+        if (!this._dropMatrix) {
             this._setBounce('bottom');
 
             if (this._bounceTweens) {

@@ -1,4 +1,5 @@
 class ComponentsSlotMachineConfig {
+
     getBasicConfig() {
         return {
             reelsCount: 5,
@@ -39,6 +40,7 @@ class ComponentsSlotMachineConfig {
             symbolsBlurKeys: [], // array or array of arrays for each reel
             // eslint-disable-next-line max-len
             lastSymbolsBlurStaticKeys: [], // array or array of arrays for each reel [1,2,3,4] or [false,false,[1]]
+            maskObjectRectangles: ['[0, 0, ${symbolWidth} * ${reelsCount}, ${symbolHeight} * ${rowsCount}]']
         };
     }
 
@@ -71,13 +73,13 @@ class ComponentsSlotMachineConfig {
             ...basic,
             dropRemainSymbols: {
                 delay: 0,
-                duration: 200/1000,
+                duration: 200 / 1000,
                 speedUpTimescale: 2,
                 ease: 'expo.out'
             },
             dropNewSymbols: {
-                delay: 250/1000,
-                duration: 200/1000,
+                delay: 250 / 1000,
+                duration: 200 / 1000,
                 speedUpTimescale: 2,
                 ease: 'expo.out'
             },
@@ -85,8 +87,8 @@ class ComponentsSlotMachineConfig {
                 bottom: [
                     { x: 0, y: -10, duration: 136, ease: 'power2.out' },
                     { x: 0, y: 0, duration: 136, ease: 'power2.in' },
-                    { x: 0, y: -5, duration: 136/2, ease: 'power2.out' },
-                    { x: 0, y: 0, duration: 136/2, ease: 'power2.in' },
+                    { x: 0, y: -5, duration: 136 / 2, ease: 'power2.out' },
+                    { x: 0, y: 0, duration: 136 / 2, ease: 'power2.in' },
                 ]
             }
         };

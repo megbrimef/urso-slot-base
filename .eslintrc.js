@@ -26,4 +26,5 @@ module.exports = {
         'no-bitwise': 0,
         'lines-between-class-members': 0,
     },
+    linebreak: ["unix", "windows"]
 };
