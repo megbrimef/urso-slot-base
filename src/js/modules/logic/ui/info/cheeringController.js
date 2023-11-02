@@ -1,5 +1,7 @@
 // eslint-disable-next-line max-len
-class ModulesLogicUiCheeringController extends Urso.SlotBase.Modules.Logic.Ui.BaseUiElementController {
+const BaseUiElementController = require('../baseUiElementController.js');
+
+class ModulesLogicUiCheeringController extends BaseUiElementController {
     _class = 'cheeringText';
     _wasFirstSpin = false;
 

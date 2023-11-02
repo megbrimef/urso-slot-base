@@ -1,4 +1,6 @@
-class AuthRequest extends Urso.SlotBase.Modules.Transport.BaseModel {
+const BaseModel = require('../baseModel.js');
+
+class AuthRequest extends BaseModel {
     constructor() {
         super('AuthRequest', false, {});
     }

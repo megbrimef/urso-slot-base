@@ -1,5 +1,7 @@
 // eslint-disable-next-line max-len
-class ModulesLogicUiInfoBalanceController extends Urso.SlotBase.Modules.Logic.Ui.BaseUiElementController {
+const BaseUiElementController = require('../baseUiElementController.js');
+
+class ModulesLogicUiInfoBalanceController extends BaseUiElementController {
     _class = 'balanceVal';
 
     _setText() {
