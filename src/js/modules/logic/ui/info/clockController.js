@@ -1,5 +1,7 @@
 // eslint-disable-next-line max-len
-class ModulesLogicUiInfoClockController extends Urso.SlotBase.Modules.Logic.Ui.BaseUiElementController {
+const BaseUiElementController = require('../baseUiElementController.js');
+
+class ModulesLogicUiInfoClockController extends BaseUiElementController {
     _class = 'clockVal';
     _interval = null;
 

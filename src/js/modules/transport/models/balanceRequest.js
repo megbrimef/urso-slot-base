@@ -1,4 +1,6 @@
-class BalanceRequest extends Urso.SlotBase.Modules.Transport.BaseModel {
+const BaseModel = require('../baseModel.js');
+
+class BalanceRequest extends BaseModel {
     constructor({ sessionId, data = {} } = {}) {
         super('BalanceRequest', sessionId, data);
     }

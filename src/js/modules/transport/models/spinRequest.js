@@ -1,4 +1,6 @@
-class SpinRequest extends Urso.SlotBase.Modules.Transport.BaseModel {
+const BaseModel = require('../baseModel.js');
+
+class SpinRequest extends BaseModel {
     constructor({ sessionId, data }) {
         super('SpinRequest', sessionId, data);
     }

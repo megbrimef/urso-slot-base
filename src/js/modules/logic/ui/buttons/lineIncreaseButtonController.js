@@ -1,5 +1,7 @@
 // eslint-disable-next-line max-len
-class ModulesLogicBaseUiButtonsLineIncreaseButtonController extends Urso.SlotBase.Modules.Logic.Ui.BaseInteractiveUiElementController {
+const BaseInteractiveUiElementController = require('../baseInteractiveUiElementController.js');
+
+class ModulesLogicBaseUiButtonsLineIncreaseButtonController extends BaseInteractiveUiElementController {
     _type = this.TYPES.BUTTON;
     _class = 'lineIncreaseButton';
     _enableStates = ['IDLE', 'FINISH_WIN_ROUND'];

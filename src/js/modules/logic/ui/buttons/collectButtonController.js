@@ -1,5 +1,7 @@
 // eslint-disable-next-line max-len
-class ModulesLogicBaseUiButtonsCollectButtonController extends Urso.SlotBase.Modules.Logic.Ui.BaseInteractiveUiElementController {
+const BaseInteractiveUiElementController = require('../baseInteractiveUiElementController.js');
+
+class ModulesLogicBaseUiButtonsCollectButtonController extends BaseInteractiveUiElementController {
     _type = this.TYPES.BUTTON;
     _class = 'collectButton';
     _canFireInteract = true;

@@ -1,4 +1,5 @@
-class CheckBrokenGameRequest extends Urso.SlotBase.Modules.Transport.BaseModel {
+const BaseModel = require('../baseModel.js');
+class CheckBrokenGameRequest extends BaseModel {
     constructor() {
         super('CheckBrokenGameRequest', false, {});
     }
