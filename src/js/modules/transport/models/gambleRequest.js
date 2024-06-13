@@ -1,4 +1,6 @@
-class GambleRequest extends Urso.SlotBase.Modules.Transport.BaseModel {
+const BaseModel = require('../baseModel.js');
+
+class GambleRequest extends BaseModel {
     constructor({ sessionId, data }) {
         super('GambleRequest', sessionId, data);
     }

@@ -36,6 +36,23 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         updateTurboModeAction: {
             run: (finishClbk) => this._runUpdateTurboMode(finishClbk),
         },
+        playDestroyAnimationAction: {
+            run: (finishClbk) => this._runPlayDestroyAnimation(finishClbk),
+        },
+        prepareSlotMachineForDropAction: {
+            run: (finishClbk) => this._runPrepareSlotMachineForDrop(finishClbk),
+        },
+        dropRemainingSymbolsAction: {
+            terminate: () => this._terminateDropRemainingSymbols(),
+            run: (finishClbk) => this._runDropRemainingSymbols(finishClbk)
+        },
+        dropNewSymbolsAction: {
+            terminate: () => this._terminateDropNewSymbols(),
+            run: (finishClbk) => this._runDropNewSymbols(finishClbk)
+        },
+        finishDropAction: {
+            run: (finishClbk) => this._runFinishDropAction(finishClbk)
+        }
     };
 
     constructor(options) {
@@ -124,6 +141,36 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         finishClbk();
     }
 
+    _runPlayDestroyAnimation(finishClbk) {
+        this._service.runPlayDestroyAnimation(finishClbk);
+    }
+
+    _runPrepareSlotMachineForDrop(finishClbk) {
+        this._service.runPrepareSlotMachineForDrop();
+        finishClbk();
+    }
+    
+    _runDropRemainingSymbols(finishClbk) {
+        this._service.runDropRemainingSymbols(finishClbk);
+    }
+
+    _runDropNewSymbols(finishClbk) {
+        this._service.runDropNewSymbols(finishClbk);
+    }
+
+    _runFinishDropAction(finishClbk) {
+        this._service.runFinishDrop();
+        finishClbk();
+    }
+
+    _terminateDropRemainingSymbols() {
+        this._service.speedUpDrop('remainingSymbols');
+    }
+
+    _terminateDropNewSymbols() {
+        this._service.speedUpDrop('newSymbols');
+    }
+
     // //position: {reel:2, row:1}
     _symbolAnimate(position) {
         this._service.symbolAnimate(position);
@@ -152,9 +199,10 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
         this._service.setDropMatrix(Urso.helper.transpose(matrix));
     }
 
-    _spinComplete() {
+    _spinComplete({ type }) {
         this._service.setBaseConfig();
-        this.callFinish('finishingSpinAction');
+        const actionToFinish = type === 'drop' ? 'dropNewSymbolsAction' : 'finishingSpinAction';
+        this.callFinish(actionToFinish);
     }
 
     _spinCompleteHandler = (params) => this._spinComplete(params);

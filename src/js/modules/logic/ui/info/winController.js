@@ -1,5 +1,7 @@
 // eslint-disable-next-line max-len
-class ModulesLogicBaseUiInfoWinController extends Urso.SlotBase.Modules.Logic.Ui.BaseUiElementController {
+const BaseUiElementController = require('../baseUiElementController.js');
+
+class ModulesLogicBaseUiInfoWinController extends BaseUiElementController {
     _class = 'winVal';
     _lastWin = 0;
 

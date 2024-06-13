@@ -1,4 +1,6 @@
-class ApiVersionRequest extends Urso.SlotBase.Modules.Transport.BaseModel {
+const BaseModel = require('../baseModel.js');
+
+class ApiVersionRequest extends BaseModel {
     constructor() {
         super('ApiVersionRequest', false, {});
     }

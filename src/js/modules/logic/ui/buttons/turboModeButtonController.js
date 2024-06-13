@@ -1,5 +1,7 @@
 // eslint-disable-next-line max-len
-class ModulesLogicBaseUiButtonsTurboModeButtonController extends Urso.SlotBase.Modules.Logic.Ui.BaseInteractiveUiElementController {
+const BaseInteractiveUiElementController = require('../baseInteractiveUiElementController.js');
+
+class ModulesLogicBaseUiButtonsTurboModeButtonController extends BaseInteractiveUiElementController {
     _type = this.TYPES.TOGGLE;
     _class = 'turboMode';
 
