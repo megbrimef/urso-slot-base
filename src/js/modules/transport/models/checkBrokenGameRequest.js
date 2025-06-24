@@ -1,8 +1,8 @@
-const BaseModel = require('../baseModel.js');
+import BaseModel from '../baseModel.js';
 class CheckBrokenGameRequest extends BaseModel {
     constructor() {
         super('CheckBrokenGameRequest', false, {});
     }
 }
 
-module.exports = CheckBrokenGameRequest;
+export default CheckBrokenGameRequest;

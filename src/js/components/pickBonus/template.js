@@ -75,4 +75,4 @@ class ComponentsPickBonusTemplate {
     }
 }
 
-module.exports = ComponentsPickBonusTemplate;
+export default ComponentsPickBonusTemplate;

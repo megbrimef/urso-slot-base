@@ -101,4 +101,4 @@ class ModulesLogicBaseUiElementController {
     }
 }
 
-module.exports = ModulesLogicBaseUiElementController;
+export default ModulesLogicBaseUiElementController;

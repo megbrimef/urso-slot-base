@@ -16,4 +16,4 @@ class ComponentsBackgroundController extends Urso.Core.Components.Base.Controlle
     }
 }
 
-module.exports = ComponentsBackgroundController;
+export default ComponentsBackgroundController;

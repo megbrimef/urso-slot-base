@@ -16,4 +16,4 @@ class ModulesStatesManagerActionsInitUILogicAction extends Urso.Core.Modules.Sta
     }
 }
 
-module.exports = ModulesStatesManagerActionsInitUILogicAction;
+export default ModulesStatesManagerActionsInitUILogicAction;

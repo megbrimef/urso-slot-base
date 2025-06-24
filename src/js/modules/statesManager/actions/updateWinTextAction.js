@@ -20,4 +20,4 @@ class ModulesStatesManagerActionsUpdateWinTextAction extends Urso.Core.Modules.S
     }
 }
 
-module.exports = ModulesStatesManagerActionsUpdateWinTextAction;
+export default ModulesStatesManagerActionsUpdateWinTextAction;

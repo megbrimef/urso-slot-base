@@ -82,4 +82,4 @@ class ComponentsPickBonusPickItemController extends Urso.Core.Components.Base.Co
     }
 }
 
-module.exports = ComponentsPickBonusPickItemController;
+export default ComponentsPickBonusPickItemController;

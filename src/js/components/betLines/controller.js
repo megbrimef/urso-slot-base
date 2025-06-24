@@ -65,4 +65,4 @@ class ComponentsBetLinesController extends Urso.Core.Components.StateDriven.Cont
     }
 }
 
-module.exports = ComponentsBetLinesController;
+export default ComponentsBetLinesController;

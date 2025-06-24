@@ -1,4 +1,4 @@
-const BaseTransportAction = require('./baseTransportAction');
+import BaseTransportAction from './baseTransportAction.js';
 
 class ModulesStatesManagerActionsTransportInitAction extends BaseTransportAction {
     name = 'transportInitAction';
@@ -9,4 +9,4 @@ class ModulesStatesManagerActionsTransportInitAction extends BaseTransportAction
     }
 }
 
-module.exports = ModulesStatesManagerActionsTransportInitAction;
+export default ModulesStatesManagerActionsTransportInitAction;

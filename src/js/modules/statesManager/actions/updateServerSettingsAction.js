@@ -16,4 +16,4 @@ class ModulesStatesManagerActionsUpdateServerSettingsAction extends Urso.Core.Mo
     }
 }
 
-module.exports = ModulesStatesManagerActionsUpdateServerSettingsAction;
+export default ModulesStatesManagerActionsUpdateServerSettingsAction;

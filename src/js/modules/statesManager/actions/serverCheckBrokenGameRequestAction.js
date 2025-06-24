@@ -1,4 +1,4 @@
-const BaseTransportAction = require('./baseTransportAction');
+import BaseTransportAction from './baseTransportAction.js';
 
 class ModulesStatesManagerActionsServerCheckBrokenGameRequestAction extends BaseTransportAction {
     name = 'serverCheckBrokenGameRequestAction';
@@ -16,4 +16,4 @@ class ModulesStatesManagerActionsServerCheckBrokenGameRequestAction extends Base
     }
 }
 
-module.exports = ModulesStatesManagerActionsServerCheckBrokenGameRequestAction;
+export default ModulesStatesManagerActionsServerCheckBrokenGameRequestAction;

@@ -12,4 +12,4 @@ class ComponentsWinFrameTemplate {
     }
 }
 
-module.exports = ComponentsWinFrameTemplate;
+export default ComponentsWinFrameTemplate;

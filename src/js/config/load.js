@@ -1,130 +1,213 @@
+import AutoSpinController from '../components/autoSpin/controller.js';
+import AutoSpinTemplate from '../components/autoSpin/template.js';
+import BackgroundController from '../components/background/controller.js';
+import BackgroundTemplate from '../components/background/template.js';
+import BetLinesConfig from '../components/betLines/config.js';
+import BetLinesController from '../components/betLines/controller.js';
+import GambleController from '../components/gamble/controller.js';
+import GambleTemplate from '../components/gamble/template.js';
+import GambleView from '../components/gamble/view.js';
+import LoaderController from '../components/loader/controller.js';
+import PaytableController from '../components/paytable/controller.js';
+import PickBonusController from '../components/pickBonus/controller.js';
+import PickBonusTemplate from '../components/pickBonus/template.js';
+import PickItemController from '../components/pickBonus/pickItem/controller.js';
+import PickItemTemplate from '../components/pickBonus/pickItem/template.js';
+import Cascade from '../components/slotMachine/spinTypes/cascade.js';
+import SlotMachineConfig from '../components/slotMachine/config.js';
+import SlotMachineController from '../components/slotMachine/controller.js';
+import SlotMachineService from '../components/slotMachine/service.js';
+import SlotMachineSymbol from '../components/slotMachine/symbol.js';
+import SlotMachineSymbols from '../components/slotMachine/symbols.js';
+import SlotMachineTemplate from '../components/slotMachine/template.js';
+import SlotMachineTween from '../components/slotMachine/tween.js';
+import Wheel from '../components/slotMachine/spinTypes/wheel.js';
+import UiController from '../components/ui/controller.js';
+import WinCounterConfig from '../components/winCounter/config.js';
+import WinCounterController from '../components/winCounter/controller.js';
+import WinFrameController from '../components/winFrame/controller.js';
+import WinFrameTemplate from '../components/winFrame/template.js';
+import WinFrameView from '../components/winFrame/view.js';
+import WinLinesController from '../components/winLines/controller.js';
+import WinLinesTemplate from '../components/winLines/template.js';
+import LogicController from '../modules/logic/controller.js';
+import LogicMain from '../modules/logic/main.js';
+import BaseInteractiveUiElementController from '../modules/logic/ui/baseInteractiveUiElementController.js';
+import BaseUiElementController from '../modules/logic/ui/baseUiElementController.js';
+import LogicUiConfig from '../modules/logic/ui/config.js';
+import LogicUiController from '../modules/logic/ui/controller.js';
+import AutoSpinButtonController from '../modules/logic/ui/buttons/autoSpinButtonController.js';
+import BetDecreaseButtonCircularController from '../modules/logic/ui/buttons/betDecreaseButtonCircularController.js';
+import BetDecreaseButtonController from '../modules/logic/ui/buttons/betDecreaseButtonController.js';
+import BetIncreaseButtonCircularController from '../modules/logic/ui/buttons/betIncreaseButtonCircularController.js';
+import BetIncreaseButtonController from '../modules/logic/ui/buttons/betIncreaseButtonController.js';
+import BetMaxButtonController from '../modules/logic/ui/buttons/betMaxButtonController.js';
+import CollectButtonController from '../modules/logic/ui/buttons/collectButtonController.js';
+import LineIncreaseButtonCircularController from '../modules/logic/ui/buttons/lineIncreaseButtonCircularController.js';
+import LineIncreaseButtonController from '../modules/logic/ui/buttons/lineIncreaseButtonController.js';
+import SkipButtonController from '../modules/logic/ui/buttons/skipButtonController.js';
+import SpinButtonController from '../modules/logic/ui/buttons/spinButtonController.js';
+import TurboModeButtonController from '../modules/logic/ui/buttons/turboModeButtonController.js';
+import BalanceController from '../modules/logic/ui/info/balanceController.js';
+import BetController from '../modules/logic/ui/info/betController.js';
+import CheeringController from '../modules/logic/ui/info/cheeringController.js';
+import ClockController from '../modules/logic/ui/info/clockController.js';
+import LinesController from '../modules/logic/ui/info/linesController.js';
+import TotalBetController from '../modules/logic/ui/info/totalBetController.js';
+import WinController from '../modules/logic/ui/info/winController.js';
+import ConfigStates from '../modules/statesManager/configStates.js';
+import BaseTransportAction from '../modules/statesManager/actions/baseTransportAction.js';
+import InitUiLogicAction from '../modules/statesManager/actions/initUiLogicAction.js';
+import LoadDefaultSceneAction from '../modules/statesManager/actions/loadDefaultSceneAction.js';
+import MakeBetAction from '../modules/statesManager/actions/makeBetAction.js';
+import ResetWinTextAction from '../modules/statesManager/actions/resetWinTextAction.js';
+import ServerApiVersionRequestAction from '../modules/statesManager/actions/serverApiVersionRequestAction.js';
+import ServerAuthRequestAction from '../modules/statesManager/actions/serverAuthRequestAction.js';
+import ServerBalanceRequestAction from '../modules/statesManager/actions/serverBalanceRequestAction.js';
+import ServerCheckBrokenGameRequestAction from '../modules/statesManager/actions/serverCheckBrokenGameRequestAction.js';
+import ServerSpinRequestAction from '../modules/statesManager/actions/serverSpinRequestAction.js';
+import TransportInitAction from '../modules/statesManager/actions/transportInitAction.js';
+import UpdateBalanceAction from '../modules/statesManager/actions/updateBalanceAction.js';
+import UpdateServerSettingsAction from '../modules/statesManager/actions/updateServerSettingsAction.js';
+import UpdateWinTextAction from '../modules/statesManager/actions/updateWinTextAction.js';
+import WaitingForInteractionAction from '../modules/statesManager/actions/waitingForInteractionAction.js';
+import BaseModel from '../modules/transport/baseModel.js';
+import TransportController from '../modules/transport/controller.js';
+import ApiVersionRequest from '../modules/transport/models/apiVersionRequest.js';
+import AuthRequest from '../modules/transport/models/authRequest.js';
+import BalanceRequest from '../modules/transport/models/balanceRequest.js';
+import CheckBrokenGameRequest from '../modules/transport/models/checkBrokenGameRequest.js';
+import SpinRequest from '../modules/transport/models/spinRequest.js';
+import GambleRequest from '../modules/transport/models/gambleRequest.js';
+import PickBonusRequest from '../modules/transport/models/pickBonusRequest.js';
+
 // SlotBase namespace
 window.Urso.SlotBase = {
     Components: {
         AutoSpin: {
-            Controller: require('../components/autoSpin/controller.js'),
-            Template: require('../components/autoSpin/template.js'),
+            Controller: AutoSpinController,
+            Template: AutoSpinTemplate,
         },
         Background: {
-            Controller: require('../components/background/controller.js'),
-            Template: require('../components/background/template.js'),
+            Controller: BackgroundController,
+            Template: BackgroundTemplate,
         },
         BetLines: {
-            Config: require('../components/betLines/config.js'),
-            Controller: require('../components/betLines/controller.js'),
+            Config: BetLinesConfig,
+            Controller: BetLinesController,
         },
         Gamble: {
-            Controller: require('../components/gamble/controller.js'),
-            Template: require('../components/gamble/template.js'),
-            View: require('../components/gamble/view.js'),
+            Controller: GambleController,
+            Template: GambleTemplate,
+            View: GambleView,
         },
         Loader: {
-            Controller: require('../components/loader/controller.js'),
+            Controller: LoaderController,
         },
         Paytable: {
-            Controller: require('../components/paytable/controller.js'),
+            Controller: PaytableController,
         },
         PickBonus: {
-            Controller: require('../components/pickBonus/controller.js'),
-            Template: require('../components/pickBonus/template.js'),
+            Controller: PickBonusController,
+            Template: PickBonusTemplate,
             PickItem: {
-                Controller: require('../components/pickBonus/pickItem/controller.js'),
-                Template: require('../components/pickBonus/pickItem/template.js'),
+                Controller: PickItemController,
+                Template: PickItemTemplate,
             },
         },
         SlotMachine: {
-            Cascade: require('../components/slotMachine/spinTypes/cascade.js'),
-            Config: require('../components/slotMachine/config.js'),
-            Controller: require('../components/slotMachine/controller.js'),
-            Service: require('../components/slotMachine/service.js'),
-            Symbol: require('../components/slotMachine/symbol.js'),
-            Symbols: require('../components/slotMachine/symbols.js'),
-            Template: require('../components/slotMachine/template.js'),
-            Tween: require('../components/slotMachine/tween.js'),
-            Wheel: require('../components/slotMachine/spinTypes/wheel.js'),
+            Cascade: Cascade,
+            Config: SlotMachineConfig,
+            Controller: SlotMachineController,
+            Service: SlotMachineService,
+            Symbol: SlotMachineSymbol,
+            Symbols: SlotMachineSymbols,
+            Template: SlotMachineTemplate,
+            Tween: SlotMachineTween,
+            Wheel: Wheel,
         },
         Ui: {
-            Controller: require('../components/ui/controller.js'),
+            Controller: UiController,
         },
         WinCounter: {
-            Config: require('../components/winCounter/config.js'),
-            Controller: require('../components/winCounter/controller.js'),
+            Config: WinCounterConfig,
+            Controller: WinCounterController,
         },
         WinFrame: {
-            Controller: require('../components/winFrame/controller.js'),
-            Template: require('../components/winFrame/template.js'),
-            View: require('../components/winFrame/view.js'),
+            Controller: WinFrameController,
+            Template: WinFrameTemplate,
+            View: WinFrameView,
         },
         WinLines: {
-            Controller: require('../components/winLines/controller.js'),
-            Template: require('../components/winLines/template.js'),
+            Controller: WinLinesController,
+            Template: WinLinesTemplate,
         },
     },
     Modules: {
         Logic: {
-            Controller: require('../modules/logic/controller.js'),
-            Main: require('../modules/logic/main.js'),
+            Controller: LogicController,
+            Main: LogicMain,
             Ui: {
-                BaseInteractiveUiElementController: require('../modules/logic/ui/baseInteractiveUiElementController.js'),
-                BaseUiElementController: require('../modules/logic/ui/baseUiElementController.js'),
-                Config: require('../modules/logic/ui/config.js'),
-                Controller: require('../modules/logic/ui/controller.js'),
+                BaseInteractiveUiElementController: BaseInteractiveUiElementController,
+                BaseUiElementController: BaseUiElementController,
+                Config: LogicUiConfig,
+                Controller: LogicUiController,
                 Buttons: {
-                    AutoSpinButtonController: require('../modules/logic/ui/buttons/autoSpinButtonController.js'),
-                    BetDecreaseButtonCircularController: require('../modules/logic/ui/buttons/betDecreaseButtonCircularController.js'),
-                    BetDecreaseButtonController: require('../modules/logic/ui/buttons/betDecreaseButtonController.js'),
-                    BetIncreaseButtonCircularController: require('../modules/logic/ui/buttons/betIncreaseButtonCircularController.js'),
-                    BetIncreaseButtonController: require('../modules/logic/ui/buttons/betIncreaseButtonController.js'),
-                    BetMaxButtonController: require('../modules/logic/ui/buttons/betMaxButtonController.js'),
-                    CollectButtonController: require('../modules/logic/ui/buttons/collectButtonController.js'),
-                    LineIncreaseButtonCircularController: require('../modules/logic/ui/buttons/lineIncreaseButtonCircularController.js'),
-                    LineIncreaseButtonController: require('../modules/logic/ui/buttons/lineIncreaseButtonController.js'),
-                    SkipButtonController: require('../modules/logic/ui/buttons/skipButtonController.js'),
-                    SpinButtonController: require('../modules/logic/ui/buttons/spinButtonController.js'),
-                    TurboModeButtonController: require('../modules/logic/ui/buttons/turboModeButtonController.js'),
+                    AutoSpinButtonController: AutoSpinButtonController,
+                    BetDecreaseButtonCircularController: BetDecreaseButtonCircularController,
+                    BetDecreaseButtonController: BetDecreaseButtonController,
+                    BetIncreaseButtonCircularController: BetIncreaseButtonCircularController,
+                    BetIncreaseButtonController: BetIncreaseButtonController,
+                    BetMaxButtonController: BetMaxButtonController,
+                    CollectButtonController: CollectButtonController,
+                    LineIncreaseButtonCircularController: LineIncreaseButtonCircularController,
+                    LineIncreaseButtonController: LineIncreaseButtonController,
+                    SkipButtonController: SkipButtonController,
+                    SpinButtonController: SpinButtonController,
+                    TurboModeButtonController: TurboModeButtonController,
                 },
                 Info: {
-                    BalanceController: require('../modules/logic/ui/info/balanceController.js'),
-                    BetController: require('../modules/logic/ui/info/betController.js'),
-                    CheeringController: require('../modules/logic/ui/info/cheeringController.js'),
-                    ClockController: require('../modules/logic/ui/info/clockController.js'),
-                    LinesController: require('../modules/logic/ui/info/linesController.js'),
-                    TotalBetController: require('../modules/logic/ui/info/totalBetController.js'),
-                    WinController: require('../modules/logic/ui/info/winController.js'),
+                    BalanceController: BalanceController,
+                    BetController: BetController,
+                    CheeringController: CheeringController,
+                    ClockController: ClockController,
+                    LinesController: LinesController,
+                    TotalBetController: TotalBetController,
+                    WinController: WinController,
                 },
             },
         },
         StatesManager: {
-            ConfigStates: require('../modules/statesManager/configStates.js'),
+            ConfigStates: ConfigStates,
             Actions: {
-                BaseTransportAction: require('../modules/statesManager/actions/baseTransportAction.js'),
-                InitUiLogicAction: require('../modules/statesManager/actions/initUiLogicAction.js'),
-                LoadDefaultSceneAction: require('../modules/statesManager/actions/loadDefaultSceneAction.js'),
-                MakeBetAction: require('../modules/statesManager/actions/makeBetAction.js'),
-                ResetWinTextAction: require('../modules/statesManager/actions/resetWinTextAction.js'),
-                ServerApiVersionRequestAction: require('../modules/statesManager/actions/serverApiVersionRequestAction.js'),
-                ServerAuthRequestAction: require('../modules/statesManager/actions/serverAuthRequestAction.js'),
-                ServerBalanceRequestAction: require('../modules/statesManager/actions/serverBalanceRequestAction.js'),
-                ServerCheckBrokenGameRequestAction: require('../modules/statesManager/actions/serverCheckBrokenGameRequestAction.js'),
-                ServerSpinRequestAction: require('../modules/statesManager/actions/serverSpinRequestAction'),
-                TransportInitAction: require('../modules/statesManager/actions/transportInitAction.js'),
-                UpdateBalanceAction: require('../modules/statesManager/actions/updateBalanceAction.js'),
-                UpdateServerSettingsAction: require('../modules/statesManager/actions/updateServerSettingsAction.js'),
-                UpdateWinTextAction: require('../modules/statesManager/actions/updateWinTextAction.js'),
-                WaitingForInteractionAction: require('../modules/statesManager/actions/waitingForInteractionAction.js'),
+                BaseTransportAction: BaseTransportAction,
+                InitUiLogicAction: InitUiLogicAction,
+                LoadDefaultSceneAction: LoadDefaultSceneAction,
+                MakeBetAction: MakeBetAction,
+                ResetWinTextAction: ResetWinTextAction,
+                ServerApiVersionRequestAction: ServerApiVersionRequestAction,
+                ServerAuthRequestAction: ServerAuthRequestAction,
+                ServerBalanceRequestAction: ServerBalanceRequestAction,
+                ServerCheckBrokenGameRequestAction: ServerCheckBrokenGameRequestAction,
+                ServerSpinRequestAction: ServerSpinRequestAction,
+                TransportInitAction: TransportInitAction,
+                UpdateBalanceAction: UpdateBalanceAction,
+                UpdateServerSettingsAction: UpdateServerSettingsAction,
+                UpdateWinTextAction: UpdateWinTextAction,
+                WaitingForInteractionAction: WaitingForInteractionAction,
             }
         },
         Transport: {
-            BaseModel: require('../modules/transport/baseModel.js'),
-            Controller: require('../modules/transport/controller.js'),
+            BaseModel: BaseModel,
+            Controller: TransportController,
             Models: {
-                ApiVersionRequest: require('../modules/transport/models/apiVersionRequest.js'),
-                AuthRequest: require('../modules/transport/models/authRequest.js'),
-                BalanceRequest: require('../modules/transport/models/balanceRequest.js'),
-                CheckBrokenGameRequest: require('../modules/transport/models/checkBrokenGameRequest.js'),
-                SpinRequest: require('../modules/transport/models/spinRequest.js'),
-                GambleRequest: require('../modules/transport/models/gambleRequest.js'),
-                PickBonusRequest: require('../modules/transport/models/pickBonusRequest.js'),
+                ApiVersionRequest: ApiVersionRequest,
+                AuthRequest: AuthRequest,
+                BalanceRequest: BalanceRequest,
+                CheckBrokenGameRequest: CheckBrokenGameRequest,
+                SpinRequest: SpinRequest,
+                GambleRequest: GambleRequest,
+                PickBonusRequest: PickBonusRequest,
             }
         }
     },

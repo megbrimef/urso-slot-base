@@ -1,4 +1,4 @@
-const BaseUiElementController = require('./baseUiElementController');
+import BaseUiElementController from './baseUiElementController.js';
 
 class ModulesLogicBaseInteractiveUiElementController extends BaseUiElementController {
     _type = null;
@@ -72,4 +72,4 @@ class ModulesLogicBaseInteractiveUiElementController extends BaseUiElementContro
     }
 }
 
-module.exports = ModulesLogicBaseInteractiveUiElementController;
+export default ModulesLogicBaseInteractiveUiElementController;

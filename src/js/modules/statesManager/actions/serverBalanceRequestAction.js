@@ -1,4 +1,4 @@
-const BaseTransportAction = require('./baseTransportAction');
+import BaseTransportAction from './baseTransportAction.js';
 class ModulesStatesManagerActionsServerBalanceRequestAction extends BaseTransportAction {
     name = 'serverBalanceRequestAction';
 
@@ -20,4 +20,4 @@ class ModulesStatesManagerActionsServerBalanceRequestAction extends BaseTranspor
     }
 }
 
-module.exports = ModulesStatesManagerActionsServerBalanceRequestAction;
+export default ModulesStatesManagerActionsServerBalanceRequestAction;

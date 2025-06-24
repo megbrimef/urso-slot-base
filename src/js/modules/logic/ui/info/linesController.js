@@ -1,5 +1,4 @@
-// eslint-disable-next-line max-len
-const BaseUiElementController = require('../baseUiElementController.js');
+import BaseUiElementController from '../baseUiElementController.js';
 
 class ModulesLogicBaseUiInfoLinesController extends BaseUiElementController {
     _class = 'linesVal';
@@ -20,4 +19,4 @@ class ModulesLogicBaseUiInfoLinesController extends BaseUiElementController {
     }
 }
 
-module.exports = ModulesLogicBaseUiInfoLinesController;
+export default ModulesLogicBaseUiInfoLinesController;

@@ -221,4 +221,4 @@ class ComponentsSlotMachineController extends Urso.Core.Components.StateDriven.C
     };
 }
 
-module.exports = ComponentsSlotMachineController;
+export default ComponentsSlotMachineController;

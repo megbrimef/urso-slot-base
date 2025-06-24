@@ -108,4 +108,4 @@ class ComponentsPickBonusController extends Urso.Core.Components.StateDriven.Con
     }
 }
 
-module.exports = ComponentsPickBonusController;
+export default ComponentsPickBonusController;

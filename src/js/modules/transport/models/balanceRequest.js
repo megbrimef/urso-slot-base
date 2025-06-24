@@ -1,4 +1,4 @@
-const BaseModel = require('../baseModel.js');
+import BaseModel from '../baseModel.js';
 
 class BalanceRequest extends BaseModel {
     constructor({ sessionId, data = {} } = {}) {
@@ -6,4 +6,4 @@ class BalanceRequest extends BaseModel {
     }
 }
 
-module.exports = BalanceRequest;
+export default BalanceRequest;

@@ -34,4 +34,4 @@ class ModulesLogicUiConfig {
     }
 }
 
-module.exports = ModulesLogicUiConfig;
+export default ModulesLogicUiConfig;

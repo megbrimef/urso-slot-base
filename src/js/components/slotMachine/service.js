@@ -241,4 +241,4 @@ class ComponentsSlotMachineService {
     }
 }
 
-module.exports = ComponentsSlotMachineService;
+export default ComponentsSlotMachineService;

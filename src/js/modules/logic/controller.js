@@ -7,4 +7,4 @@ class ModulesLogicController extends Urso.Core.Modules.Logic.Controller {
     }
 }
 
-module.exports = ModulesLogicController;
+export default ModulesLogicController;

@@ -151,4 +151,4 @@ class ComponentsPaytableController extends Urso.Core.Components.StateDriven.Cont
     }
 }
 
-module.exports = ComponentsPaytableController;
+export default ComponentsPaytableController;

@@ -106,4 +106,4 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
     }
 }
 
-module.exports = ModulesStatesManagerConfigStates;
+export default ModulesStatesManagerConfigStates;

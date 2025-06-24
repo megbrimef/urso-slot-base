@@ -851,4 +851,4 @@ class ComponentsSlotMachineWheel {
     }
 }
 
-module.exports = ComponentsSlotMachineWheel;
+export default ComponentsSlotMachineWheel;

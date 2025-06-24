@@ -1,4 +1,4 @@
-const BaseModel = require('../baseModel.js');
+import BaseModel from '../baseModel.js';
 
 class AuthRequest extends BaseModel {
     constructor() {
@@ -6,4 +6,4 @@ class AuthRequest extends BaseModel {
     }
 }
 
-module.exports = AuthRequest;
+export default AuthRequest;

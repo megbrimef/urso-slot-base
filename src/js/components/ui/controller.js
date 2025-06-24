@@ -53,4 +53,4 @@ class ComponentsUiController extends Urso.Core.Components.Base.Controller {
     }
 }
 
-module.exports = ComponentsUiController;
+export default ComponentsUiController;

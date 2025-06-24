@@ -43,4 +43,4 @@ class ModulesStatesManagerActionsBaseEventDrivenAction extends Urso.Core.Modules
     }
 }
 
-module.exports = ModulesStatesManagerActionsBaseEventDrivenAction;
+export default ModulesStatesManagerActionsBaseEventDrivenAction;

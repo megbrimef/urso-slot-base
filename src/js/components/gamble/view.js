@@ -39,4 +39,4 @@ class ComponentsGambleView {
     }
 }
 
-module.exports = ComponentsGambleView;
+export default ComponentsGambleView;

@@ -1,4 +1,4 @@
-const BaseTransportAction = require('./baseTransportAction');
+import BaseTransportAction from './baseTransportAction.js';
 
 class ModulesStatesManagerActionsServerApiVersionRequestAction extends BaseTransportAction {
     name = 'serverApiVersionRequestAction';
@@ -14,4 +14,4 @@ class ModulesStatesManagerActionsServerApiVersionRequestAction extends BaseTrans
     }
 }
 
-module.exports = ModulesStatesManagerActionsServerApiVersionRequestAction;
+export default ModulesStatesManagerActionsServerApiVersionRequestAction;

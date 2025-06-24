@@ -12,4 +12,4 @@ class ModulesStatesManagerActionsUpdateBalanceAction extends Urso.Core.Modules.S
     }
 }
 
-module.exports = ModulesStatesManagerActionsUpdateBalanceAction;
+export default ModulesStatesManagerActionsUpdateBalanceAction;

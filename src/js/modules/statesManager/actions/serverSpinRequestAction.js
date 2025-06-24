@@ -1,4 +1,4 @@
-const BaseTransportAction = require('./baseTransportAction');
+import BaseTransportAction from './baseTransportAction.js';
 
 class ModulesStatesManagerActionsServerSpinRequestAction extends BaseTransportAction {
     name = 'serverSpinRequestAction';
@@ -32,4 +32,4 @@ class ModulesStatesManagerActionsServerSpinRequestAction extends BaseTransportAc
     }
 }
 
-module.exports = ModulesStatesManagerActionsServerSpinRequestAction;
+export default ModulesStatesManagerActionsServerSpinRequestAction;

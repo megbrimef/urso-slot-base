@@ -76,4 +76,4 @@ class ComponentsWinFrameView {
     }
 }
 
-module.exports = ComponentsWinFrameView;
+export default ComponentsWinFrameView;

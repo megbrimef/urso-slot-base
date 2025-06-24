@@ -23,4 +23,4 @@ class ComponentsWinCounterConfig {
     }
 }
 
-module.exports = ComponentsWinCounterConfig;
+export default ComponentsWinCounterConfig;

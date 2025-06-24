@@ -36,4 +36,4 @@ class ComponentsLoaderController extends Urso.Core.Components.StateDriven.Contro
     }
 }
 
-module.exports = ComponentsLoaderController;
+export default ComponentsLoaderController;

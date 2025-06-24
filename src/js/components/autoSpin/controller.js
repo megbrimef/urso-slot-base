@@ -101,4 +101,4 @@ class ComponentsAutoSpinController extends Urso.Core.Components.StateDriven.Cont
     }
 }
 
-module.exports = ComponentsAutoSpinController;
+export default ComponentsAutoSpinController;

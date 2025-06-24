@@ -1,4 +1,4 @@
-const BaseEventDrivenAction = require('./baseEventDrivenAction');
+import BaseEventDrivenAction from './baseEventDrivenAction.js';
 
 class ModulesStatesManagerActionsLoadDefaultSceneAction extends BaseEventDrivenAction {
     name = 'loadDefaultSceneAction';
@@ -9,4 +9,4 @@ class ModulesStatesManagerActionsLoadDefaultSceneAction extends BaseEventDrivenA
     }
 }
 
-module.exports = ModulesStatesManagerActionsLoadDefaultSceneAction;
+export default ModulesStatesManagerActionsLoadDefaultSceneAction;

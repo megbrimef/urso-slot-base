@@ -231,4 +231,4 @@ class ComponentsWinCounterController extends Urso.Core.Components.StateDriven.Co
     }
 }
 
-module.exports = ComponentsWinCounterController;
+export default ComponentsWinCounterController;

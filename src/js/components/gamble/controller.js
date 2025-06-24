@@ -160,4 +160,4 @@ class ComponentsGambleController extends Urso.Core.Components.StateDriven.Contro
     }
 }
 
-module.exports = ComponentsGambleController;
+export default ComponentsGambleController;

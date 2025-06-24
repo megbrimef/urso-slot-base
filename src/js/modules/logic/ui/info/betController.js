@@ -1,5 +1,4 @@
-// eslint-disable-next-line max-len
-const BaseUiElementController = require('../baseUiElementController.js');
+import BaseUiElementController from '../baseUiElementController.js';
 
 class ModulesLogicUiInfoBetController extends BaseUiElementController {
     _class = 'betVal';
@@ -76,4 +75,4 @@ class ModulesLogicUiInfoBetController extends BaseUiElementController {
     }
 }
 
-module.exports = ModulesLogicUiInfoBetController;
+export default ModulesLogicUiInfoBetController;

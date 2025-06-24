@@ -5,4 +5,4 @@ class SlotBaseApp extends Urso.Core.App {
     }
 }
 
-module.exports = SlotBaseApp;
+export default SlotBaseApp;

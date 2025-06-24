@@ -12,4 +12,4 @@ class ModulesStatesManagerActionsResetWinTextAction extends Urso.Core.Modules.St
     }
 }
 
-module.exports = ModulesStatesManagerActionsResetWinTextAction;
+export default ModulesStatesManagerActionsResetWinTextAction;

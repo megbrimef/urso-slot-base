@@ -19,4 +19,4 @@ class ComponentsWinFrameController extends Urso.Core.Components.Base.Controller 
     }
 }
 
-module.exports = ComponentsWinFrameController;
+export default ComponentsWinFrameController;

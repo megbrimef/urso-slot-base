@@ -363,4 +363,4 @@ class ComponentsSlotMachineTween {
     }
 }
 
-module.exports = ComponentsSlotMachineTween;
+export default ComponentsSlotMachineTween;

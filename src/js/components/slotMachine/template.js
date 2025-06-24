@@ -20,4 +20,4 @@ class ComponentsSlotMachineTemplate {
     }
 }
 
-module.exports = ComponentsSlotMachineTemplate;
+export default ComponentsSlotMachineTemplate;

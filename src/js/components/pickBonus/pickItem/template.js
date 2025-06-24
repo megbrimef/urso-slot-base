@@ -68,4 +68,4 @@ class ComponentsPickItemTemplate {
     }
 }
 
-module.exports = ComponentsPickItemTemplate;
+export default ComponentsPickItemTemplate;

@@ -1,5 +1,4 @@
-// eslint-disable-next-line max-len
-const BaseInteractiveUiElementController = require('../baseInteractiveUiElementController.js');
+import BaseInteractiveUiElementController from '../baseInteractiveUiElementController.js';
 
 class ModulesLogicBaseUiButtonsLineIncreaseButtonController extends BaseInteractiveUiElementController {
     _type = this.TYPES.BUTTON;
@@ -41,4 +40,4 @@ class ModulesLogicBaseUiButtonsLineIncreaseButtonController extends BaseInteract
     }
 }
 
-module.exports = ModulesLogicBaseUiButtonsLineIncreaseButtonController;
+export default ModulesLogicBaseUiButtonsLineIncreaseButtonController;

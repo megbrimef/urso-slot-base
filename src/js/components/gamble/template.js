@@ -2,4 +2,4 @@ class ComponentsGambleTemplate {
     objects = [];
 }
 
-module.exports = ComponentsGambleTemplate;
+export default ComponentsGambleTemplate;

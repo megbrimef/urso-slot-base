@@ -144,4 +144,4 @@ class ComponentsWinLinesController extends Urso.Core.Components.StateDriven.Cont
     }
 }
 
-module.exports = ComponentsWinLinesController;
+export default ComponentsWinLinesController;

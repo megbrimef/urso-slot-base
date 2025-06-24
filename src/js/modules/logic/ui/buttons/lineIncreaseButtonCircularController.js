@@ -1,6 +1,6 @@
-// eslint-disable-next-line max-len
+import LineIncreaseButtonController from './lineIncreaseButtonController.js';
+import BaseInteractiveUiElementController from '../baseInteractiveUiElementController.js';
 
-const LineIncreaseButtonController = require('./lineIncreaseButtonController');
 class ModulesLogicBaseUiButtonsLineIncreaseCircularButtonController extends LineIncreaseButtonController {
     _class = 'lineIncreaseCircularButton';
 
@@ -15,4 +15,4 @@ class ModulesLogicBaseUiButtonsLineIncreaseCircularButtonController extends Line
     }
 }
 
-module.exports = ModulesLogicBaseUiButtonsLineIncreaseCircularButtonController;
+export default ModulesLogicBaseUiButtonsLineIncreaseCircularButtonController;

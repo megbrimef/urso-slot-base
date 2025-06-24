@@ -4,4 +4,4 @@ class ComponentsWinlinesTemplate {
     }
 }
 
-module.exports = ComponentsWinlinesTemplate;
+export default ComponentsWinlinesTemplate;

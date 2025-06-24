@@ -29,4 +29,4 @@ class ModulesLogicUiController {
     }
 }
 
-module.exports = ModulesLogicUiController;
+export default ModulesLogicUiController;

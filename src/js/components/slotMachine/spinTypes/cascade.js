@@ -1,4 +1,4 @@
-const Wheel = require('./wheel');
+import Wheel from './wheel.js';
 
 class ComponentsSlotMachineCascade extends Wheel {
     _wasDropped = [];
@@ -58,4 +58,4 @@ class ComponentsSlotMachineCascade extends Wheel {
     }
 }
 
-module.exports = ComponentsSlotMachineCascade;
+export default ComponentsSlotMachineCascade;

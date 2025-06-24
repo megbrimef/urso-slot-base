@@ -104,4 +104,4 @@ class ComponentsSlotMachineSymbols {
     }
 }
 
-module.exports = ComponentsSlotMachineSymbols;
+export default ComponentsSlotMachineSymbols;

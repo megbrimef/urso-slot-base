@@ -1,9 +1,10 @@
-require('@urso/core');
+import '@urso/core';
 
-window.Urso.SlotBase = {};
+// window.Urso.SlotBase = {};
 
-require('./config/load');
-require('./config/main');
-Urso.SlotBase.App = require('./slotBaseApp');
+import './config/load.js';
+import './config/main.js';
+import SlotBaseApp from './slotBaseApp.js';
 
+Urso.SlotBase.App = SlotBaseApp;
 Urso.runGame = (new Urso.SlotBase.App()).setup;

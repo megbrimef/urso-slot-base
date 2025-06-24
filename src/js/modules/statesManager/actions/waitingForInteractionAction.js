@@ -36,4 +36,4 @@ class ModulesStatesManagerActionsWaitingForInteractionAction extends Urso.Core.M
     }
 }
 
-module.exports = ModulesStatesManagerActionsWaitingForInteractionAction;
+export default ModulesStatesManagerActionsWaitingForInteractionAction;

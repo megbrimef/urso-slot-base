@@ -27,4 +27,4 @@ class ComponentsBackgroundTemplate {
     }
 }
 
-module.exports = ComponentsBackgroundTemplate;
+export default ComponentsBackgroundTemplate;

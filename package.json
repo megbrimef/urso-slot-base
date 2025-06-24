@@ -1,13 +1,15 @@
 {
   "name": "@urso/slot-base",
-  "version": "0.7.93",
+  "version": "0.9.0-dev",
   "description": "HTML5 slot base game",
   "main": "build/js/index.js",
+  "type": "module",
   "author": "LCG",
   "license": "MIT",
   "scripts": {
-    "build:prod": "webpack --config webpack.config.js --mode=production",
-    "build:dev": "webpack --config webpack.config.js --mode=development"
+    "dev": "vite",
+    "build:prod": "vite build",
+    "serve": "vite preview"
   },
   "repository": {
     "type": "git",
@@ -22,23 +24,10 @@
   },
   "homepage": "https://github.com/megbrimef/urso-slot-base#readme",
   "dependencies": {
-    "@urso/core": "^0.7.93"
+    "@urso/core": "^0.9.4-dev"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "babel-loader": "^8.2.2",
-    "copy-webpack-plugin": "^5.0.3",
-    "eslint": "^8.5.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.3",
-    "exports-loader": "^0.7.0",
-    "html-webpack-plugin": "^5.1.0",
-    "script-loader": "^0.7.2",
-    "source-map-loader": "^1.0.0",
-    "style-loader": "^0.23.1",
-    "webpack": "^5.11.0",
-    "webpack-cli": "^4.2.0",
-    "webpack-dev-server": "^3.11.0"
+   "@vitejs/plugin-legacy": "^6.1.1",
+    "vite": "^6.3.0"
   }
 }

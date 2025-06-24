@@ -1,4 +1,4 @@
-const BaseModel = require('../baseModel.js');
+import BaseModel from '../baseModel.js';
 
 class PickBonusRequest extends BaseModel {
     constructor({ sessionId, data }) {
@@ -6,4 +6,4 @@ class PickBonusRequest extends BaseModel {
     }
 }
 
-module.exports = PickBonusRequest;
+export default PickBonusRequest;

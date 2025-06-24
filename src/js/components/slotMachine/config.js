@@ -114,4 +114,4 @@ class ComponentsSlotMachineConfig {
     }
 }
 
-module.exports = ComponentsSlotMachineConfig;
+export default ComponentsSlotMachineConfig;

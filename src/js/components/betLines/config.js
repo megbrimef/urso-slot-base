@@ -6,4 +6,4 @@ class ComponentsBetLinesConfig {
     }
 }
 
-module.exports = ComponentsBetLinesConfig;
+export default ComponentsBetLinesConfig;

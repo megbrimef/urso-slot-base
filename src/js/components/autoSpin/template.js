@@ -4,4 +4,4 @@ class ComponentsAutoSpinTemplate {
     }
 }
 
-module.exports = ComponentsAutoSpinTemplate;
+export default ComponentsAutoSpinTemplate;

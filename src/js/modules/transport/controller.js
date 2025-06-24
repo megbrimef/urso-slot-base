@@ -52,4 +52,4 @@ class ModulesTransportController extends Urso.Core.Modules.Transport.Controller 
     }
 }
 
-module.exports = ModulesTransportController;
+export default ModulesTransportController;

@@ -1,4 +1,4 @@
-const BaseModel = require('../baseModel.js');
+import BaseModel from '../baseModel.js';
 
 class ApiVersionRequest extends BaseModel {
     constructor() {
@@ -6,4 +6,4 @@ class ApiVersionRequest extends BaseModel {
     }
 }
 
-module.exports = ApiVersionRequest;
+export default ApiVersionRequest;

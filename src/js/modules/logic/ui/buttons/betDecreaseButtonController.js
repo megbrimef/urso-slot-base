@@ -1,5 +1,6 @@
-// eslint-disable-next-line max-len
-const BetIncreaseButtonController = require('./betIncreaseButtonController');
+import BetIncreaseButtonController from './betIncreaseButtonController.js';
+import BaseInteractiveUiElementController from '../baseInteractiveUiElementController.js';
+
 class ModulesLogicBaseUiButtonsBetDecreaseButtonController extends BetIncreaseButtonController {
     _class = 'betDecreaseButton';
 
@@ -16,4 +17,4 @@ class ModulesLogicBaseUiButtonsBetDecreaseButtonController extends BetIncreaseBu
     }
 }
 
-module.exports = ModulesLogicBaseUiButtonsBetDecreaseButtonController;
+export default ModulesLogicBaseUiButtonsBetDecreaseButtonController;

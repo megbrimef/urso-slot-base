@@ -1,4 +1,4 @@
-const BaseModel = require('../baseModel.js');
+import BaseModel from '../baseModel.js';
 
 class SpinRequest extends BaseModel {
     constructor({ sessionId, data }) {
@@ -6,4 +6,4 @@ class SpinRequest extends BaseModel {
     }
 }
 
-module.exports = SpinRequest;
+export default SpinRequest;

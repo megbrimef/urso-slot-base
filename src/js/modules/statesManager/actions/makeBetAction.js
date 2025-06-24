@@ -12,4 +12,4 @@ class ModulesStatesManagerActionsMakeBetAction extends Urso.Core.Modules.StatesM
     }
 }
 
-module.exports = ModulesStatesManagerActionsMakeBetAction;
+export default ModulesStatesManagerActionsMakeBetAction;

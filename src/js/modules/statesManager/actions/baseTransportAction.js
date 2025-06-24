@@ -1,4 +1,4 @@
-const BaseEventDrivenAction = require('./baseEventDrivenAction');
+import BaseEventDrivenAction from './baseEventDrivenAction.js';
 
 class ModulesStatesManagerActionsBaseTransportAction extends BaseEventDrivenAction {
     serverActionType = null;
@@ -21,4 +21,4 @@ class ModulesStatesManagerActionsBaseTransportAction extends BaseEventDrivenActi
     }
 }
 
-module.exports = ModulesStatesManagerActionsBaseTransportAction;
+export default ModulesStatesManagerActionsBaseTransportAction;

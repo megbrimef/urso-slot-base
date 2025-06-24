@@ -1,4 +1,4 @@
-const BaseTransportAction = require('./baseTransportAction');
+import BaseTransportAction from './baseTransportAction.js';
 
 class ModulesStatesManagerActionsServerAuthRequestAction extends BaseTransportAction {
     name = 'serverAuthRequestAction';
@@ -37,4 +37,4 @@ class ModulesStatesManagerActionsServerAuthRequestAction extends BaseTransportAc
     }
 }
 
-module.exports = ModulesStatesManagerActionsServerAuthRequestAction;
+export default ModulesStatesManagerActionsServerAuthRequestAction;
