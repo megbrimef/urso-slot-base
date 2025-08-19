@@ -9,12 +9,12 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
                         all: [
                             {
                                 sequence: [
-                                    { action: 'updateServerSettingsAction' },
-                                    { action: 'transportInitAction' },
-                                    { action: 'serverApiVersionRequestAction' },
-                                    { action: 'serverCheckBrokenGameRequestAction' },
-                                    { action: 'serverAuthRequestAction' },
-                                    { action: 'serverBalanceRequestAction' },
+                                    // { action: 'updateServerSettingsAction' },
+                                    // { action: 'transportInitAction' },
+                                    // { action: 'serverApiVersionRequestAction' },
+                                    // { action: 'serverCheckBrokenGameRequestAction' },
+                                    // { action: 'serverAuthRequestAction' },
+                                    // { action: 'serverBalanceRequestAction' },
                                 ],
                             },
                             {
@@ -25,14 +25,14 @@ class ModulesStatesManagerConfigStates extends Urso.Core.Modules.StatesManager.C
                             },
                         ],
                     },
-                    {
-                        all: [
-                            { action: 'initUiLogicAction' },
-                            { action: 'updateBalanceAction' },
-                            { action: 'updateBetLinesAction' },
-                            { action: 'hideLoaderAction' },
-                        ],
-                    },
+                    // {
+                    //     all: [
+                    //         { action: 'initUiLogicAction' },
+                    //         { action: 'updateBalanceAction' },
+                    //         { action: 'updateBetLinesAction' },
+                    //         { action: 'hideLoaderAction' },
+                    //     ],
+                    // },
                 ],
             },
 

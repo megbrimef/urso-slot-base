@@ -7,4 +7,4 @@ import './config/main.js';
 import SlotBaseApp from './slotBaseApp.js';
 
 Urso.SlotBase.App = SlotBaseApp;
-Urso.runGame = (new Urso.SlotBase.App()).setup;
+// Urso.runGame = (new Urso.SlotBase.App()).setup;
