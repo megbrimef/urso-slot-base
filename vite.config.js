@@ -3,29 +3,30 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [],
   build: {
+    minify: false,
     outDir: 'build',
     emptyOutDir: true,
     lib: {
       entry: './src/js/index.js',
-      name: 'Urso',
+      name: 'Urso Slot Base',
       fileName: 'js/index',
       formats: ['es'],
       sourcemap: true,
       
     },
-    rollupOptions: {
-      external: [], // add external dependencies if needed
-      output: {
-        inlineDynamicImports: true
-      }
-    },
-    minify: 'terser',
-    terserOptions: {
-      compress: true,
-      mangle: true,
-      format: {
-        comments: false
-      }
-    },
+    // rollupOptions: {
+    //   external: [], // add external dependencies if needed
+    //   output: {
+    //     inlineDynamicImports: true
+    //   }
+    // },
+    // minify: 'terser',
+    // terserOptions: {
+    //   compress: true,
+    //   mangle: true,
+    //   format: {
+    //     comments: false
+    //   }
+    // },
   }
 });
