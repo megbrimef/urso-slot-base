@@ -1,6 +1,6 @@
 {
   "name": "@urso/slot-base",
-  "version": "0.9.2-dev",
+  "version": "0.9.3-dev",
   "description": "HTML5 slot base game",
   "main": "build/js/index.js",
   "type": "module",
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/megbrimef/urso-slot-base#readme",
   "dependencies": {
-    "@urso/core": "^0.9.6-dev"
+    "@urso/core": "^0.9.7-dev"
   },
   "devDependencies": {
    "@vitejs/plugin-legacy": "^6.1.1",
